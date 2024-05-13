@@ -14,4 +14,5 @@
 ![블록도 캡처](https://github.com/sojaeheon/smartfarm/assets/144245586/ca9e0690-a9d5-4e6d-a17c-f9515fcfb069)
 
 ## Video
-![Edge Impulse](https://youtu.be/chbItIeD0JI)
+[![Alt text](https://img.youtube.com/vi/chbItIeD0JI/0.jpg)](https://www.youtube.com/watch?v=chbItIeD0JI)
+
