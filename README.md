@@ -13,6 +13,8 @@
 ## Video
 [![Alt text](https://img.youtube.com/vi/chbItIeD0JI/0.jpg)](https://www.youtube.com/watch?v=chbItIeD0JI)
 
+# 사용 llama model
+xionic-ko-llama-3-70b-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
 
 
 
