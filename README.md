@@ -20,13 +20,12 @@
 + Kaggle : 딸기 병해 객채 검출 데이터
 + 총 4301 병해 이미지
 + 종류 : 각진반점, 탄저병, 꽃곰팡이병, 잿빛곰팡이병, 세균모무늬병, 흰가루병(잎), 흰가루병(과일)
-4. 학습 영상
 
-![GIFMaker_me (1)](https://github.com/sojaeheon/smartfarm/assets/132196804/1d162bdf-30d3-4835-9ecf-627e61593c87)
+5. 테스트 영상
+    
+https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-7248a1e67bcf
 
 
-5. 테스트
-   
 
 
 
