@@ -40,7 +40,7 @@ xionic-ko-llama-3-70b-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
 ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/71bf9aa9-08ab-4567-a0c9-643830bec7c9)
 
 
-# UI
+# UI (미완성)
 ![0612232209731627](https://github.com/sojaeheon/smartfarm/assets/132196804/1652d921-8472-407f-844f-20e224c270bb)
 
 
