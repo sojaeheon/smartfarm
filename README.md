@@ -40,14 +40,14 @@ xionic-ko-llama-3-70b-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
 ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/71bf9aa9-08ab-4567-a0c9-643830bec7c9)
 
 
-
-
-
-
-
-
-
-
+#UI
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/193cb435-ee21-4ad0-ba45-0400935245ec)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/cca2a78a-53e7-4a63-86f2-d372974fc875)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/fdcf1df8-a3d9-4899-9fff-f74f0c05f3ec)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/2a66e7e8-e3c6-452d-b211-12a65e9645d3)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/11e0a8f4-b2f0-42cc-9f24-2e8d7dc49c6e)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/73b0d6ca-9f7d-4250-8877-f76bb013f64c)
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/7770cd75-3577-42aa-855a-61357ce8d67c)
 
 
 ## 블록도
