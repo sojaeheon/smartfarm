@@ -46,7 +46,7 @@ xionic-ko-llama-3-70b-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
 
 
 ## 블록도
-![image](https://github.com/sojaeheon/smartfarm/assets/144245586/76647670-4532-49a5-8fd1-14fd17f369b1)
+![image](https://github.com/sojaeheon/smartfarm/assets/144245586/cfb397f3-ccad-418b-a793-76ab83f630d1)
 
 ![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
 
