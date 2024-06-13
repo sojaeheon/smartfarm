@@ -10,6 +10,13 @@
 ## 노션
 조명은 LED - (https://www.notion.so/daa597b71e6b46b9a22b0299711b95e0)
 
+
+## 블록도
+![image](https://github.com/sojaeheon/smartfarm/assets/144245586/cfb397f3-ccad-418b-a793-76ab83f630d1)
+
+![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
+
+
 ## roboflow 사용
 1. 모델 : Roboflow 3.0
 2. traing 그래프
@@ -45,8 +52,4 @@ xionic-ko-llama-3-70b-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
 ![0612232209731627](https://github.com/sojaeheon/smartfarm/assets/132196804/1652d921-8472-407f-844f-20e224c270bb)
 
 
-## 블록도
-![image](https://github.com/sojaeheon/smartfarm/assets/144245586/cfb397f3-ccad-418b-a793-76ab83f630d1)
-
-![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
 
