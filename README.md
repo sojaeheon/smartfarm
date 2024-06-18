@@ -1,6 +1,6 @@
-# Smartfarm
+# 조명은 LED - Smartfarm
 
-## 조명은 LED
+## 조원
 * 하승철
 * 박현준
 * 소재헌
@@ -16,6 +16,11 @@
 
 ![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
 
+## Block #1 
+
+## Block #2
+
+## Block #3
 
 ## roboflow 사용
 1. 모델 : Roboflow 3.0
