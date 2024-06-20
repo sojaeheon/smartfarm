@@ -73,6 +73,7 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 
 ## 4. 스마트팜 환경제어
 * 블록도
+  
 ![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
 
 
