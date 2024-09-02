@@ -14,7 +14,7 @@
       <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
   </aside>
-  <article class="main">
+  <section class="main">
     <div>
       <img id="setting" src="./assets/settings.svg" />
     </div>
@@ -22,7 +22,7 @@
       <p><strong>챗봇</strong></p>
       <span class="search"><input type="text" value=""></span>
     </div>
-  </article>
+  </section>
 </template>
 
 <script> //JS짜는 곳
