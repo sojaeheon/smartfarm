@@ -1,5 +1,5 @@
 <template> <!--HTML짜는 곳-->
-  <nav class="menu">
+  <aside class="menu">
     <div>
       <img id="hidden" src="./assets/log-out.svg" />
     </div>
@@ -13,14 +13,16 @@
     <div id="search_list">
       <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
-  </nav>
-  <section class="main">
-    <img id="setting" src="./assets/settings.svg" />
+  </aside>
+  <article class="main">
+    <div>
+      <img id="setting" src="./assets/settings.svg" />
+    </div>
     <div id="chat">
       <p><strong>챗봇</strong></p>
       <span class="search"><input type="text" value=""></span>
     </div>
-  </section>
+  </article>
 </template>
 
 <script> //JS짜는 곳
