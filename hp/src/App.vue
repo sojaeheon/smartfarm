@@ -55,8 +55,8 @@ p {
   border-radius: 30px;
   border: 2px solid #F99E17;
 }
-.search button{
-  
+.search button {
+  position: absolute;
 }
 .menu, .main {
   display: inline-block;
