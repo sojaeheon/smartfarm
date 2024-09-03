@@ -1,7 +1,7 @@
 <template> <!--HTML짜는 곳-->
   <aside class="menu">
     <div>
-      <img id="hidden" src="./assets/log-out.svg" />
+      <img id="hidden" src="./assets/log-out.svg" alt="logout icon" />
     </div>
     <div id="function">
       <p class="bg-red"><strong>기능들</strong></p>
@@ -16,14 +16,14 @@
   </aside>
   <main class="main">
     <div>
-      <img id="setting" src="./assets/settings.svg" />
+      <img id="settings" src="./assets/settings.svg" alt="settings icon" />
     </div>
     <div id="chat">
       <p><strong>챗봇</strong></p>
-      <span class="search">
-        <input type="text" value="">
-        <button type="submit">제출 검색</button>
-      </span>
+      <div class="search">
+        <input type="text" name="search_box">
+        <button type="submit"></button>
+      </div>
     </div>
   </main>
 </template>
@@ -37,6 +37,7 @@
 body, html {
     margin: 0;
     display: flex;
+    height: 100vh;
 }
 p {
   font-size: 1.5rem;
@@ -48,29 +49,35 @@ p {
 }
 .search input{
   height: 5vh;
-  width: 50vw;
-  position: absolute;
-  margin: 1px 2px 3px 4px;
+  width: 60vw;
+  position: relative;
+  padding: 0px 10px 0px 10px;
 
   border-radius: 30px;
   border: 2px solid #F99E17;
 }
 .search button {
   position: absolute;
+  width: 40px;
+  height: 40px;
+  right: 20px;
+  top: 5px;
+  background-image: url('./assets/search.svg');
+  background-color: snow;
+  background-size: cover;
+  border: none;
 }
 .menu, .main {
   display: inline-block;
 }
 .menu {
   float: left;
-  height: 100vh;
-  width: 14.5vw;
+  width: 17.5vw;
   background-color: seashell;
 }
 .main {
   float: right;
-  height: 100vh;
-  width: 84.5vw;
+  width: 82.5vw;
   background-color: snow;
 }
 .bg-red {
@@ -83,7 +90,7 @@ p {
   padding: 50px 0px;
   color: black;
 }
-#hidden, #setting {
+#hidden, #settings {
   float: right;
 }
 </style>
