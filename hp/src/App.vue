@@ -14,15 +14,18 @@
       <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
   </aside>
-  <section class="main">
+  <main class="main">
     <div>
       <img id="setting" src="./assets/settings.svg" />
     </div>
     <div id="chat">
       <p><strong>챗봇</strong></p>
-      <span class="search"><input type="text" value=""></span>
+      <span class="search">
+        <input type="text" value="">
+        <button type="submit">제출</button>
+      </span>
     </div>
-  </section>
+  </main>
 </template>
 
 <script> //JS짜는 곳
@@ -38,16 +41,22 @@ body, html {
 p {
   font-size: 1.5rem;
 }
-.search input{ 
-  height: 5vh;
-  width: 50vw;
+.search{
   position: absolute;
   top: 90vh;
   left: 30vw;
+}
+.search input{
+  height: 5vh;
+  width: 50vw;
+  position: absolute;
   margin: 1px 2px 3px 4px;
 
   border-radius: 30px;
   border: 2px solid #F99E17;
+}
+.search button{
+  
 }
 .menu, .main {
   display: inline-block;
