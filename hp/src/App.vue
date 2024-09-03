@@ -22,7 +22,7 @@
       <p><strong>챗봇</strong></p>
       <span class="search">
         <input type="text" value="">
-        <button type="submit">제출</button>
+        <button type="submit">제출 검색</button>
       </span>
     </div>
   </main>
