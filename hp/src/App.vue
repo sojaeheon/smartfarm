@@ -22,19 +22,17 @@
       <button id="settings"></button>
     </div>
     <div id="chat">
-      <div class="communicate">
-        <textarea name="question"></textarea>
-      </div>
-      <p><strong>챗봇</strong></p>
       <div class="search">
-        <input type="text" name="search_box" placeholder="무엇이 궁금하신가?">
-        <button type="submit"></button>
+        <AppChatbot />
       </div>
     </div>
   </main>
 </template>
 
-<script> //JS짜는 곳
+<script>
+import AppChatbot from './components/AppChatbot.vue';
+
+ //JS짜는 곳
 export default{
   name: 'App',
   data(){
@@ -47,6 +45,9 @@ export default{
       this.show=!this.show;
     }
   },
+  components: {
+    AppChatbot
+  }
 }
   
 </script>
@@ -69,23 +70,8 @@ button {
 }
 .search{
   position: absolute;
-  top: 90vh;
+  bottom: 5vh;
   left: 30vw;
-}
-.search input{
-  height: 5vh;
-  width: 60vw;
-  position: relative;
-  padding: 0px 20px 0px 20px;
-  font-size: 1rem;
-  border-radius: 30px;
-  border: 2px solid #F99E17;
-}
-.search button {
-  position: absolute;
-  right: 20px;
-  top: 5px;
-  background-image: url('./assets/search.svg');
 }
 .menu, .main {
   display: inline-block;
@@ -93,6 +79,7 @@ button {
 .menu {
   float: left;
   width: 17.5vw;
+  height: 100vh;
   background-color: seashell;
 }
 .main {
