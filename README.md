@@ -51,9 +51,21 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 3. AI의 답변
 ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/600552a6-3324-47d4-bc74-f294ff175586)
 
+<br/><br/>
+<hr>
+<br/><br/>
 
+# 블록도
+![image](https://github.com/user-attachments/assets/087f21e0-691e-4a7c-87bc-0169c04680cc)
 
-
+# 주요 기능
+### 1. AI 챗봇
+### 2. 질병 확인
+### 3. 생장일지 작성
+### 4. 장치 구동
+### 5. 센서 환경정보 
+  
+<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 # 방향
 
 ## 1. RAG
