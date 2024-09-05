@@ -1,7 +1,7 @@
 <template> <!--HTML짜는 곳-->
-  <aside class="menu">
+  <aside class="menu" v-if="show">
     <div>
-      <img id="hidden" src="./assets/log-out.svg" alt="logout icon" />
+      <button id="hidden" @click="toggleShow"></button>
     </div>
     <div id="function">
       <p class="bg-red"><strong>기능들</strong></p>
@@ -14,14 +14,20 @@
       <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
   </aside>
+  <aside class="no-menu" v-else-if="!show">
+    <button id=show @click="toggleShow"></button>
+  </aside>
   <main class="main">
     <div>
-      <img id="settings" src="./assets/settings.svg" alt="settings icon" />
+      <button id="settings"></button>
     </div>
     <div id="chat">
+      <div class="communicate">
+        <textarea name="question"></textarea>
+      </div>
       <p><strong>챗봇</strong></p>
       <div class="search">
-        <input type="text" name="search_box">
+        <input type="text" name="search_box" placeholder="무엇이 궁금하신가?">
         <button type="submit"></button>
       </div>
     </div>
@@ -29,8 +35,20 @@
 </template>
 
 <script> //JS짜는 곳
-
-
+export default{
+  name: 'App',
+  data(){
+    return {
+      show: true,
+    }
+  },
+  methods: {
+    toggleShow(){
+      this.show=!this.show;
+    }
+  },
+}
+  
 </script>
 
 <style> /*CSS짜는 곳*/
@@ -42,6 +60,13 @@ body, html {
 p {
   font-size: 1.5rem;
 }
+button {
+  width: 40px;
+  height: 40px;
+  background-color: snow;
+  background-size: cover;
+  border: none;
+}
 .search{
   position: absolute;
   top: 90vh;
@@ -51,21 +76,16 @@ p {
   height: 5vh;
   width: 60vw;
   position: relative;
-  padding: 0px 10px 0px 10px;
-
+  padding: 0px 20px 0px 20px;
+  font-size: 1rem;
   border-radius: 30px;
   border: 2px solid #F99E17;
 }
 .search button {
   position: absolute;
-  width: 40px;
-  height: 40px;
   right: 20px;
   top: 5px;
   background-image: url('./assets/search.svg');
-  background-color: snow;
-  background-size: cover;
-  border: none;
 }
 .menu, .main {
   display: inline-block;
@@ -76,8 +96,6 @@ p {
   background-color: seashell;
 }
 .main {
-  float: right;
-  width: 82.5vw;
   background-color: snow;
 }
 .bg-red {
@@ -86,11 +104,22 @@ p {
   color: white;
   background-color: #F99E17;
 }
+#hidden {
+  float: right;
+  top: 5px;
+  background-image: url('./assets/log-out.svg');
+}
+#show {
+  background-image: url('./assets/log-in.svg');
+}
 #function, #search_list, #chat {
   padding: 50px 0px;
   color: black;
 }
-#hidden, #settings {
-  float: right;
+#settings {
+  position: fixed;
+  top: 5px;
+  right: 20px;
+  background-image: url('./assets/settings.svg');
 }
 </style>
