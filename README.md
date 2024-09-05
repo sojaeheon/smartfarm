@@ -66,12 +66,8 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 ## 2. stt - tts
 * Python 라이브러리 gTTS를 이용해 음성으로 대화
 
-## 3. 앱 
-* UI예시 (미완성)
-![0612232209731627](https://github.com/sojaeheon/smartfarm/assets/132196804/1652d921-8472-407f-844f-20e224c270bb)
 
-
-## 4. 스마트팜 환경제어
+## 3. 스마트팜 환경제어
 * 블록도
   
 ![image](https://github.com/sojaeheon/smartfarm/assets/132196804/798ce32d-b311-41f1-b988-9a10f7976752)
