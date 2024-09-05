@@ -1,7 +1,7 @@
 <template> <!--HTML짜는 곳-->
-  <aside class="menu">
+  <aside class="menu" v-if="show">
     <div>
-      <img id="hidden" src="./assets/log-out.svg" />
+      <button id="hidden" @click="toggleShow"></button>
     </div>
     <div id="function">
       <p class="bg-red"><strong>기능들</strong></p>
@@ -14,63 +14,83 @@
       <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
   </aside>
+  <aside class="no-menu" v-else-if="!show">
+    <button id=show @click="toggleShow"></button>
+  </aside>
   <main class="main">
     <div>
-      <img id="setting" src="./assets/settings.svg" />
+      <button id="settings"></button>
     </div>
     <div id="chat">
+<<<<<<< HEAD
       <p><strong>챗봇</strong></p>
       <span class="search">
         <input type="text" value="">
-        <button type="submit">제출 검색</button>
+        <button type="submit">제출 </button>
       </span>
+=======
+      <div class="search">
+        <AppChatbot />
+      </div>
+>>>>>>> 763645e5fa9fc8713695e20c1f6fb9f49ef65021
     </div>
   </main>
 </template>
 
-<script> //JS짜는 곳
+<script>
+import AppChatbot from './components/AppChatbot.vue';
 
-
+ //JS짜는 곳
+export default{
+  name: 'App',
+  data(){
+    return {
+      show: true,
+    }
+  },
+  methods: {
+    toggleShow(){
+      this.show=!this.show;
+    }
+  },
+  components: {
+    AppChatbot
+  }
+}
+  
 </script>
 
 <style> /*CSS짜는 곳*/
 body, html {
     margin: 0;
     display: flex;
+    height: 100vh;
 }
 p {
   font-size: 1.5rem;
 }
+button {
+  width: 40px;
+  height: 40px;
+  background-color: snow;
+  background-size: cover;
+  border: none;
+}
 .search{
   position: absolute;
-  top: 90vh;
+  bottom: 5vh;
   left: 30vw;
-}
-.search input{
-  height: 5vh;
-  width: 50vw;
-  position: absolute;
-  margin: 1px 2px 3px 4px;
-
-  border-radius: 30px;
-  border: 2px solid #F99E17;
-}
-.search button {
-  position: absolute;
 }
 .menu, .main {
   display: inline-block;
 }
 .menu {
   float: left;
+  width: 17.5vw;
   height: 100vh;
-  width: 14.5vw;
   background-color: seashell;
 }
 .main {
-  float: right;
-  height: 100vh;
-  width: 84.5vw;
   background-color: snow;
 }
 .bg-red {
@@ -79,11 +99,22 @@ p {
   color: white;
   background-color: #F99E17;
 }
+#hidden {
+  float: right;
+  top: 5px;
+  background-image: url('./assets/log-out.svg');
+}
+#show {
+  background-image: url('./assets/log-in.svg');
+}
 #function, #search_list, #chat {
   padding: 50px 0px;
   color: black;
 }
-#hidden, #setting {
-  float: right;
+#settings {
+  position: fixed;
+  top: 5px;
+  right: 20px;
+  background-image: url('./assets/settings.svg');
 }
 </style>
