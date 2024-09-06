@@ -22,17 +22,9 @@
       <button id="settings"></button>
     </div>
     <div id="chat">
-<<<<<<< HEAD
-      <p><strong>챗봇</strong></p>
-      <span class="search">
-        <input type="text" value="">
-        <button type="submit">제출 </button>
-      </span>
-=======
       <div class="search">
         <AppChatbot />
       </div>
->>>>>>> 763645e5fa9fc8713695e20c1f6fb9f49ef65021
     </div>
   </main>
 </template>
