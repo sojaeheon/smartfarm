@@ -1,4 +1,5 @@
 <template> <!--HTML짜는 곳-->
+<LoginView />
   <aside class="menu" v-if="show">
     <div>
       <button id="hidden" @click="toggleShow"></button>
@@ -31,6 +32,7 @@
 
 <script>
 import AppChatbot from './components/AppChatbot.vue';
+import LoginView from './components/LoginView.vue';
 
  //JS짜는 곳
 export default{
@@ -46,7 +48,8 @@ export default{
     }
   },
   components: {
-    AppChatbot
+    AppChatbot,
+    LoginView,
   }
 }
   
