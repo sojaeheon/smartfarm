@@ -1,31 +1,20 @@
 <template> <!--HTML짜는 곳-->
-  <aside class="menu" v-if="show">
-    <div>
-      <button id="hidden" @click="toggleShow"></button>
-    </div>
-    <div id="function">
-      <p class="bg-red"><strong>기능들</strong></p>
-      <ul>
-        <li>챗봇</li>
-        <li>병해충진단</li>
+  <header><img src="./assets/Farmi.svg" alt="farmi" height="50vh"></header>
+  <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
+  <nav class="menu">
+    <div :id="isMobile ? 'nav-mobile' : 'nav-desktop'" >
+      <ul v-if="show">
+        <li><a href="#"></a>메인페이지</li>
+        <li><a href="#"></a>병해진단</li>
+        <li><a href="#"></a>챗봇</li>
+        <li><a href="#"></a>환경그래프</li>
       </ul>
     </div>
     <div id="search_list">
-      <p class="bg-red"><strong>검색 기록</strong></p>
     </div>
-  </aside>
-  <aside class="no-menu" v-else-if="!show">
-    <button id=show @click="toggleShow"></button>
-  </aside>
+  </nav>
   <main class="main">
-    <div>
-      <button id="settings"></button>
-    </div>
-    <div id="chat">
-      <div class="search">
-        <AppChatbot />
-      </div>
-    </div>
+    <AppChatbot />
   </main>
 </template>
 
@@ -38,12 +27,28 @@ export default{
   data(){
     return {
       show: true,
+      isMobile: false
     }
   },
   methods: {
     toggleShow(){
-      this.show=!this.show;
+      this.show =! this.show;
+    },
+    checkIfMobile() {
+      this.isMobile = window.innerWidth < 768;  // 화면 크기에 따라 모바일 여부 판단
+      if (!this.isMobile) {
+        this.show = true;  // PC에서는 항상 메뉴가 보여야 함
+      } else {
+        this.show = false; // 모바일에서는 숨김 상태로 시작
+      }
     }
+  },
+  mounted() {
+    this.checkIfMobile();
+    window.addEventListener('resize', this.checkIfMobile);
+  },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.checkIfMobile);
   },
   components: {
     AppChatbot
@@ -55,58 +60,50 @@ export default{
 <style> /*CSS짜는 곳*/
 body, html {
     margin: 0;
-    display: flex;
     height: 100vh;
 }
-p {
-  font-size: 1.5rem;
+header {
+  border-bottom: 2px solid black;
+  padding-left: 1.5vw;
+}
+nav {
+  border-right: 1px solid gray;
+}
+ul {
+  /*list-style-type: none;*/
+  font-size: 125%;
+}
+li {
+  padding: 5px;
+}
+a {
+  text-decoration: none;
+  color: inherit;
 }
 button {
-  width: 40px;
-  height: 40px;
-  background-color: snow;
+  width: 35px;
+  height: 35px;
+  background-color: white;
   background-size: cover;
   border: none;
-}
-.search{
-  position: absolute;
-  bottom: 5vh;
-  left: 30vw;
 }
 .menu, .main {
   display: inline-block;
 }
 .menu {
   float: left;
-  width: 17.5vw;
-  height: 100vh;
-  background-color: seashell;
-}
-.main {
   background-color: snow;
 }
-.bg-red {
-  padding: 5px;
-  text-align: center;
-  color: white;
-  background-color: #F99E17;
+.main {
+  display: flex;
+  justify-content: center; /* 가로축 중앙 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+  background-color: snow;
 }
-#hidden {
+#menu-button {
   float: right;
   top: 5px;
-  background-image: url('./assets/log-out.svg');
-}
-#show {
-  background-image: url('./assets/log-in.svg');
-}
-#function, #search_list, #chat {
-  padding: 50px 0px;
-  color: black;
-}
-#settings {
-  position: fixed;
-  top: 5px;
-  right: 20px;
-  background-image: url('./assets/settings.svg');
+  background-image: url('./assets/menu.svg');
 }
 </style>
