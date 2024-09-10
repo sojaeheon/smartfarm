@@ -1,12 +1,14 @@
 <template>
   <div class="chat-bot">
-      <div class="messages">
-        <div v-for="message in messages" :key="message.id" class="message">
-          <div :class="`message-${message.sender}`">{{ message.text }}</div>
-        </div>
+    <div class="messages">
+      <div v-for="message in messages" :key="message.id" class="message">
+        <div :class="`message-${message.sender}`">{{ message.text }}</div>
       </div>
-    <input v-model="userInput" @keyup.enter="sendMessage" placeholder="메시지 입력..." />
-    <button type="submit"></button>
+    </div>
+    <div class="input-container">
+      <input v-model="userInput" @keyup.enter="sendMessage" placeholder="메시지 입력..." />
+      <button type="submit" @click="sendMessage"></button>
+    </div>
   </div>
 </template>
   
@@ -58,10 +60,12 @@ export default {
   
 <style>
 /* 여기에 챗봇 스타일 추가 */
+.chat-bot {
+  margin: 10px 0; /*위 아래 여백*/
+}
 .chat-bot input{
   height: 5vh;
   width: 60vw;
-  position: relative;
   padding: 0px 20px 0px 20px;
   font-size: 1rem;
   border-radius: 30px;
@@ -69,8 +73,8 @@ export default {
 }
 .chat-bot button {
   position: absolute;
-  right: 20px;
-  bottom: 5px;
+  right: 1.5vw;
+  bottom: 1.5vh;
   background-image: url('../assets/search.svg');
 }
 </style>
