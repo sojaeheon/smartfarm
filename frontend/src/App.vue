@@ -1,8 +1,8 @@
 <template> <!--HTML짜는 곳-->
   <header><img src="./assets/Farmi.svg" alt="farmi" height="50vh"></header>
+  <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
   <nav class="menu">
-    <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
-    <div :id="{'nav-mobile': show}" >
+    <div :id="isMobile ? 'nav-mobile' : 'nav-desktop'" >
       <ul v-if="show">
         <li><a href="#"></a>메인페이지</li>
         <li><a href="#"></a>병해진단</li>
@@ -14,14 +14,7 @@
     </div>
   </nav>
   <main class="main">
-    <div>
-      <button id="search-list"></button>
-    </div>
-    <div id="chat">
-      <div class="search">
-        <AppChatbot />
-      </div>
-    </div>
+    <AppChatbot />
   </main>
 </template>
 
@@ -34,16 +27,20 @@ export default{
   data(){
     return {
       show: true,
-      isMobile: false,
-      menuVisible: false 
+      isMobile: false
     }
   },
   methods: {
     toggleShow(){
       this.show =! this.show;
     },
-    checkIfMobile(){
-      this.isMobile=window.innerWidth < 768;
+    checkIfMobile() {
+      this.isMobile = window.innerWidth < 768;  // 화면 크기에 따라 모바일 여부 판단
+      if (!this.isMobile) {
+        this.show = true;  // PC에서는 항상 메뉴가 보여야 함
+      } else {
+        this.show = false; // 모바일에서는 숨김 상태로 시작
+      }
     }
   },
   mounted() {
@@ -69,6 +66,9 @@ header {
   border-bottom: 2px solid black;
   padding-left: 1.5vw;
 }
+nav {
+  border-right: 1px solid gray;
+}
 ul {
   /*list-style-type: none;*/
   font-size: 125%;
@@ -81,46 +81,29 @@ a {
   color: inherit;
 }
 button {
-  width: 40px;
-  height: 40px;
-  background-color: snow;
+  width: 35px;
+  height: 35px;
+  background-color: white;
   background-size: cover;
   border: none;
-}
-.search{
-  position: absolute;
-  justify-content: center;
-  bottom: 5vh;
-  border: 2px solid blue;
 }
 .menu, .main {
   display: inline-block;
 }
 .menu {
   float: left;
-  background-color: seashell;
-}
-.main {
   background-color: snow;
 }
-.bg-red {
-  padding: 5px;
-  text-align: center;
-  color: white;
-  background-color: #F99E17;
+.main {
+  display: flex;
+  justify-content: center; /* 가로축 중앙 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+  background-color: snow;
 }
 #menu-button {
   float: right;
   top: 5px;
   background-image: url('./assets/menu.svg');
-}
-#show {
-  background-image: url('./assets/log-in.svg');
-}
-#search-list {
-  position: fixed;
-  top: 5px;
-  right: 20px;
-  background-image: url('./assets/settings.svg'); /*검색기록 이미지 찾기*/
 }
 </style>
