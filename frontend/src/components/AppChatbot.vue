@@ -1,22 +1,28 @@
 <template>
-  <div class="chat-bot">
-    <div>
-      <button id="search-list"></button>
-    </div>
-    <div class="messages">
-      <div v-for="message in messages" :key="message.id" class="message">
-        <div :class="`message-${message.sender}`">{{ message.text }}</div>
+  <div>
+    <MenuList /> 
+  </div>
+  <main class="main">
+    <div class="chat-bot">
+      <div>
+        <button id="search-list"></button>
+      </div>
+      <div class="messages">
+        <div v-for="message in messages" :key="message.id" class="message">
+          <div :class="`message-${message.sender}`">{{ message.text }}</div>
+        </div>
+      </div>
+      <div class="input-container">
+        <input v-model="userInput" @keyup.enter="sendMessage" placeholder="메시지 입력..." />
+        <button type="submit" @click="sendMessage"></button>
       </div>
     </div>
-    <div class="input-container">
-      <input v-model="userInput" @keyup.enter="sendMessage" placeholder="메시지 입력..." />
-      <button type="submit" @click="sendMessage"></button>
-    </div>
-  </div>
+  </main>
 </template>
   
 <script>
 import axios from 'axios';
+import MenuList from '../components/MenuList.vue';
   
 export default {
   data() {
@@ -57,12 +63,23 @@ export default {
         return '죄송합니다, 오류가 발생했습니다.';
       }
     }
+  },
+  components: {
+    MenuList
   }
 };
 </script>
   
 <style>
 /* 여기에 챗봇 스타일 추가 */
+.main {
+  display: inline-block;
+  display: flex;
+  justify-content: center; /* 가로축 중앙 정렬 */
+  align-items: center; /* 세로축 중앙 정렬 */
+  height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
+  background-color: snow;
+}
 .chat-bot {
   margin: 10px 0; /*위 아래 여백*/
   position: absolute;
