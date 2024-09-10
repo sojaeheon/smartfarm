@@ -1,7 +1,7 @@
 <template>
   <div class="wrap">
         <div class="login">
-            <img src="./assets/Farmi.svg" alt="" height="80px"><br>
+            <img src="../assets/Farmi.svg" alt="farmi" height="80px"><br>
 
             <div class="login_id">
                 <h4>E-mail</h4>
@@ -33,6 +33,7 @@ export default {
     LoginClick(){
       console.log(this.uid, this.upw);
       alert('로그인 완료');
+      this.$router.push('/AppChatbot');
     }
   }
 };
