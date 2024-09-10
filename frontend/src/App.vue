@@ -1,4 +1,5 @@
 <template> <!--HTML짜는 곳-->
+<LoginView />
   <header><img src="./assets/Farmi.svg" alt="farmi" height="50vh"></header>
   <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
   <nav class="menu">
@@ -20,6 +21,7 @@
 
 <script>
 import AppChatbot from './components/AppChatbot.vue';
+import LoginView from './components/LoginView.vue';
 
  //JS짜는 곳
 export default{
@@ -51,7 +53,8 @@ export default{
     window.removeEventListener('resize', this.checkIfMobile);
   },
   components: {
-    AppChatbot
+    AppChatbot,
+    LoginView,
   }
 }
   

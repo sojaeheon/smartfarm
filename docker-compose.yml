@@ -1,0 +1,51 @@
+
+services:
+    backend:
+        build: ./backend
+        volumes:
+            - ./backend/app
+        container_name: backend
+        restart: always
+        environment:
+            - FLASK_ENV=development
+            - MONGO_URI=mongodb://mongo:27017/farmi_db
+        expose:
+            - 6000
+
+
+    frontend:
+        build: ./frontend
+        volumes:
+            - ./frontend:/app
+        container_name: frontend
+        restart: always
+        ports:
+            - "6001:6001"
+
+
+    nginx:
+        image: nginx:latest
+        volumes:
+            - ./nginx:/etc/nginx/conf.d
+        container_name: nginx
+        restart: always
+        ports:
+            - "80:80"
+        depends_on:
+            - backend
+            - frontend
+    
+    mongo:
+        image: mongo:latest
+        container_name: mongodb
+        volumes:
+            - mongo-data:/data/db
+        ports:
+            - "27017:27017"  # MongoDB의 기본 포트
+        # environment:
+        #     MONGO_INITDB_ROOT_USERNAME: 사용자명
+        #     MONGO_INITDB_ROOT_PASSWORD: 비밀번호
+    
+volumes:
+    mongo-data:
+    
