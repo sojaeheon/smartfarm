@@ -25,10 +25,8 @@ import axios from 'axios';
 import MenuList from '../components/MenuList.vue';
   
 export default {
-  name: 'AppChatbot',
   data() {
     return {
-      name: "AppChatbot",
       userInput: '',
       messages: []
     };

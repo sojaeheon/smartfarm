@@ -11,9 +11,9 @@ export default{
     // 여기에 로그인 상태 확인 로직을 추가할 수 있습니다.
     const isLoggedIn = localStorage.getItem('loggedIn');
     if (!isLoggedIn) {
-      this.$router.push('/');
+      this.$router.push('/LoginView');
     } else {
-      this.$router.push('/AppChatbot');
+      this.$router.push('/MainView');
     }
   }
 }
