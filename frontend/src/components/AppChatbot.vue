@@ -19,8 +19,10 @@
 import axios from 'axios';
   
 export default {
+  name: 'AppChatbot',
   data() {
     return {
+      name: "AppChatbot",
       userInput: '',
       messages: []
     };
