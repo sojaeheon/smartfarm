@@ -4,10 +4,15 @@
   <nav class="menu">
     <div :id="isMobile ? 'nav-mobile' : 'nav-desktop'" >
       <ul v-if="show">
-        <li><a href="/">메인페이지</a></li>
-        <li><a href="#">병해진단</a></li>
+        <li><router-link to="/">메인페이지</router-link></li>
+        <li><router-link to="/DiseaseDiagnosis">병해진단</router-link></li>
+        <li><router-link to="/AppChatbot">챗봇</router-link></li>
+        <li><router-link to="/Graph">환경그래프</router-link></li>
+
+        <!-- <li><a href="/">메인페이지</a></li>
+        <li><a href="/DiseaseDiagnosis">병해진단</a></li>
         <li><a href="/AppChatbot">챗봇</a></li>
-        <li><a href="#">환경그래프</a></li>
+        <li><a href="/Graph">환경그래프</a></li> -->
       </ul>
     </div>
   </nav>

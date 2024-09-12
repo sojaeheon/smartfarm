@@ -26,7 +26,6 @@
 export default {
   data() {
     return {
-      name: "Login",
       uid: "",
       upw: "",
     };
@@ -35,7 +34,7 @@ export default {
     LoginClick(){
       console.log(this.uid, this.upw);
       // alert('로그인 완료');
-      this.$router.push('/AppChatbot');
+      this.$router.push('/');
     }
   }
 };
