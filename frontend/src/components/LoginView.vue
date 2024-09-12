@@ -1,8 +1,8 @@
 <template>
   <div class="wrap">
     <form @submit.prevent="LoginClick"></form>
-        <div class="login">
-            <img src="../assets/Farmi.svg" alt="" height="80px"><br>
+        <!-- <div class="login">
+            <img src="../assets/Farmi.svg" alt="" height="80px" ><br>
 
             <div class="login_id">
                 <h4>E-mail</h4>
@@ -15,13 +15,28 @@
             </div>
             
             <div class="submit">
-              <button class="submit_button" @click="LoginClick = true">submit</button>
-              <!-- <router-link to="/AppChatbot"></router-link> -->
+              <button class="submit_button" @click="LoginClick">Submit</button>
+            </div> -->
+            <div class="login">
+              <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
+            
+              <div class="login_id">
+                <h4>E-mail</h4>
+                <input type="email" placeholder="Email" class="input-field">
+              </div>
+
+            <div class="login_pw">
+                <h4>Password</h4>
+                <input type="password" placeholder="Password" class="input-field">
+            </div>
+    
+            <div class="submit">
+                <button class="submit_button" @click="LoginClick">Submit</button>
             </div>
         </div>
       <from />
   </div>
-  <div class="all_menu">
+  <!-- <div class="all_menu">
     <div class="row" style="overflow: auto">
         <div class="menu">
             <ul>
@@ -37,7 +52,7 @@
               </ul>
             </div>
           </div>
-        </div>
+        </div> -->
 </template>
 
 <script>
@@ -47,14 +62,13 @@ export default {
       name: "Login",
       uid: "",
       upw: "",
-      // LoginClick: false,
     };
   },
   methods: {
     LoginClick(){
-      this.$router.push('/AppChatbot');
       // console.log(this.uid, this.upw);
-      // alert('로그인 완료');
+      alert('로그인 완료');
+      this.$router.push('/AppChatbot');
     }
   }
 };
@@ -78,84 +92,93 @@ export default {
   }
   
   .login {
-    width: 30%;
-    height: 600px;
+    width: 80%; /* 화면 너비의 80% */
+    height: auto;
+    max-width: 300px; /* 최대 너비 */
+    max-height: 1000vh;
     background: white;
     border-radius: 20px;
     display: flex;
-    align-items: center;
-    justify-content: center;
     flex-direction: column;
-    border: 3px solid #FA782D;
-  }
-  
-  h2 {
-    color: #FA782D;
-    font-size: 2em;
-  }
-  .login_sns {
-    padding: 20px;
-    display: flex;
-  }
-  
-  .login_sns li {
-    padding: 0px 15px;
-  }
-  
-  .login_sns a {
-    width: 50px;
-    height: 50px;
-    display: flex;
     align-items: center;
     justify-content: center;
+    padding: 20px;
+    border: 3px solid #FA782D;
+    box-sizing: border-box; /* 패딩 포함한 전체 크기 계산 */
+}
+
+.login-logo {
+    width: 200px; /* 로고 크기를 상대적으로 설정 */
+    max-width: 80%; /* 로고가 너무 커지지 않도록 */
+    height: auto;
+    margin-bottom: 20px;
+    margin-top: 20px;
+}
+
+.login_id, .login_pw {
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+h4 {
+    margin: 0 0 5px 0;
+}
+
+.input-field {
+    width: 100%; /* 입력 필드 너비를 100%로 설정 */
     padding: 10px;
-    border-radius: 50px;
-    background: white;
-    font-size: 20px;
-    box-shadow: 3px 3px 3px rgba(0, 0, 0, 0.4), -3px -3px 5px rgba(0, 0, 0, 0.1);
-  }
-  
-  .login_id {
-    margin-top: 20px;
-    width: 80%;
-  }
-  .login_id input {
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1rem;
+    box-sizing: border-box; /* 패딩 포함한 전체 크기 계산 */
+}
+
+.submit {
+    display: flex; /* Flexbox를 사용하여 중앙 정렬 */
+    justify-content: center; /* 수평 중앙 정렬 */
+    width: 50%; /* .submit 컨테이너가 부모 요소의 너비를 100% 사용하도록 설정 */
+}
+
+.submit_button {
     width: 100%;
-    height: 50px;
-    border-radius: 30px;
+    max-width: 300px; /* 최대 너비 */
+    font-size: 1.35rem;
+    background-color: #FA782D;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
     margin-top: 10px;
-    padding: 0px 20px;
-    border: 1px solid lightgray;
-    outline: none;
-  }
+    margin-bottom: 10px;
+}
+
+.submit_button:hover {
+    background-color: #ff8a47;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+    .login {
+        width: 90%; /* 작은 화면에서 너비 확장 */
+        max-width: 300px;
+    }
+
+    .submit_button {
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .login {
+        width: 100%;
+        padding: 15px;
+    }
+
+    .submit_button {
+        font-size: 0.8rem;
+    }
+}
+
   
-  .login_pw {
-    margin-top: 20px;
-    width: 80%;
-  }
-  .login_pw input {
-    width: 100%;
-    height: 50px;
-    border-radius: 30px;
-    margin-top: 10px;
-    padding: 0px 20px;
-    border: 1px solid lightgray;
-    outline: none;
-  }
-  
-  .submit {
-    margin-top: 50px;
-    width: 80%;
-  }
-  .submit_button {
-    position: grid; /* 브라우저 창을 기준으로 고정 */
-    background-color: #FA782D; /* 버튼 배경색 */
-    color: white; /* 버튼 글자 색 */
-    border: none; /* 테두리 없음 */
-    width: 100%;
-    font-size: 23px; /* 글자 크기 */
-    text-align: center;        /* 텍스트 가운데 정렬 */
-    cursor: pointer;           /* 마우스 포인터 모양 변경 */
-    border-radius: 12px;       /* 테두리 둥글게 */
-  }
 </style>
