@@ -19,7 +19,7 @@ FROM nginx:alpine AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Nginx 설정 복사
-COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
