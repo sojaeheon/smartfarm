@@ -7,12 +7,12 @@ const router = createRouter({
     routes: [
         {
             path: "/",
-            name: "LoginView",
+            name: "Login",
             component: LoginView,
         },
         {
             path: "/AppChatbot",
-            name: "AppChatbot",
+            name: "Chatbot",
             component: AppChatbot,
         },
     ],
