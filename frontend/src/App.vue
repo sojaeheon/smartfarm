@@ -1,5 +1,9 @@
 <template> <!--HTML짜는 곳-->
 <LoginView />
+
+<div id="app">
+    <router-view></router-view>
+  </div>
   <header><img src="./assets/Farmi.svg" alt="farmi" height="50vh"></header>
   <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
   <nav class="menu">
@@ -17,11 +21,12 @@
   <main class="main">
     <AppChatbot />
   </main>
+  <RouterView />
 </template>
 
 <script>
 import AppChatbot from './components/AppChatbot.vue';
-import LoginView from './components/LoginView.vue';
+// import LoginView from './components/LoginView.vue';
 
  //JS짜는 곳
 export default{
@@ -54,7 +59,7 @@ export default{
   },
   components: {
     AppChatbot,
-    LoginView,
+    // LoginView,
   }
 }
   
