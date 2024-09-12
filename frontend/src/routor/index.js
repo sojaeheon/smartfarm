@@ -6,13 +6,13 @@ const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
-            path: "/Login",
-            name: "Login",
+            path: "/",
+            name: "LoginView",
             component: LoginView,
         },
         {
             path: "/AppChatbot",
-            name: "Chatbot",
+            name: "AppChatbot",
             component: AppChatbot,
         },
     ],

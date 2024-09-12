@@ -1,7 +1,8 @@
 <template>
   <div class="wrap">
+    <form @submit.prevent="LoginClick"></form>
         <div class="login">
-            <img src="./assets/Farmi.svg" alt="" height="80px"><br>
+            <img src="../assets/Farmi.svg" alt="" height="80px"><br>
 
             <div class="login_id">
                 <h4>E-mail</h4>
@@ -14,25 +15,46 @@
             </div>
             
             <div class="submit">
-              <button class="submit_button" @click="LoginClick">submit</button>
+              <button class="submit_button" @click="LoginClick = true">submit</button>
+              <!-- <router-link to="/AppChatbot"></router-link> -->
             </div>
-            
         </div>
+      <from />
   </div>
+  <div class="all_menu">
+    <div class="row" style="overflow: auto">
+        <div class="menu">
+            <ul>
+                <li>
+                    <a><p>시험 안내</p><i class="xi-angle-down"></i></a>
+                    <ul>
+                        <li><a href="javascript:void(0);" onclick="fnNetFunnelAction('/pageLink.do?link=examInfo', 'examInfo')"><p>시험 소개</p></a></li>
+                        <li><a href="javascript:void(0);" onclick="fnNetFunnelAction('/pageLink.do?link=apyexmInfo', 'examInfo')"><p>응시 안내</p></a></li>
+                        <li><a href="javascript:void(0);" onclick="fnNetFunnelAction('/pageLink.do?link=sclpstRegltn', 'examInfo')"><p>응시 규정</p></a></li>
+                        <li><a href="javascript:void(0);" onclick="fnNetFunnelAction('/pageLink.do?link=examArea', 'examInfo')"><p>시험장 현황</p></a></li>
+                    </ul>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
 </template>
 
 <script>
 export default {
   data() {
     return {
+      name: "Login",
       uid: "",
       upw: "",
+      // LoginClick: false,
     };
   },
   methods: {
     LoginClick(){
-      console.log(this.uid, this.upw);
-      alert('로그인 완료');
+      this.$router.push('/AppChatbot');
+      // console.log(this.uid, this.upw);
+      // alert('로그인 완료');
     }
   }
 };
@@ -133,7 +155,6 @@ export default {
     width: 100%;
     font-size: 23px; /* 글자 크기 */
     text-align: center;        /* 텍스트 가운데 정렬 */
-    padding: 12px;        /* 내부 여백 */
     cursor: pointer;           /* 마우스 포인터 모양 변경 */
     border-radius: 12px;       /* 테두리 둥글게 */
   }
