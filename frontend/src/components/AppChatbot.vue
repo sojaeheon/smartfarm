@@ -91,7 +91,7 @@ export default {
   },
   components: {
     MenuList,
-    AppChatbotModal
+    AppChatbotModal,
   },
   updated() {
     // 컴포넌트 업데이트 후 스크롤을 맨 아래로 자동 조정
