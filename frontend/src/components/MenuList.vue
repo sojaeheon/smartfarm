@@ -1,15 +1,12 @@
 <template> <!--HTML짜는 곳-->
-  <header><img src="../assets/Farmi.svg" alt="farmi" height="50vh"></header>
   <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
-  <nav class="menu">
-    <div :id="isMobile ? 'nav-mobile' : 'nav-desktop'" >
-      <ul v-if="show">
-        <li><a href="/">메인페이지</a></li>
-        <li><a href="#">병해진단</a></li>
-        <li><a href="/AppChatbot">챗봇</a></li>
-        <li><a href="#">환경그래프</a></li>
-      </ul>
-    </div>
+  <nav class="menu" :id="isMobile ? 'nav-mobile' : 'nav-desktop'">
+    <ul v-if="show">
+      <li><a href="/">메인페이지</a></li>
+      <li><a href="#">병해진단</a></li>
+      <li><a href="/AppChatbot">챗봇</a></li>
+      <li><a href="#">환경그래프</a></li>
+    </ul>
   </nav>
 </template>
 
@@ -49,19 +46,15 @@ export default{
 </script>
 
 <style> /*CSS짜는 곳*/
-header {
-  border-bottom: 2px solid black;
-  padding-left: 1.5vw;
-}
 nav {
-  border-right: 1px solid gray;
+  padding: 2vw 1.5vw 1vw 1.5vw;
 }
 ul {
-  /*list-style-type: none;*/
+  list-style-type: none;
   font-size: 125%;
 }
 li {
-  padding: 5px;
+  padding: 0vw 1vw 1.5vw 0vw;
 }
 a {
   text-decoration: none;
@@ -69,8 +62,6 @@ a {
 }
 .menu {
   display: inline-block;
-  float: left;
-  background-color: snow;
 }
 #menu-button {
   float: right;
