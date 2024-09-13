@@ -112,7 +112,7 @@ header {
 .chat-bot {
   display: flex;
   flex-direction: column; /* 위아래 배치 */
-  height: 90vh;
+  height: 80vh;
   width: 60vw;
   margin: 10px 0 10px 10vw;
   position: relative;
@@ -130,7 +130,7 @@ header {
   display: flex;
   flex-direction: column; /* 메시지를 위에서 아래로 쌓이게 함 */
   gap: 10px; /* 메시지들 사이의 간격 */
-  max-height: 80vh; /* 최대 높이 설정 */
+  max-height: 60vh; /* 최대 높이 설정 */
   flex-grow: 1; /* 가능한 공간을 모두 차지하도록 설정 */
   margin-bottom: 10px; /* 입력창 바로 위로 붙이기 위한 마진 */
   margin-top: auto;

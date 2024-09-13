@@ -30,7 +30,7 @@
     display: flex;
     justify-content: flex-end; /* 오른쪽 정렬 */
     align-items: flex-start; /* 위쪽 정렬 */
-    z-index: 1;
+    z-index: 3;
   }
   .modal {
     margin: 20px; /* 모달과 화면 가장자리 간의 여백 */
