@@ -64,7 +64,7 @@ header {
   justify-content: space-between; /* 좌우로 아이템 배치 */
   align-items: center; /* 세로로 가운데 정렬 */
   padding: 12px;
-  position: relative;
+  position: fiexed;
 }
 
 #menu-button {
