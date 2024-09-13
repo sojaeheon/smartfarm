@@ -101,16 +101,15 @@ header {
   margin-top: 8px;
   background-image: url('../assets/settings.svg'); /*검색기록 이미지 찾기*/
 }
-
 nav {
-  border-right: 1px solid gray;
+  padding: 2vw 1.5vw 1vw 1.5vw;
 }
 ul {
-  /*list-style-type: none;*/
+  list-style-type: none;
   font-size: 125%;
 }
 li {
-  padding: 5px;
+  padding: 0vw 1vw 1.5vw 0vw;
 }
 a {
   text-decoration: none;
@@ -118,8 +117,6 @@ a {
 }
 .menu {
   display: inline-block;
-  float: left;
-  background-color: snow;
 }
 #menu-button {
   float: right;
