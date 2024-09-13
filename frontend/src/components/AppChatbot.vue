@@ -1,15 +1,21 @@
 <template>
-  <div>
-    <MenuList /> 
-  </div>
-  <main class="main">
+  <header>
+    <img src="../assets/Farmi.svg" alt="farmi" height="50vh" />
+  </header>
+  <section class="main">
+    <div class="menu">
+      <MenuList />
+    </div>
     <div class="chat-bot">
       <div>
-        <button id="search-list"></button>
+        <button id="search-list" @click="showSearchList"></button>
+        <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
+          <AppChatbotModal :lists="lists" @closeModal="closeModal" />
+        </div>
       </div>
-      <div class="messages">
-        <div v-for="message in messages" :key="message.id" class="message">
-          <div :class="`message-${message.sender}`">{{ message.text }}</div>
+      <div class="messages" ref="messages">
+        <div v-for="message in messages" :key="message.id" class="message" :class="message.sender">
+          <div class="message-text">{{ message.text }}</div>
         </div>
       </div>
       <div class="input-container">
@@ -17,95 +23,151 @@
         <button type="submit" @click="sendMessage"></button>
       </div>
     </div>
-  </main>
+  </section>
 </template>
-  
+
 <script>
 import axios from 'axios';
-import MenuList from '../components/MenuList.vue';
-  
+import MenuList from './MenuList.vue';
+import AppChatbotModal from './AppChatbotModal.vue';
+
 export default {
   data() {
     return {
+      isListOpen: false, // 모달의 상태
+      lists: ['이거', '저거', '요거'],
       userInput: '',
       messages: []
     };
   },
   methods: {
+    showSearchList() {
+      this.isListOpen = true; // 모달 열기
+    },
+    closeModal() {
+      this.isListOpen = false; // 모달 닫기
+    },
     async sendMessage() {
       const userMessage = this.userInput.trim();
       if (!userMessage) return;
-  
+
       this.addMessage('user', userMessage);
-  
+
       const aiResponse = await this.getAIResponse(userMessage);
       this.addMessage('ai', aiResponse);
-  
+
       this.userInput = '';
+      this.scrollToBottom(); // 메시지 전송 후 스크롤 내리기
     },
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
     async getAIResponse(message) {
       try {
-        const response = await axios.post('AI_API_ENDPOINT', {
-          prompt: message,
-          // 다른 필요한 API 매개변수
-        }, {
-          headers: {
-            'Authorization': `Bearer YOUR_API_KEY`
+        const response = await axios.post(
+          'AI_API_ENDPOINT',
+          {
+            prompt: message
+          },
+          {
+            headers: {
+              Authorization: `Bearer YOUR_API_KEY`
+            }
           }
-        });
-  
+        );
+
         return response.data.choices[0].text.trim();
       } catch (error) {
         console.error('AI 응답 오류:', error);
         return '죄송합니다, 오류가 발생했습니다.';
       }
+    },
+    scrollToBottom() {
+    const messagesContainer = this.$refs.messages;
+    if (messagesContainer) {
+      messagesContainer.scrollTop = messagesContainer.scrollHeight; // 스크롤을 맨 아래로 내리기
+    }
     }
   },
   components: {
-    MenuList
+    MenuList,
+    AppChatbotModal
+  },
+  updated() {
+    // 컴포넌트 업데이트 후 스크롤을 맨 아래로 자동 조정
+    this.scrollToBottom();
   }
 };
 </script>
-  
+
 <style>
 /* 여기에 챗봇 스타일 추가 */
+header {
+  border-bottom: 2px solid black;
+  padding-left: 1.5vw;
+}
 .main {
-  display: inline-block;
   display: flex;
-  justify-content: center; /* 가로축 중앙 정렬 */
-  align-items: center; /* 세로축 중앙 정렬 */
-  height: 100vh; /* 화면 전체 높이를 차지하도록 설정 */
-  background-color: snow;
 }
 .chat-bot {
-  margin: 10px 0; /*위 아래 여백*/
-  position: absolute;
-  justify-content: center;
-  bottom: 5vh;
-  border: 2px solid blue;
+  display: flex;
+  flex-direction: column; /* 위아래 배치 */
+  height: 90vh;
+  width: 60vw;
+  margin: 10px 0 10px 10vw;
+  position: relative;
+  background-color: rgba(99, 199, 88, 0.3);
+  padding: 10px;
+  justify-content: flex-end; /* 메시지들을 아래쪽으로 정렬 */
 }
 #search-list {
   position: fixed;
   top: 5px;
   right: 20px;
-  background-image: url('../assets/settings.svg'); /*검색기록 이미지 찾기*/
+  background-image: url('../assets/settings.svg'); /* 검색기록 이미지 찾기 */
 }
-.chat-bot input{
+.messages {
+  display: flex;
+  flex-direction: column; /* 메시지를 위에서 아래로 쌓이게 함 */
+  gap: 10px; /* 메시지들 사이의 간격 */
+  max-height: 80vh; /* 최대 높이 설정 */
+  flex-grow: 1; /* 가능한 공간을 모두 차지하도록 설정 */
+  margin-bottom: 10px; /* 입력창 바로 위로 붙이기 위한 마진 */
+  margin-top: auto;
+  overflow-y: auto; /* 스크롤 가능하도록 설정 */
+}
+.messages > :first-child {
+  margin-top: auto;
+}
+.message {
+  display: flex;
+}
+.message-text {
+  padding: 10px;
+  border-radius: 10px;
+  max-width: 60%;
+  background-color: rgba(250,120,45,0.5);
+  z-index: 1;
+}
+.input-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.chat-bot input {
   height: 5vh;
   width: 60vw;
   padding: 0px 20px 0px 20px;
   font-size: 1rem;
   border-radius: 30px;
   border: 2px solid #F99E17;
+  outline: none;
 }
 .chat-bot button {
-  position: absolute;
-  right: 2vw;
-  top: 5px;
+  width: 4vh;
+  height: 4vh;
   background-image: url('../assets/search.svg');
+  border-radius: 50px;
 }
 </style>
-  
