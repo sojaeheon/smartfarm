@@ -1,19 +1,26 @@
 <template>
   <header>
-    <img src="../assets/Farmi.svg" alt="farmi" height="50vh" />
-  </header>
-  <section class="main">
-    <div class="menu">
+        <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
+        <img src="../assets/Farmi.svg" alt="farmi" height="50vh">
+    
+        <div class="menuWrap">
+            <ul class="loginclick">
+                <li><router-link to="/LoginView">로그인</router-link></li>
+            </ul>
+        </div>
+    </header>
+    <div>
       <MenuList />
     </div>
-    <div class="chat-bot">
-      <div>
-        <button id="search-list" @click="showSearchList"></button>
-        <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
-          <AppChatbotModal :lists="lists" @closeModal="closeModal" />
+    <section class="main">
+      <div class="chat-bot">
+        <div>
+          <button id="search-list" @click="showSearchList"></button>
+          <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
+            <AppChatbotModal :lists="lists" @closeModal="closeModal" />
+          </div>
         </div>
-      </div>
-      <div class="messages" ref="messages">
+        <div class="messages" ref="messages">
         <div v-for="message in messages" :key="message.id" class="message" :class="message.sender">
           <div class="message-text">{{ message.text }}</div>
         </div>
@@ -101,10 +108,13 @@ export default {
 </script>
 
 <style>
-/* 여기에 챗봇 스타일 추가 */
 header {
-  border-bottom: 2px solid black;
-  padding-left: 1.5vw;
+border-bottom: 2px solid black;
+display: flex;
+justify-content: space-between; /* 좌우로 아이템 배치 */
+align-items: center; /* 세로로 가운데 정렬 */
+padding: 12px;
+position: fiexed;
 }
 .main {
   display: flex;
