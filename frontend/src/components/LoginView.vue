@@ -32,11 +32,14 @@ export default {
   },
   methods: {
     LoginClick(){
-      console.log(this.uid, this.upw);
-      // alert('로그인 완료');
-      this.$router.push('/');
-    }
-  }
+      const isLoggedIn = localStorage.getItem('loggedIn');
+      if (!isLoggedIn) {
+        this.$router.push('/LoginView');
+      } else {
+        this.$router.push('/MainView');
+      }
+    },
+  },
 };
 </script>
 
