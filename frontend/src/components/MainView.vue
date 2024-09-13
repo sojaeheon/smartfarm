@@ -5,7 +5,7 @@
     
         <div class="menuWrap">
             <ul class="loginclick">
-                <li><router-link to="/LoginView">로그인</router-link></li>
+                <li><router-link to="/LoginView" class="로그인">로그인</router-link></li>
             </ul>
         </div>
     </header>
@@ -21,9 +21,15 @@
   
 import MenuList from '../components/MenuList.vue';
 export default {
+    return: {
+        로그인: false,
+    },
     components: {
         MenuList
     },
+    method: {
+        
+    }
 };
 </script>
 

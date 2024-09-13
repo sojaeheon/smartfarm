@@ -108,14 +108,7 @@ export default {
 </script>
 
 <style>
-header {
-border-bottom: 2px solid black;
-display: flex;
-justify-content: space-between; /* 좌우로 아이템 배치 */
-align-items: center; /* 세로로 가운데 정렬 */
-padding: 12px;
-position: fiexed;
-}
+
 .main {
   display: flex;
 }
