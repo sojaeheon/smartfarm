@@ -32,12 +32,13 @@ export default {
   },
   methods: {
     LoginClick(){
-      const isLoggedIn = localStorage.getItem('loggedIn');
-      if (!isLoggedIn) {
-        this.$router.push('/LoginView');
-      } else {
-        this.$router.push('/MainView');
-      }
+      this.$router.push('/MainView');
+      // const isLoggedIn = localStorage.getItem('loggedIn');
+      // if (!isLoggedIn) {
+      //   this.$router.push('/');
+      // } else {
+      //   this.$router.push('/MainView');
+      // }
     },
   },
 };
