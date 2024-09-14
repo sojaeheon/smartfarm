@@ -39,7 +39,10 @@
     padding: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     min-width: 200px; /* 최소 너비 */
-    cursor: pointer
+    cursor: pointer;
+  }
+  .modal-item {
+    list-style: none;
   }
   </style>
   

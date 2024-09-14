@@ -116,6 +116,13 @@ align-items: center; /* 세로로 가운데 정렬 */
 padding: 12px;
 position: fiexed;
 }
+button {
+  width: 35px;
+  height: 35px;
+  background-color: white;
+  background-size: cover;
+  border: none;
+}
 .main {
   display: flex;
 }
