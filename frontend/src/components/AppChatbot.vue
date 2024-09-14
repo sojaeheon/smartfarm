@@ -1,17 +1,9 @@
 <template>
   <header>
-        <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
-        <img src="../assets/Farmi.svg" alt="farmi" height="50vh">
-    
-        <div class="menuWrap">
-            <ul class="loginclick">
-                <li><router-link to="/LoginView">로그인</router-link></li>
-            </ul>
-        </div>
-    </header>
     <div>
-      <MenuList />
+        <AppHeader />
     </div>
+    </header>
     <section class="main">
       <div class="chat-bot">
         <div>
@@ -35,8 +27,8 @@
 
 <script>
 import axios from 'axios';
-import MenuList from './MenuList.vue';
 import AppChatbotModal from './AppChatbotModal.vue';
+import AppHeader from './AppHeader.vue';
 
 export default {
   data() {
@@ -97,7 +89,7 @@ export default {
     }
   },
   components: {
-    MenuList,
+    AppHeader,
     AppChatbotModal,
   },
   updated() {
