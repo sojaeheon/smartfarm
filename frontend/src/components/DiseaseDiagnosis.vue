@@ -1,21 +1,17 @@
 <template>
     <header>
-        <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
-        <img src="../assets/Farmi.svg" alt="farmi" height="50vh">
-    
-        <div class="menuWrap">
-            <ul class="loginclick">
-                <li><router-link to="/LoginView">로그인</router-link></li>
-            </ul>
+        <div>
+            <AppHeader />
         </div>
     </header>
-    <div>
-        <MenuList />
+    <div class="PhotoSelection">
+        <button class="Selection">사진 선택..</button>
+
     </div>
 </template>
 
 <script>
-import MenuList from '../components/MenuList.vue';
+import AppHeader from './AppHeader.vue';
 
 export default {
     data() {
@@ -23,18 +19,26 @@ export default {
 
         }
     },
-    method: {
-        병해진단클릭() {
-            this.$router.push('/MainVIew');
-        },
-    },
     components: {
-        MenuList
+        AppHeader
     },
 }
 
 </script>
 
 <style>
-
+.PhotoSelection {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+.Selection {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    font-size: 20px;
+    width: 55%;
+    height: 55%;
+    cursor: pointer;
+}
 </style>
