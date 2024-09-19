@@ -134,6 +134,7 @@ button {
   margin: 10px 0 10px 10vw;
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
+  border-radius: 10px;
   padding: 10px;
   justify-content: flex-end; /* 메시지들을 아래쪽으로 정렬 */
 }
