@@ -1,18 +1,11 @@
 <template>
   <header>
-    <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
-    <img src="../assets/Farmi.svg" alt="farmi" height="50vh">
-    <div class="menuWrap">
-      <ul class="loginclick">
-        <li><router-link to="/LoginView">로그인</router-link></li>
-      </ul>
+    <div>
+      <AppHeader />
     </div>
   </header>
-  <div>
-    <MenuList />
-  </div>
   <div id="Chart">
-    <Chart :ChartData="currentSensorData"/>
+    <Chart :ChartData="currentSensorData" />
   </div>
   <div id="button-container">
     <button type="button" v-for="(sensor, index) in sensors" :key="index" class="sensors-button"
@@ -21,8 +14,8 @@
 </template>
 
 <script>
+import AppHeader from './AppHeader.vue';
 import Chart from './Chart.vue';
-import MenuList from './MenuList.vue';
 
 export default {
   name: 'GraphView',
@@ -70,7 +63,7 @@ export default {
     }
   },
   components: {
-    MenuList,
+    AppHeader,
     Chart
   }
 };
