@@ -32,11 +32,15 @@ export default {
   },
   methods: {
     LoginClick(){
-      console.log(this.uid, this.upw);
-      // alert('로그인 완료');
-      this.$router.push('/');
-    }
-  }
+      this.$router.push('/MainView');
+      // const isLoggedIn = localStorage.getItem('loggedIn');
+      // if (!isLoggedIn) {
+      //   this.$router.push('/');
+      // } else {
+      //   this.$router.push('/MainView');
+      // }
+    },
+  },
 };
 </script>
 
