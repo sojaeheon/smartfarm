@@ -117,8 +117,8 @@ button {
   flex-direction: column;
   /* 위아래 배치 */
   height: 80vh;
-  width: 60vw;
-  margin: 10px 0 10px 10vw;
+  width: 75vw;
+  margin: 2vw 0 10px 10vw;
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
   border-radius: 10px;
@@ -131,7 +131,7 @@ button {
   position: fixed;
   top: 5px;
   right: 20px;
-  background-image: url('../assets/settings.svg');
+  background-image: url('../assets/inbox.svg');
   /* 검색기록 이미지 찾기 */
 }
 
@@ -177,7 +177,7 @@ button {
 
 .chat-bot input {
   height: 5vh;
-  width: 60vw;
+  width: 75vw;
   padding: 0px 20px 0px 20px;
   font-size: 1rem;
   border-radius: 30px;
