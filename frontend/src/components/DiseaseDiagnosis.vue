@@ -4,7 +4,7 @@
             <AppHeader />
         </div>
     </header>
-    <div class="PhotoSelection">
+    <div class="PhotoSelection" :class="{ 'menu-open': isMenuOpen }">
         <button class="Selection" @click="ShowModal = true">사진 선택..</button>
     </div>
 
@@ -14,39 +14,26 @@
     </div>
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
-    <div v-if="showModal" class="modal-background">
-      <div class="modal">
-        <button class="close-button" @click="closeModal">X</button>
-        <button @click="openCamera">카메라</button>
-        <button @click="openFilePicker">파일 선택</button>
-      </div>
-    </div>
-
-    <!-- <div class="modal" v-if="ShowModal == true">
-        <ui class="modal-content">
+    <div class="modal-background" v-if="ShowModal">
+        <ul class="modal">
+            <button class="close-button" @click="closeModal"></button>
             <li @click="openCamera">카메라</li>
             <li @click="openFilePicker">파일 선택</li>
-            <li @click="ShowModal = false">닫기</li>
-        </ui>
-    </div> -->
+        </ul>
+    </div>
+
     <!-- 파일 선택 숨김 -->
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none;" />
-
-    <!-- 업로드된 이미지 리스트 -->
-    <!-- <div class="uploaded-images">
-        <div v-for="(imageUrl, index) in imageUrls" :key="index" class="image-wrapper">
-            <img :src="imageUrl" alt="업로드된 이미지" class="uploaded-image" />
-        </div>
-    </div> -->
 
     <!-- 진단 결과 모달 -->
     <div v-if="showDiagnosis" class="modal-background">
       <div class="modal">
         <button class="close-button" @click="closeDiagnosis"></button>
-        <h3>병해진단 결과</h3>
+        <h3>진단 결과</h3>
         <p>{{ diagnosis }}</p>
       </div>
     </div>
+
 </template>
 
 <script>
@@ -55,13 +42,12 @@ import AppHeader from './AppHeader.vue';
 export default {
     data() {
         return{
+            ShowModal: false,
             photos: [], // 업로드된 사진을 저장하는 배열
-            showModal: false, // 사진 선택 모달창 상태
             showDiagnosis: false, // 진단 결과 모달창 상태
             diagnosis: '', // 진단 결과 저장
 
-            // ShowModal: false,
-            // imageUrls: [],     // 업로드된 이미지들의 URL을 저장하는 배열
+            isMenuOpen: false,
         }
     },
     components: {
@@ -87,16 +73,22 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.imageUrls.push(imageUrl);  // 배열에 추가하여 이미지 저장
+                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
                 }
             }
         },
         openDiagnosis(photo) {  // 진단 내용을 불러오고 모달을 엽니다.
-            this.diagnosis = `진단 결과: ${photo}`;
+            this.diagnosis = `${photo}`;
             this.showDiagnosis = true;
         },
         closeDiagnosis() {
             this.showDiagnosis = false;
+        },
+        closeModal() {
+            this.ShowModal = false;
+        },
+        toggleMenu() {
+            this.isMenuOpen = !this.isMenuOpen;
         },
     },
 }
@@ -106,9 +98,11 @@ export default {
 <style>
 .PhotoSelection {
     display: flex;
-    height: 40vh;
-    margin-top: 15px;
-    margin-left: 30px;
+    top: 10px;
+    left: 20px;
+    width: 37vw;
+    height: 20%;
+    transform: transform 0.1s ease; /* 이동할 때 부드럽게 */
 }
 .Selection {
     background-color: #f0f0f0;
@@ -117,91 +111,93 @@ export default {
     width: 20%;
     height: 40%;
     cursor: pointer;
+    margin-top: 15px;
+    margin-left: 20px;
+    padding: 8px;
 }
 
 /* 모달 스타일 */
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40%; /* 전체 너비 */
-  height: 40%; /* 전체 높이 */
-  background-color: rgba(0, 0, 0, 0.5); /* 반투명 검정 배경 */
-  display: flex;
-  justify-content: center;
-  align-items: center; /* 가운데 정렬 */
+.modal-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 중앙 정렬 */
 }
 
-.modal-content {
-  background-color: white;
-  padding: 15px;
-  border-radius: 10px;
-  width: 100%; /* 화면 크기에 맞게 조정 */
-  max-width: 400px; /* 최대 크기 설정 */
-  box-sizing: border-box; /* 패딩과 테두리를 포함한 크기 계산 */
-  text-align: center;
+.modal {
+    position: relative;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 80%;
+    max-width: 300px;
+    text-align: center;
+    cursor: pointer;
 }
+
+.close-button {
+    background-image: url('@/assets/closebutton.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    position: absolute;  /* 절대 위치로 설정 */
+    top: 8px;  /* 모달의 상단에 붙이기 */
+    right: 8px;  /* 모달의 오른쪽에 붙이기 */
+}
+
 
 /* li 태그 스타일 (버튼처럼 보이게) */
-.modal-content li {
+.modal li {
   list-style: none; /* 기본 리스트 스타일 제거 */
   padding: 10px 0; /* 항목마다 여백 추가 */
   border-bottom: 1px solid #ddd; /* 항목 구분선 */
   cursor: pointer;
   font-size: 1.25rem; /* 글자 크기 증가 */
-}
+} 
 
 /* 마지막 항목은 구분선을 제거 */
-.modal-content li:last-child {
+.modal li:last-child {
   border-bottom: none;
 }
 
-.close-button {
-    background-image: url(../assets/);
+.photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 이미지가 화면에 맞게 정렬되도록 */
+    gap: 8px; /* 이미지 간의 간격을 설정 */
+    margin-top: 20px; /* 상단 여백 */
+    max-height: calc(100vh - 200px); /* 화면 높이에서 메뉴바 높이를 뺀 크기를 지정 */
+    overflow-y: auto; /* 세로로 스크롤이 생기도록 설정 */
+    padding-right: 10px; /* 스크롤바로 인한 오른쪽 여백 */
 }
 
-/* 모달 스타일
-.modal {
-    position: fixed;
-    top: 0;
-    width: 40%;
-    height: 40%;
-    background-color: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center; */
-    /* align-items: center; */
-    /* border-radius: 10px; */
-    /* max-width: 400px; 최대 크기 설정 */
-/* }
-.modal-content {
-    background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    text-align: center; */
-    /* width: 100%; 화면 크기에 맞게 조정 */
-    /* max-width: 400px; 최대 크기 설정 */
-    /* box-sizing: border-box; 패딩과 테두리를 포함한 크기 계산 */
-    
-    /* cursor: pointer;
-} */
-
-.preview {
-    margin-top: 20px;
-    text-align: center;
-}
-
+/* 이미지 미리보기 스타일 */
 .preview-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
+    width: 150px;
+    height: 200px; /* 이미지의 가로세로 비율을 유지하면서 자동으로 크기 조절 */
+    object-fit: contain; 
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: 20px;
 }
-
-
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
 @media (max-width: 768px) {
-    .modal-content button {
-        font-size: 0.9rem; /* 모바일에서 버튼 텍스트 크기 조정 */
-        padding: 8px 16px; /* 모바일에서 버튼 패딩 조정 */
+    .Selection {
+        width: 50%;
+        height: 30%;
+    }
+    .modal {
+        width: 90%;
     }
 }
+
 </style>
