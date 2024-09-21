@@ -35,6 +35,7 @@ a {
   float: left;
   background-color: snow;
   width: 130px;
+  height: 90vh;
 }
 
 a:hover {
