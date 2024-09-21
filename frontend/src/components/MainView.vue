@@ -2,6 +2,7 @@
     <div>
         <AppHeader />
     </div>
+    <div class="main">
     <div class="grid-container">
         <!-- Camera -->
         <div class="grid-item" id="camera">
@@ -38,6 +39,7 @@
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -147,6 +149,12 @@ export default {
 </script>
 
 <style>
+.main {
+    display: flex;
+    
+    margin-top: 10px;
+    margin-left: 10px;
+}
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -154,7 +162,7 @@ export default {
     gap: 2vh;
     width: 83vw;
     height: 80vh;
-    margin-top: 15px;
+    
     /* margin: 2vh 0 0 8.5vw; */
 }
 
@@ -236,7 +244,7 @@ export default {
     .grid-container {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
-        margin: 2vw 0;
+        /* margin: 2vw 0; */
     }
 
     .actuator button {
