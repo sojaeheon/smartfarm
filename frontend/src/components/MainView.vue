@@ -162,7 +162,6 @@ export default {
     gap: 2vh;
     width: 83vw;
     height: 80vh;
-    
     /* margin: 2vh 0 0 8.5vw; */
 }
 
@@ -170,7 +169,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    border: 2px solid #000;
+    border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 8px;
     padding: 10px;
 }

@@ -117,8 +117,9 @@ button {
   flex-direction: column;
   /* 위아래 배치 */
   height: 85vh;
-  width: 80vw;
-  margin: 2vw 0 10px 10vw;
+  width: 85vw;
+  margin: 2vw 0 0 4vw;
+  /* margin: 2vw 0 10px 10vw; */
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
   border-radius: 8px;
@@ -189,7 +190,7 @@ button {
 
 .chat-bot input {
   height: 5vh;
-  width: 75vw;
+  width: 85vw;
   padding: 0px 20px 0px 20px;
   font-size: 1rem;
   border-radius: 30px;
