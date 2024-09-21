@@ -27,10 +27,15 @@
 
         <!-- Weather -->
         <div class="grid-item" id="weather">
-            <h3>현재 날씨</h3>
-            <p>온도: {{ weather.temp }}°C</p>
-            <p>습도: {{ weather.humidity }}%</p>
-            <p>날씨: {{ weather.description }}</p>
+            <div class="weather-content">
+                <img :src="weatherIconUrl" alt="Icon" />
+                <div class="weather_text">
+                    <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
+                    <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
+                    <p v-if="weather.description">날씨: {{ weather.description }}</p>
+                    <p v-else> 날씨 정보를 불러오는 중...</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -55,12 +60,25 @@ export default {
                 조도: '350lux',
                 수위: '50%',
             },
+            api_key: 'b220e5b857e610bc88ca3db69f5be7be',
+            url_base: 'https://api.openweathermap.org/data/2.5/',
+            lat: '35.9646',   //군산 위도
+            lon: '126.7369',  //군산 경도
             weather: {
-                temp: '',
-                humidity: '',
-                description: ''
-            }
+                temp: null,
+                humidity: null,
+                description: '',
+                icon: '',
+            },
         };
+    },
+    computed: {
+      // weather.icon 값이 있을 때 아이콘 URL 생성
+      weatherIconUrl() {
+        const iconUrl = this.weather.icon ? `https://openweathermap.org/img/wn/${this.weather.icon}@2x.png` : '';
+            console.log("Weather icon URL:", iconUrl); // 아이콘 URL 로그 출력
+            return iconUrl;
+      }
     },
     mounted() {
         // 웹캠 접근
@@ -81,18 +99,46 @@ export default {
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
         },
         fetchWeatherData() {
-            // 기상청 API 요청 예시
-            fetch('https://api.openweathermap.org/data/2.5/weather?q=Seoul&appid=YOUR_API_KEY&units=metric')
-                .then(response => response.json())
-                .then(data => {
-                    this.weather.temp = data.main.temp;
-                    this.weather.humidity = data.main.humidity;
-                    this.weather.description = data.weather[0].description;
-                })
-                .catch(error => {
-                    console.error("날씨 정보 불러오기 실패:", error);
-                });
-        }
+            const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
+            fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok. Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => { // 데이터 구조에 맞게 경로 설정
+                console.log(data); // 응답 전체 확인
+                this.setResult(data);
+            })
+            .catch(error => {
+                console.error("날씨 정보 불러오기 실패:", error);
+            });
+        },
+        setResult(data){
+            if (data && data.main && data.weather && data.weather.length > 0) {
+                this.weather = {
+                    temp: data.main.temp, // 온도
+                    humidity: data.main.humidity, // 습도
+                    description: data.weather[0].description, // 날씨 설명
+                    icon: data.weather[0].icon // 아이콘 값 저장
+                };
+                console.log("Weather icon:", this.weather.icon); // 아이콘 값 확인
+            }
+        },
+        dateBuilder: function () {
+            let d = new Date();
+            let months = [
+                "1월", "2월", "3월", "4월", "5월", "6월",
+                "7월", "8월", "9월", "10월", "11월", "12월"
+            ];
+            let days = [ "월요일", "화요일", "수요일", "목요일", "금요일" ];
+            let day = days[d.getDay()];
+            let date = d.getDate();
+            let month = months[d.getMonth()];
+            let year = d.getFullYear();
+            return `${day} ${date} ${month} ${year}`;
+        },
     },
     components: {
         AppHeader,
@@ -108,7 +154,8 @@ export default {
     gap: 2vh;
     width: 83vw;
     height: 80vh;
-    margin: 2vh 0 0 8.5vw;
+    margin-top: 15px;
+    /* margin: 2vh 0 0 8.5vw; */
 }
 
 .grid-item {
@@ -161,6 +208,28 @@ export default {
     font-weight: bold;
     padding: 2vh 0;
     margin: 0 0.25vw;
+}
+
+#weather {
+    display: flex;
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
+}
+
+.weather-content {
+    display: flex; /* 아이콘과 텍스트를 가로로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+}
+
+.weather_text p {
+    margin: 3px 0; /* p 태그 간 간격 조정 */
+}
+
+.weather img {
+  width: 30px;
+  height: 30px;
 }
 
 @media (max-width: 768px) {
