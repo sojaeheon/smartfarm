@@ -5,11 +5,11 @@ FROM node:18-alpine AS build-stage
 WORKDIR /app
 
 # 의존성 설치
-COPY package*.json ./
+COPY frontend/package*.json ./
 RUN npm install
 
 # 소스 복사 및 빌드
-COPY . .
+COPY frontend/ .
 RUN npm run build
 
 # Production 단계
@@ -19,7 +19,9 @@ FROM nginx:alpine AS production-stage
 COPY --from=build-stage /app/dist /usr/share/nginx/html
 
 # Nginx 설정 복사
-COPY ../nginx/nginx.conf /etc/nginx/conf.d/default.conf
+# COPY ../nginx/default.conf /etc/nginx/conf.d/
+
+EXPOSE 80
 
 # Nginx 실행
 CMD ["nginx", "-g", "daemon off;"]
