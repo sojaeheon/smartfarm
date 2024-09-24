@@ -92,7 +92,7 @@ export default {
 }
 
 #Chart {
-  margin: 2vh 10vw;
+  margin: 2vw 0 10px 10vw;
   display: flex;
   width: 70vw;
 }

@@ -10,5 +10,7 @@ COPY . /app
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
 
+EXPOSE 6000
+
 # uWSGI 실행
 CMD ["uwsgi", "--ini", "uwsgi.ini"]
