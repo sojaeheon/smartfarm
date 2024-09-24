@@ -116,12 +116,13 @@ button {
   display: flex;
   flex-direction: column;
   /* 위아래 배치 */
-  height: 80vh;
-  width: 75vw;
-  margin: 2vw 0 10px 10vw;
+  height: 85vh;
+  width: 85vw;
+  margin: 1vw 0 0 2vw;
+  /* margin: 2vw 0 10px 10vw; */
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
-  border-radius: 10px;
+  border-radius: 8px;
   padding: 10px;
   justify-content: flex-end;
   /* 메시지들을 아래쪽으로 정렬 */
@@ -129,10 +130,9 @@ button {
 
 #search-list {
   position: fixed;
-  top: 5px;
+  top: 17px;
   right: 20px;
   background-image: url('../assets/inbox.svg');
-  /* 검색기록 이미지 찾기 */
 }
 
 .messages {
@@ -141,7 +141,7 @@ button {
   /* 메시지를 위에서 아래로 쌓이게 함 */
   gap: 10px;
   /* 메시지들 사이의 간격 */
-  max-height: 60vh;
+  max-height: 70vh;
   /* 최대 높이 설정 */
   flex-grow: 1;
   /* 가능한 공간을 모두 차지하도록 설정 */
@@ -158,6 +158,14 @@ button {
 
 .message {
   display: flex;
+
+  justify-content: flex-end; /* 사용자 메시지를 오른쪽으로 정렬 */
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.message.ai {
+  justify-content: flex-start; /* AI 메시지는 왼쪽으로 정렬 */
+  color: white;
 }
 
 .message-text {
@@ -166,6 +174,11 @@ button {
   max-width: 60%;
   background-color: rgba(250, 120, 45, 0.5);
   z-index: 1;
+}
+
+/* 사용자 메시지 스타일 추가 */
+.message.user .message-text {
+  background-color: rgba(250, 120, 45, 0.5); /* 사용자 메시지 배경색 */
 }
 
 .input-container {
@@ -177,7 +190,7 @@ button {
 
 .chat-bot input {
   height: 5vh;
-  width: 75vw;
+  width: 85vw;
   padding: 0px 20px 0px 20px;
   font-size: 1rem;
   border-radius: 30px;

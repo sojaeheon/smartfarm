@@ -33,8 +33,9 @@ a {
 .menu {
   display: inline-block;
   float: left;
-  background-color: snow;
+  background-color: rgb(251, 244, 244);
   width: 130px;
+  height: 90vh;
 }
 
 a:hover {
