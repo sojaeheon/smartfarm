@@ -118,8 +118,7 @@ button {
   /* 위아래 배치 */
   height: 85vh;
   width: 85vw;
-  margin: 1vw 0 0 2vw;
-  /* margin: 2vw 0 10px 10vw; */
+  margin: 1vh 0 0 1vw;
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
   border-radius: 8px;
@@ -188,7 +187,7 @@ button {
   margin-top: 10px;
 }
 
-.chat-bot input {
+.input-container input {
   height: 5vh;
   width: 85vw;
   padding: 0px 20px 0px 20px;
@@ -198,10 +197,16 @@ button {
   outline: none;
 }
 
-.chat-bot button {
+.input-container button {
   width: 4vh;
   height: 4vh;
   background-image: url('../assets/search.svg');
-  border-radius: 50px;
+  border-radius: 15px;
+  background-color: rgba(99, 199, 88, 0.1);
+}
+@media (max-aspect-ratio: 1/1) {
+    .chat-bot {
+      width: 93vw;
+    }
 }
 </style>

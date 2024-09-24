@@ -190,7 +190,7 @@ export default {
     margin-left: 20px;
 }
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
-@media (max-width: 768px) {
+@media (max-aspect-ratio: 1/1) {
     .Selection {
         width: 50%;
         height: 30%;
