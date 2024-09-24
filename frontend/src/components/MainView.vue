@@ -162,7 +162,7 @@ export default {
     gap: 2vh;
     width: 83vw;
     height: 80vh;
-    /* margin: 2vh 0 0 8.5vw; */
+    margin: 1vw 0 0 2vw;
 }
 
 .grid-item {
