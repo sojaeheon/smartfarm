@@ -118,7 +118,7 @@ button {
   /* 위아래 배치 */
   height: 85vh;
   width: 85vw;
-  margin: 2vw 0 0 4vw;
+  margin: 1vw 0 0 2vw;
   /* margin: 2vw 0 10px 10vw; */
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
