@@ -1,6 +1,6 @@
 <template>
     <header class="header">
-        <img src="../assets/Farmi.svg" alt="farmi" class="logo" height="50vh">
+        <img src="../assets/Farmi.svg" alt="farmi" class="logo" height="45vh">
         <button id="menu-button" v-if="isMobile" @click="toggleShow"></button>
     </header>
     <div class="menuWrap" v-if="show == true">
@@ -51,7 +51,7 @@ export default {
     display: flex;
     justify-content: center; /* 로고를 가운데로 배치 */
     align-items: center; /* 세로로 가운데 정렬 */
-    padding: 10px 20px;
+    padding: 8px;
     position: relative; /* 메뉴 버튼이 위치할 수 있도록 설정 */
 }
 
