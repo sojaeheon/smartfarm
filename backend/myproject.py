@@ -18,8 +18,12 @@ chain = create_rag_chain(retriever, prompt)
 
 
 # 챗봇
-@app.route('/chatbot', methods=['POST'])
+@app.route('/api/chatbot/', methods=['GET','POST'])
 def chatbot():
+    if request.method == 'GET':
+        return jsonify({"message": "챗봇에 질문을 하려면 POST 요청으로 question을 보내세요."}), 200
+    
+    # POST 요청 처리
     user_input = request.json.get('question')
     
     if not user_input:
@@ -35,8 +39,12 @@ def chatbot():
 
 
 # 질병 진단
-@app.route('/disease', methods=['POST'])
+@app.route('/api/disease/', methods=['GET','POST'])
 def disease():
+    if request.method == 'GET':
+        return jsonify({"message": "이미지를 포함한 POST 요청만 허용됩니다."}), 200
+    
+    # POST 요청 처리
     disease_name = None
     solution = None
 
@@ -73,7 +81,7 @@ def hello():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=6000,debug=True)
 
 
     
