@@ -29,7 +29,7 @@ def load_and_split_pdf(pdf_path):
 # 임베딩 모델 생성
 def create_embeddings_model():
     """임베딩 모델을 생성하는 함수"""
-    model_name = "jhgan/ko-sroberta-multitask" # BAAI/bge-m3
+    model_name = "BAAI/bge-m3" # jhgan/ko-sroberta-multitask
     model_kwargs = {'device': 'cpu'}
     encode_kwargs = {'normalize_embeddings': True}
 
@@ -99,34 +99,34 @@ def get_answer_from_chain(chain, user_input):
     return final_answer  # 최종적으로 하나의 문자열로 응답
 
 # 실행 흐름
-def bot():
-    # PDF 파일 경로
-    pdf_path = "manual/딸기고품질다수확재배매뉴얼 설향.pdf"
+# def bot():
+#     # PDF 파일 경로
+#     pdf_path = "manual/딸기고품질다수확재배매뉴얼 설향.pdf"
 
-    # 문서 로드 및 분할
-    texts = load_and_split_pdf(pdf_path)
+#     # 문서 로드 및 분할
+#     texts = load_and_split_pdf(pdf_path)
 
-    # 임베딩 모델 생성
-    embeddings_model = create_embeddings_model()
+#     # 임베딩 모델 생성
+#     embeddings_model = create_embeddings_model()
 
-    # 문서 검색 설정
-    retriever = setup_document_search(texts, embeddings_model)
+#     # 문서 검색 설정
+#     retriever = setup_document_search(texts, embeddings_model)
 
-    # 프롬프트 템플릿 설정
-    prompt = create_prompt_template()
+#     # 프롬프트 템플릿 설정
+#     prompt = create_prompt_template()
 
-    # 체인 생성
-    rag_chain = create_rag_chain(retriever, prompt)
+#     # 체인 생성
+#     rag_chain = create_rag_chain(retriever, prompt)
 
-    # 사용자로부터 계속 입력받기 위한 루프
-    while True:
-        user_input = input("질문을 입력하세요 (종료하려면 'exit' 입력): ")
+#     # 사용자로부터 계속 입력받기 위한 루프
+#     while True:
+#         user_input = input("질문을 입력하세요 (종료하려면 'exit' 입력): ")
 
-        if user_input.lower() == 'exit':
-            print("프로그램을 종료합니다.")
-            break
+#         if user_input.lower() == 'exit':
+#             print("프로그램을 종료합니다.")
+#             break
 
-        get_answer_from_chain(rag_chain, user_input)
+#         get_answer_from_chain(rag_chain, user_input)
 
-if __name__ == "__main__":
-    bot()
+# if __name__ == "__main__":
+#     bot()
