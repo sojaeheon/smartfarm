@@ -72,16 +72,12 @@ def disease():
         "disease": disease_name,
         "solution": solution
     }
-
     return jsonify(data)
+
 
 @app.route("/api/", methods=['GET'])
 def hello():
     return "<h1 style='color:blue'>Hello There!</h1>"
 
-
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=6000,debug=True)
-
-
-    
