@@ -5,17 +5,17 @@
               <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
             
               <div class="login_id">
-                <h4>E-mail</h4>
-                <input type="email" placeholder="Email" class="input-field">
+                <h4>ID</h4>
+                <input type="text" v-model="uid" placeholder="ID" class="input-field">
               </div>
 
             <div class="login_pw">
                 <h4>Password</h4>
-                <input type="password" placeholder="Password" class="input-field">
+                <input type="password" v-model="upw" placeholder="Password" class="input-field">
             </div>
     
             <div class="submit">
-                <button class="submit_button" @click="LoginClick">Submit</button>
+                <button class="submit_button" @click="LoginClick">Login</button>
             </div>
         </div>
       <from />
@@ -23,6 +23,8 @@
 </template>
 
 <script>
+import axios from 'axios'
+
 export default {
   data() {
     return {
@@ -31,14 +33,31 @@ export default {
     };
   },
   methods: {
-    LoginClick(){
-      this.$router.push('/MainView');
-      // const isLoggedIn = localStorage.getItem('loggedIn');
-      // if (!isLoggedIn) {
-      //   this.$router.push('/');
-      // } else {
-      //   this.$router.push('/MainView');
-      // }
+    async LoginClick() {
+      try {
+        // 서버에 POST 요청 보내기
+        const response = await axios.post('/api/logincheck', {
+          username: this.uid,
+          password: this.upw,
+        });
+
+        // 서버 응답에 따른 처리
+        if (response.data.success) {
+          // 로그인 성공 시
+          localStorage.setItem('loggedIn', true);
+          this.$router.push('/MainView');
+        } else {
+          // 로그인 실패 시
+          alert('로그인 실패: 아이디나 비밀번호가 잘못되었습니다.');
+          localStorage.setItem('loggedIn', false);
+          this.$router.push('/');
+        }
+      } catch (error) {
+        // 서버 오류 발생 시
+        alert('서버와의 통신 중 오류가 발생했습니다.');
+        console.error(error);
+        this.$router.push('/');
+      }
     },
   },
 };
