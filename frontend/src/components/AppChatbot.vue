@@ -63,19 +63,17 @@ export default {
     },
     async getAIResponse(message) {
       try {
-        const response = await axios.post(
-          'AI_API_ENDPOINT',
-          {
-            prompt: message
-          },
-          {
-            headers: {
-              Authorization: `Bearer YOUR_API_KEY`
-            }
+        const response = await axios.post('http://192.168.0.29:8888/api/get_answer', {
+          question: message,
+          // 다른 필요한 API 매개변수
+        }, {
+          headers: {
+            'Content-Type': `application/json`
           }
-        );
+        });
 
-        return response.data.choices[0].text.trim();
+
+        return response.data.answer
       } catch (error) {
         console.error('AI 응답 오류:', error);
         return '죄송합니다, 오류가 발생했습니다.';
