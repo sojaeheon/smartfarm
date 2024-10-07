@@ -47,11 +47,9 @@ export default {
     data() {
         return {
             actuators: [
-                { label: '조도', isOn: false },
-                { label: 'CO2', isOn: false },
-                { label: '온도', isOn: false },
-                { label: '습도', isOn: false },
-                { label: '수위', isOn: false }
+                { label: 'DC팬', isOn: false },
+                { label: '워터펌프', isOn: false },
+                { label: 'LED', isOn: false },
             ],
             data: {
                 온도: '22°C',
