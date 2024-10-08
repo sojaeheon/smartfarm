@@ -14,8 +14,11 @@
         <div class="grid-item" id="actuator-container">
             <div v-for="(actuator, index) in actuators" :key="index" class="actuator">
                 <button type="button" :class="{ on: actuator.isOn }" @click="toggleActuator(index)">
-                    {{ actuator.label }} <br> {{ actuator.isOn ? 'ON' : 'OFF' }}
+                    <img :src="actuator.imgSrc" alt="Actuator Image" /> <br> {{ actuator.isOn ? 'ON' : 'OFF' }}
                 </button>
+                <div id="actuator-label">
+                    {{ actuator.label }}
+                </div>
             </div>
         </div>
 
@@ -47,9 +50,9 @@ export default {
     data() {
         return {
             actuators: [
-                { label: 'DC모터', isOn: false },
-                { label: '워터펌프', isOn: false },
-                { label: 'LED', isOn: false },
+                { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
+                { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
+                { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
             data: {
                 온도: '22°C',
@@ -183,17 +186,23 @@ export default {
 
 .actuator button {
     width: 7vw;
-    height: 7vh;
+    height: 9vh;
     border: 2px solid #F99E17;
     border-radius: 5px;
     text-align: center;
     font-weight: bold;
     display: inline-block;
     cursor: pointer;
+    font-size: large;
 }
 
 .on {
     background-color: #F99E17;
+}
+#actuator-label
+{
+    text-align: center;
+    margin: 0.5vw 0; 
 }
 #data-button {
     width: 7vw;
