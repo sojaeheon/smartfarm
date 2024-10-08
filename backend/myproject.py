@@ -27,11 +27,6 @@ def get_db_connection():
         )
     return g.db
 
-
-@app.route("/api/", methods=['GET'])
-def hello():
-    return "<h1 style='color:blue'>Hello There!</h1>"
-
 # 로그인 처리
 @app.route('/api/logincheck', methods=['POST'])
 def login_check():
@@ -49,15 +44,30 @@ def login_check():
     connection.close()
 
     if user:
+        # 세션에 로그인 정보 저장
+        session['logged_in'] = True
         session['username'] = username
-        return jsonify({"success": True, "message": "Login successful."})
+        return jsonify({"success": True, "message": "Login successful.", "username" : session['username']})
     else:
         return jsonify({"success": False, "message": "Invalid username or password."})
 
-@app.route('/logout')
+# 세션 상태 확인 API
+@app.route('/api/session-check', methods=['GET'])
+def session_check():
+    """로그인 세션 상태를 확인합니다."""
+    if 'logged_in' in session and session['logged_in']:
+        return jsonify({"loggedIn": True, "username": session['username']})
+    else:
+        return jsonify({"loggedIn": False})
+
+# 로그아웃 처리
+@app.route('/api/logout', methods=['GET'])
 def logout():
+    """세션에서 사용자 이름을 제거하여 로그아웃합니다."""
+    session.pop('logged_in', None)
     session.pop('username', None)
-    return redirect('/')
+    return jsonify({"success": True, "message": "Logged out successfully."})
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=6000)
