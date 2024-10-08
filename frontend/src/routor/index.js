@@ -14,22 +14,22 @@ const router = createRouter({
             component: LoginView,
         },
         {
-            path: "/MainView",
+            path: "/MainView/<username>",
             name: "Main",
             component: MainView,
         },
         {
-            path: "/DiseaseDiagnosis",
+            path: "/DiseaseDiagnosis/<username>",
             name: "Disease",
             component: DiseaseDiagnosis,
         },
         {
-            path: "/AppChatbot",
+            path: "/AppChatbot/<username>",
             name: "Chatbot",
             component: AppChatbot,
         },
         {
-            path: "/Graph",
+            path: "/Graph/<username>",
             name: "Graph",
             component: GraphView,
         }
