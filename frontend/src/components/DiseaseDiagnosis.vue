@@ -108,8 +108,8 @@ export default {
     background-color: #f0f0f0;
     border-radius: 10px;
     font-size: 20px;
-    width: 20%;
-    height: 40%;
+    width: 25%;
+    height: 45%;
     cursor: pointer;
     margin-top: 15px;
     margin-left: 20px;
