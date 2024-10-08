@@ -51,7 +51,7 @@
           // 서버 응답에 따른 처리
           if (response.data.success) {
             // 회원가입 성공 시
-            alert('회원가입 성공!');
+            // alert('회원가입 성공!');
             this.$router.push('/MainView');
           } else {
             // 회원가입 실패 시
