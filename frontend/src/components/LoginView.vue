@@ -46,7 +46,9 @@ export default {
         if (response.data.success) {
           // 로그인 성공 시
           localStorage.setItem('loggedIn', true);
-          this.$router.push('/MainView/${username}');
+          localStorage.setItem('username', response.data.username);
+          
+          this.$router.push('/MainView');
         } else {
           // 로그인 실패 시
           alert('로그인 실패: 아이디나 비밀번호가 잘못되었습니다.');
