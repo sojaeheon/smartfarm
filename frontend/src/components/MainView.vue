@@ -37,6 +37,7 @@
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
+import axios from 'axios';
 
 export default {
     data() {
@@ -92,6 +93,13 @@ export default {
                 .catch(error => {
                     console.error("날씨 정보 불러오기 실패:", error);
                 });
+        },
+        async logout() {
+        // 로그아웃 API 호출
+        await axios.get('/api/logout');
+        localStorage.removeItem('loggedIn');
+        localStorage.removeItem('username');
+        this.$router.push('/');
         }
     },
     components: {
