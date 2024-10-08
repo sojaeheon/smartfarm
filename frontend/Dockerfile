@@ -5,7 +5,7 @@ FROM node:18-alpine AS build-stage
 WORKDIR /app
 
 # 의존성 설치
-COPY frontend/package*.json ./
+COPY . /app
 
 RUN npm install
 
