@@ -8,8 +8,41 @@
         <li><router-link to="/Graph">환경그래프</router-link></li>
       </ul>
     </div>
+    <div class="logout-container">
+      <img src="../assets/log-out.svg" alt="" class="logout" @click="handleLogout">
+    </div>
   </nav>
 </template>
+
+<script>
+// import axios from 'axios';
+
+export default {
+  methods: {
+    handleLogout() {
+      this.$router.push('/');
+      alert('ㅃ2');
+    }
+    // async handleLogout() {
+    //   try {
+    //     // 서버에 로그아웃 요청 보내기
+    //     const response = await axios.post('/api/logout');
+        
+    //     if (response.data.success) {
+    //       localStorage.removeItem('loggedIn');  // 로컬 스토리지에서 로그인 상태 제거
+    //       this.$router.push('/');          // 로그인 페이지로 이동
+    //       alert('로그아웃 되었습니다.');
+    //     } else {
+    //       alert('로그아웃 실패');
+    //     }
+    //   } catch (error) {
+    //     console.error('로그아웃 중 오류 발생:', error);
+    //     alert('로그아웃 실패');
+    //   }
+    // }
+  }
+};
+</script>
 
 <style>
 nav {
@@ -28,6 +61,21 @@ li {
 a {
   text-decoration: none;
   color: inherit;
+}
+
+.logout-container {
+  display: flex;
+  justify-content: flex-end; /* 오른쪽으로 정렬 */
+  margin-right: 5px;
+}
+
+.logout {
+  position: fixed;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  bottom: 0;
+  width: 30px;
+  cursor: pointer;
 }
 
 .menu {

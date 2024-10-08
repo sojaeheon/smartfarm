@@ -52,7 +52,7 @@
           if (response.data.success) {
             // 회원가입 성공 시
             // alert('회원가입 성공!');
-            this.$router.push('/MainView');
+            this.$router.push('/');  //로그인 창으로
           } else {
             // 회원가입 실패 시
             alert('회원가입 실패: 입력 정보를 다시 확인하세요.');
