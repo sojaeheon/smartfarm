@@ -1,7 +1,8 @@
-from flask import Flask, jsonify, g, request
+from flask import Flask, jsonify, g, request, session, redirect
 import pymysql
 
 app = Flask(__name__)
+app.secret_key = '818188'
 
 # 데이터베이스 설정 정보
 db_config = {
@@ -48,9 +49,15 @@ def login_check():
     connection.close()
 
     if user:
+        session['username'] = username
         return jsonify({"success": True, "message": "Login successful."})
     else:
         return jsonify({"success": False, "message": "Invalid username or password."})
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect('/')
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=6000)
