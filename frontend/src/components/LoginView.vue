@@ -1,24 +1,29 @@
 <template>
   <div class="wrap">
     <form @submit.prevent="LoginClick"></form>
-            <div class="login">
-              <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
-            
-              <div class="login_id">
-                <h4>E-mail</h4>
-                <input type="email" placeholder="Email" class="input-field">
-              </div>
+    <div class="login">
+      <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
+      <div class="login_id">
+        <h4>ID</h4>
+        <input type="text" v-model="uid" placeholder="ID" class="input-field">
+      </div>
+      
+      <div class="login_pw">
+        <h4>Password</h4>
+        <input type="password" v-model="upw" placeholder="Password" class="input-field">
+      </div>
+      
+      <div class="signup">
+        <p class="signup-text">
+          <router-link to="/SignUpView">회원가입</router-link>
+        </p>
+      </div>
 
-            <div class="login_pw">
-                <h4>Password</h4>
-                <input type="password" placeholder="Password" class="input-field">
-            </div>
-    
-            <div class="submit">
-                <button class="submit_button" @click="LoginClick">Submit</button>
-            </div>
-        </div>
-      <from />
+      <div class="submit">
+        <button class="submit_button" @click="LoginClick">Login</button>
+      </div>
+    </div>
+    <from />
   </div>
 </template>
 
@@ -104,9 +109,14 @@ export default {
     margin-top: 20px;
 }
 
-.login_id, .login_pw {
-    width: 100%;
-    margin-bottom: 20px;
+.login_id {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.login_pw {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 h4 {
@@ -143,7 +153,25 @@ h4 {
 }
 
 .submit_button:hover {
-    background-color: #ff8a47;
+  background-color: #ff8a47;
+}
+
+.signup {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-end; /* 회원가입 버튼을 오른쪽으로 정렬 */
+  width: 100%;
+}
+
+.signup-text {
+  font-size: 13px;
+  color: grey;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.signup-text:hover {
+  color: #FA782D; /* 마우스 오버 시 색상 변경 */
 }
 
 /* 반응형 디자인 */
