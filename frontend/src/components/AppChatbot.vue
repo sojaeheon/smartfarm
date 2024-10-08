@@ -63,19 +63,17 @@ export default {
     },
     async getAIResponse(message) {
       try {
-        const response = await axios.post(
-          'AI_API_ENDPOINT',
-          {
-            prompt: message
-          },
-          {
-            headers: {
-              Authorization: `Bearer YOUR_API_KEY`
-            }
+        const response = await axios.post('http://192.168.0.29:8888/api/get_answer', {
+          question: message,
+          // 다른 필요한 API 매개변수
+        }, {
+          headers: {
+            'Content-Type': `application/json`
           }
-        );
+        });
 
-        return response.data.choices[0].text.trim();
+
+        return response.data.answer
       } catch (error) {
         console.error('AI 응답 오류:', error);
         return '죄송합니다, 오류가 발생했습니다.';
@@ -118,8 +116,7 @@ button {
   /* 위아래 배치 */
   height: 85vh;
   width: 85vw;
-  margin: 1vw 0 0 2vw;
-  /* margin: 2vw 0 10px 10vw; */
+  margin: 1vh 0 0 1vw;
   position: relative;
   background-color: rgba(99, 199, 88, 0.3);
   border-radius: 8px;
@@ -188,7 +185,7 @@ button {
   margin-top: 10px;
 }
 
-.chat-bot input {
+.input-container input {
   height: 5vh;
   width: 85vw;
   padding: 0px 20px 0px 20px;
@@ -198,10 +195,16 @@ button {
   outline: none;
 }
 
-.chat-bot button {
+.input-container button {
   width: 4vh;
   height: 4vh;
   background-image: url('../assets/search.svg');
-  border-radius: 50px;
+  border-radius: 15px;
+  background-color: rgba(99, 199, 88, 0.1);
+}
+@media (max-aspect-ratio: 1/1) {
+    .chat-bot {
+      width: 93vw;
+    }
 }
 </style>

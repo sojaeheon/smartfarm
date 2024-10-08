@@ -21,9 +21,7 @@
 
         <!-- Current Data -->
         <div class="grid-item" id="current-data">
-            <ul>
-                <li v-for="(value, key) in data" :key="key">{{ key }} <br> {{ value }}</li>
-            </ul>
+            <button v-for="(value, key) in data" :key="key" id="data-button">{{ key }} <br> {{ value }}</button>
         </div>
 
         <!-- Weather -->
@@ -49,11 +47,9 @@ export default {
     data() {
         return {
             actuators: [
-                { label: '조도', isOn: false },
-                { label: 'CO2', isOn: false },
-                { label: '온도', isOn: false },
-                { label: '습도', isOn: false },
-                { label: '수위', isOn: false }
+                { label: 'DC팬', isOn: false },
+                { label: '워터펌프', isOn: false },
+                { label: 'LED', isOn: false },
             ],
             data: {
                 온도: '22°C',
@@ -162,7 +158,7 @@ export default {
     gap: 2vh;
     width: 83vw;
     height: 80vh;
-    margin: 1vw 0 0 2vw;
+    margin: 1vh 0 0 1vw;
 }
 
 .grid-item {
@@ -199,24 +195,16 @@ export default {
 .on {
     background-color: #F99E17;
 }
-
-.grid-item ul {
-    display: flex;
-    list-style: none;
-    padding: 0;
-}
-
-.grid-item li {
+#data-button {
     width: 7vw;
     height: 10vh;
     border: 2px solid #63C758;
     border-radius: 10px;
     text-align: center;
     font-weight: bold;
-    padding: 2vh 0;
     margin: 0 0.25vw;
+    font-size: medium;
 }
-
 #weather {
     display: flex;
     flex-direction: column; /* 세로 정렬 */
@@ -239,23 +227,20 @@ export default {
   height: 30px;
 }
 
-@media (max-width: 768px) {
+@media (max-aspect-ratio: 1/1) {
     .grid-container {
         grid-template-columns: 1fr;
         grid-template-rows: auto;
         /* margin: 2vw 0; */
     }
-
     .actuator button {
         width: 15vw;
-        height: 7vh;
         color: black;
-        border: 2px solid #F99E17;
-        border-radius: 5px;
-        text-align: center;
-        font-weight: bold;
-        display: inline-block;
-        cursor: pointer;
+    }
+    #data-button {
+        width: 15vw;
+        color: black;
+        margin: 0 1vw;
     }
 }
 </style>
