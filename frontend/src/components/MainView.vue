@@ -47,7 +47,7 @@ export default {
     data() {
         return {
             actuators: [
-                { label: 'DC팬', isOn: false },
+                { label: 'DC모터', isOn: false },
                 { label: '워터펌프', isOn: false },
                 { label: 'LED', isOn: false },
             ],
