@@ -4,26 +4,30 @@
               <div class="register">
                 <img src="../assets/Farmi.svg" alt="Logo" class="register-logo"><br>
               
-                <div class="register_username">
-                  <h4>Username</h4>
-                  <input type="text" v-model="username" placeholder="Username" class="input-field">
-                </div>
-  
-                <div class="register_email">
-                  <h4>Email</h4>
-                  <input type="email" v-model="email" placeholder="Email" class="input-field">
+                <div class="register_uid">
+                  <h4>ID</h4>
+                  <input type="text" v-model="uid" placeholder="uid" class="input-field">
                 </div>
   
                 <div class="register_pw">
                   <h4>Password</h4>
                   <input type="password" v-model="password" placeholder="Password" class="input-field">
                 </div>
+
+                <div class="register_rapa">
+                  <h4>Rapa_IP</h4>
+                  <input type="text" v-model="rapa_ip" placeholder="rapa_ip" class="input-field">
+                </div>
+                  
+                <div class="register_port">
+                  <h4>Port</h4>
+                  <input type="text" v-model="port" placeholder="port" class="input-field">
+                </div>
       
               <div class="submit">
                   <button class="submit_button" @click="RegisterClick">Sign Up</button>
               </div>
           </div>
-        <form />
     </div>
   </template>
   
@@ -33,9 +37,10 @@
   export default {
     data() {
       return {
-        username: "",
-        email: "",
+        uid: "",
         password: "",
+        rapa_ip: "",
+        port : "",
       };
     },
     methods: {
@@ -43,9 +48,10 @@
         try {
           // 서버에 POST 요청 보내기
           const response = await axios.post('/api/register', {
-            username: this.username,
-            email: this.email,
+            uid: this.uid,
             password: this.password,
+            rapa_ip: this.rapa_ip,
+            port : this.port,
           });
   
           // 서버 응답에 따른 처리
@@ -107,7 +113,7 @@
       margin-top: 20px;
   }
   
-  .register_username, .register_email, .register_pw {
+  .register_uid, .register_rapa, .register_pw, .register_port {
       width: 100%;
       margin-bottom: 20px;
   }

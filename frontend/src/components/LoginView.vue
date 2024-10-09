@@ -1,29 +1,29 @@
 <template>
   <div class="wrap">
     <form @submit.prevent="LoginClick"></form>
-    <div class="login">
-      <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
-      <div class="login_id">
-        <h4>ID</h4>
-        <input type="text" v-model="uid" placeholder="ID" class="input-field">
-      </div>
-      
-      <div class="login_pw">
-        <h4>Password</h4>
-        <input type="password" v-model="upw" placeholder="Password" class="input-field">
-      </div>
-      
-      <div class="signup">
-        <p class="signup-text">
-          <router-link to="/SignUpView">회원가입</router-link>
-        </p>
-      </div>
+            <div class="login">
+              <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
+            
+              <div class="login_id">
+                <h4>ID</h4>
+                <input type="text" v-model="uid" placeholder="ID" class="input-field">
+              </div>
 
-      <div class="submit">
-        <button class="submit_button" @click="LoginClick">Login</button>
-      </div>
-    </div>
-    <from />
+            <div class="login_pw">
+                <h4>Password</h4>
+                <input type="password" v-model="upw" placeholder="Password" class="input-field">
+            </div>
+
+            <div class="signup">
+                <p class="signup-text">
+                  <router-link to="/SignUpView">회원가입</router-link>
+                </p>
+            </div>
+    
+            <div class="submit">
+                <button class="submit_button" @click="LoginClick">Login</button>
+            </div>
+        </div>
   </div>
 </template>
 
@@ -43,7 +43,7 @@ export default {
       try {
         // 서버에 POST 요청 보내기
         const response = await axios.post('/api/logincheck', {
-          username: this.uid,
+          uid: this.uid,
           password: this.upw,
         });
 
@@ -51,9 +51,9 @@ export default {
         if (response.data.success) {
           // 로그인 성공 시
           localStorage.setItem('loggedIn', true);
-          localStorage.setItem('username', response.data.username);
-          
-          this.$router.push('/MainView');
+          alert(response.data.session['uid'])
+        
+          this.$router.push('/MainView',{"session" : response.data.session});
         } else {
           // 로그인 실패 시
           alert('로그인 실패: 아이디나 비밀번호가 잘못되었습니다.');
@@ -112,14 +112,9 @@ export default {
     margin-top: 20px;
 }
 
-.login_id {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.login_pw {
-  width: 100%;
-  margin-bottom: 10px;
+.login_id, .login_pw {
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 h4 {
@@ -156,7 +151,7 @@ h4 {
 }
 
 .submit_button:hover {
-  background-color: #ff8a47;
+    background-color: #ff8a47;
 }
 
 .signup {

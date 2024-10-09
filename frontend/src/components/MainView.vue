@@ -45,7 +45,6 @@
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
-import axios from 'axios';
 
 export default {
     data() {
@@ -140,7 +139,8 @@ export default {
             let month = months[d.getMonth()];
             let year = d.getFullYear();
             return `${day} ${date} ${month} ${year}`;
-        },
+        },        
+       
     },
     components: {
         AppHeader,
