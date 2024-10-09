@@ -1,29 +1,35 @@
 <template>
-    <div class="wrap">
-      <form @submit.prevent="RegisterClick"> </form>
-              <div class="register">
-                <img src="../assets/Farmi.svg" alt="Logo" class="register-logo"><br>
-              
-                <div class="register_username">
-                  <h4>Username</h4>
-                  <input type="text" v-model="username" placeholder="Username" class="input-field">
-                </div>
-  
-                <div class="register_email">
-                  <h4>Email</h4>
-                  <input type="email" v-model="email" placeholder="Email" class="input-field">
-                </div>
-  
-                <div class="register_pw">
-                  <h4>Password</h4>
-                  <input type="password" v-model="password" placeholder="Password" class="input-field">
-                </div>
+  <div class="wrap">
+    <form @submit.prevent="RegisterClick"> </form>
+    <div class="register">
+      <img src="../assets/Farmi.svg" alt="Logo" class="register-logo"><br>
       
-              <div class="submit">
-                  <button class="submit_button" @click="RegisterClick">Sign Up</button>
-              </div>
-          </div>
+      <div class="register_username">
+        <h4>Username</h4>
+        <input type="text" v-model="username" placeholder="Username" class="input-field">
+      </div>
+      
+      <div class="register_email">
+        <h4>Email</h4>
+        <input type="email" v-model="email" placeholder="Email" class="input-field">
+      </div>
+      
+      <div class="register_pw">
+        <h4>Password</h4>
+        <input type="password" v-model="password" placeholder="Password" class="input-field">
+      </div>
+      
+      <div class="backlogin">
+        <p class="backlogin-text">
+          <router-link to="/">로그인</router-link>
+        </p>
+      </div>
+      
+      <div class="submit">
+        <button class="submit_button" @click="RegisterClick">Sign Up</button>
+      </div>
     </div>
+  </div>
   </template>
   
   <script>
@@ -106,9 +112,14 @@
       margin-top: 20px;
   }
   
-  .register_username, .register_email, .register_pw {
-      width: 100%;
+  .register_username, .register_email {
+      width: 95%;
       margin-bottom: 20px;
+  }
+
+  .register_pw {
+      width: 95%;
+      margin-bottom: 10px;
   }
   
   h4 {
@@ -123,51 +134,67 @@
       font-size: 1rem;
       box-sizing: border-box;
   }
+
+  .backlogin {
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-end; /* 회원가입 버튼을 오른쪽으로 정렬 */
+  width: 100%;
+}
+
+.backlogin-text {
+  font-size: 13px;
+  color: grey;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.backlogin-text:hover {
+  color: #FA782D; /* 마우스 오버 시 색상 변경 */
+}
   
-  .submit {
-      display: flex;
-      justify-content: center;
-      width: 50%;
+.submit {
+  display: flex;
+    justify-content: center;
+    width: 50%;
+}
+  
+.submit_button {
+  width: 100%;
+  max-width: 300px;
+  font-size: 1.35rem;
+  background-color: #FA782D;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+  
+.submit_button:hover {
+  background-color: #ff8a47;
+}
+  
+@media (max-width: 768px) {
+  .register {
+    width: 90%;
+    max-width: 325px;
   }
-  
   .submit_button {
-      width: 100%;
-      max-width: 300px;
-      font-size: 1.35rem;
-      background-color: #FA782D;
-      color: white;
-      border: none;
-      border-radius: 12px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-      margin-top: 10px;
-      margin-bottom: 10px;
+    font-size: 0.9rem;
   }
-  
-  .submit_button:hover {
-      background-color: #ff8a47;
+}
+
+@media (max-width: 480px) {
+  .register {
+    width: 100%;
+    padding: 15px;
   }
-  
-  @media (max-width: 768px) {
-      .register {
-          width: 90%;
-          max-width: 300px;
-      }
-  
-      .submit_button {
-          font-size: 0.9rem;
-      }
+  .submit_button {
+    font-size: 0.8rem;
   }
-  
-  @media (max-width: 480px) {
-      .register {
-          width: 100%;
-          padding: 15px;
-      }
-  
-      .submit_button {
-          font-size: 0.8rem;
-      }
-  }
-  </style>
+}
+</style>
   
