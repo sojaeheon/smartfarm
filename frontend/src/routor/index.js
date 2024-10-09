@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+import SignUpView from "@/components/SignUpView.vue";
 import LoginView from "@/components/LoginView.vue";
 import MainView from "@/components/MainView.vue";
 import DiseaseDiagnosis from "@/components/DiseaseDiagnosis.vue";
@@ -8,6 +9,11 @@ import GraphView from "@/components/GraphView.vue";
 const router = createRouter({
     history: createWebHistory(),
     routes: [
+        {
+            path: "/SignUpView",
+            name: "Signup",
+            component: SignUpView,
+        },
         {
             path: "/",
             name: "Login",

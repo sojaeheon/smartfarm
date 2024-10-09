@@ -33,7 +33,6 @@ def login_check():
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
-
     # 데이터베이스 연결 및 쿼리 실행
     connection = get_db_connection()
     with connection.cursor() as cursor:
