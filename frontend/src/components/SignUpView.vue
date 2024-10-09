@@ -61,7 +61,7 @@
             this.$router.push('/');  //로그인 창으로
           } else {
             // 회원가입 실패 시
-            alert('회원가입 실패: 입력 정보를 다시 확인하세요.');
+            alert(response.data.messege);
           }
         } catch (error) {
           // 서버 오류 발생 시
