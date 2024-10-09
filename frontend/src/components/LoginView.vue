@@ -23,7 +23,6 @@
         <button class="submit_button" @click="LoginClick">Login</button>
       </div>
     </div>
-    <from />
   </div>
 </template>
 
