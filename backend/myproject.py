@@ -31,24 +31,58 @@ def get_db_connection():
 @app.route('/api/logincheck', methods=['POST'])
 def login_check():
     data = request.get_json()
-    username = data.get('username')
+    uid = data.get('uid')
     password = data.get('password')
     # 데이터베이스 연결 및 쿼리 실행
     connection = get_db_connection()
+
     with connection.cursor() as cursor:
         query = "SELECT * FROM users WHERE id = %s AND passwd = %s"
-        cursor.execute(query, (username, password))
+        cursor.execute(query, (uid, password))
         user = cursor.fetchone()
 
     connection.close()
-
+    print(user)
     if user:
         # 세션에 로그인 정보 저장
         session['logged_in'] = True
-        session['username'] = username
-        return jsonify({"success": True, "message": "Login successful.", "username" : session['username']})
+        session['uid'] = user['id']
+        session['rapa_ip'] = user['rapa_ip']
+        session['port']=user['port']
+
+        session_data = dict(session)
+        print(session_data)
+
+        return jsonify({"success": True, "session" : session_data})
     else:
         return jsonify({"success": False, "message": "Invalid username or password."})
+
+# 회원가입
+@app.route('/api/register', methods=['POST'])
+def signup():
+    data = request.get_json()
+    uid = data.get('uid')
+    upw = data.get('password')
+    rapa_ip = data.get('rapa_ip')
+    port = data.get('port')
+
+    # 데이터베이스 연결 및 쿼리 실행
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+         # 사용자 중복 체크
+        check_query = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(check_query, (uid))
+        if cursor.fetchone():
+            return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
+
+        # 사용자 등록
+        insert_query = "INSERT INTO users (id, passwd, rapa_ip, port) VALUES (%s, %s, %s, %s)"
+        cursor.execute(insert_query, (uid, upw, rapa_ip, port))
+        connection.commit()
+
+    connection.close()
+    
+    return jsonify({"success": True, "message": "회원가입이 완료되었습니다."})
 
 # 세션 상태 확인 API
 @app.route('/api/session-check', methods=['GET'])
