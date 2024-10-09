@@ -63,6 +63,7 @@
           // 서버 응답에 따른 처리
           if (response.data.success) {
             // 회원가입 성공 시
+            alert(response.data.message)
             this.$router.push('/');  //로그인 창으로
           } else {
             // 회원가입 실패 시
