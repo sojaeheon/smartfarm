@@ -109,12 +109,12 @@ export default {
 }
 
 .login_id {
-  width: 100%;
+  width: 95%;
   margin-bottom: 20px;
 }
 
 .login_pw {
-  width: 100%;
+  width: 95%;
   margin-bottom: 10px;
 }
 
@@ -177,7 +177,7 @@ h4 {
 @media (max-width: 768px) {
     .login {
         width: 90%; /* 작은 화면에서 너비 확장 */
-        max-width: 300px;
+        max-width: 325px;
     }
 
     .submit_button {
