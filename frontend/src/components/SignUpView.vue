@@ -1,6 +1,6 @@
 <template>
     <div class="wrap">
-      <form @submit.prevent="RegisterClick"></form>
+      <form @submit.prevent="RegisterClick"> </form>
               <div class="register">
                 <img src="../assets/Farmi.svg" alt="Logo" class="register-logo"><br>
               
