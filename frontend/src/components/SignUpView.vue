@@ -6,7 +6,13 @@
 
       <div class="register_uid">
         <h4>ID</h4>
-        <input type="text" v-model="uid" placeholder="uid" class="input-field">
+        <div class="uid-row">
+          <input type="text" v-model="uid" placeholder="uid" class="input-field">
+          <button class="check-duplicate" @click="checkDuplicateUid">중복 확인</button>
+        </div>
+        
+        <span v-if="isUidAvailable" class="available">사용 가능한 아이디입니다.</span>
+        <span v-if="!isUidAvailable && uidChecked" class="not-available">이미 사용 중인 아이디입니다.</span>
       </div>
 
       <div class="register_pw">
@@ -47,9 +53,12 @@ export default {
       password: "",
       rapa_ip: "",
       port: "",
+      isUidAvailable: false,
+      uidChecked: false,
     };
   },
   methods: {
+    // Rapa_IP 유효성 검사
     isValidIP(ip) {
       const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
       return ipPattern.test(ip);
@@ -58,6 +67,28 @@ export default {
     isValidPort(port) {
       const portPattern = /^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5]?[0-9]{0,4})$/; // 0-65535 범위
       return portPattern.test(port);
+    },
+    // 아이디 중복 확인
+    async checkDuplicateUid() {
+      if (!this.uid) {
+        alert('아이디를 입력하세요.');
+        return;
+      }
+      try {
+        const response = await axios.post('/api/check-uid', { uid: this.uid });
+        if (response.data.available) {
+          this.isUidAvailable = true;
+          this.uidChecked = true;
+          alert('사용 가능한 아이디입니다.');
+        } else {
+          this.isUidAvailable = false;
+          this.uidChecked = true;
+          alert('이미 사용 중인 아이디입니다.');
+        }
+      } catch (error) {
+        alert('서버와의 통신 중 오류가 발생했습니다.');
+        console.error(error);
+      }
     },
     async RegisterClick() {
       // Rapa_IP와 Port 유효성 검사
@@ -140,19 +171,50 @@ export default {
 
 .register_uid,
 .register_rapa,
-.register_pw,
-.register_port {
+.register_pw {
   width: 95%;
   margin-bottom: 20px;
-  margin-bottom: 20px;
+}
+
+.register_port {
+  width: 95%;
+  margin-bottom: 10px;
+}
+
+.uid-row {
+  display: flex;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+  align-items: center;
+  width: 100%; /* 너비를 100%로 설정 */
+  gap: 10px; /* 입력 필드와 버튼 간 간격 설정 */
 }
 
 h4 {
-  margin: 0 0 5px 0;
+  margin: 0;
+}
+
+.check-duplicate {
+  width: 25%;
+  background-color: transparent;
+  color: grey;
+  border: 1px solid grey;
+  padding: 8px 12px; /* 버튼의 padding을 조절하여 크기를 적당히 설정 */
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-size: 0.8rem; /* 글씨 크기를 줄임 */
+  display: flex;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.check-duplicate:hover {
+  background-color: #FA782D;
+  color: white;
 }
 
 .input-field {
-  width: 100%;
+  flex-grow: 1;
   padding: 10px;
   border: 2px solid #ddd;
   border-radius: 10px;
@@ -164,7 +226,6 @@ h4 {
   margin-bottom: 5px;
   display: flex;
   justify-content: flex-end;
-  /* 회원가입 버튼을 오른쪽으로 정렬 */
   width: 100%;
 }
 
@@ -177,7 +238,6 @@ h4 {
 
 .backlogin-text:hover {
   color: #FA782D;
-  /* 마우스 오버 시 색상 변경 */
 }
 
 .submit {
