@@ -56,7 +56,7 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 <br/><br/>
 
 # 블록도
-![image](https://github.com/user-attachments/assets/087f21e0-691e-4a7c-87bc-0169c04680cc)
+![image](https://github.com/user-attachments/assets/867bc69a-03aa-40e9-9175-9249130dd4b0)
 # 병해 진단
 ![image](https://github.com/user-attachments/assets/39fdf106-4f69-4456-922f-8fc70a632726)
 # AI 챗봇
