@@ -30,13 +30,15 @@
       <div class="modal">
         <button class="close-button" @click="closeDiagnosis"></button>
         <h3>진단 결과</h3>
-        <p>{{ diagnosis }}</p>
+        <p>병명: {{ diagnosis.disease }}</p>
+        <p>솔루션: {{ diagnosis.solution }}</p>
       </div>
     </div>
 
 </template>
 
 <script>
+import axios from 'axios';
 import AppHeader from './AppHeader.vue';
 
 export default {
@@ -45,7 +47,10 @@ export default {
             ShowModal: false,
             photos: [], // 업로드된 사진을 저장하는 배열
             showDiagnosis: false, // 진단 결과 모달창 상태
-            diagnosis: '', // 진단 결과 저장
+            diagnosis: {
+              disease: '',  //진단 결과의 병명
+              solution: ''  //진단 결과의 솔루션
+            },
 
             isMenuOpen: false,
         }
@@ -77,9 +82,28 @@ export default {
                 }
             }
         },
-        openDiagnosis(photo) {  // 진단 내용을 불러오고 모달을 엽니다.
-            this.diagnosis = `${photo}`;
-            this.showDiagnosis = true;
+        async openDiagnosis(photo) {  
+            try {
+                // 파일을 FormData로 변환
+                const formData = new FormData();
+                formData.append('photo', photo.file);
+
+                // 서버에 진단 요청 보내기
+                const response = await axios.post('/api/diagnosis', formData, {
+                    headers: {
+                        'Content-Type': 'multipart/form-data',
+                    },
+                });
+
+                // 서버에서 받은 진단 결과 처리
+                this.diagnosis.disease = response.data.disease;
+                this.diagnosis.solution = response.data.solution;
+                this.showDiagnosis = true;  // 모달 열기
+
+            } catch (error) {
+                console.error('진단 중 오류 발생:', error);
+                alert('진단 중 오류가 발생했습니다.');
+            }
         },
         closeDiagnosis() {
             this.showDiagnosis = false;

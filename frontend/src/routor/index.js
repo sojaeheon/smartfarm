@@ -23,21 +23,25 @@ const router = createRouter({
             path: "/MainView",
             name: "Main",
             component: MainView,
+
         },
         {
             path: "/DiseaseDiagnosis",
             name: "Disease",
             component: DiseaseDiagnosis,
+
         },
         {
             path: "/AppChatbot",
             name: "Chatbot",
             component: AppChatbot,
+
         },
         {
             path: "/Graph",
             name: "Graph",
             component: GraphView,
+
         }
     ],
 });
