@@ -187,6 +187,7 @@ export default {
 
 .actuator button {
     width: 7vw;
+    height: 10vh;
     border: 2px solid #F99E17;
     border-radius: 5px;
     text-align: center;
