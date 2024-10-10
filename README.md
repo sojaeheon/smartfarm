@@ -84,6 +84,10 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 
 ### 5. 스마트팜 환경그래프 페이지 
 #### 5.1 스마트팜 내 환경을 그래프로 확인 
+
+#영상
+https://github.com/user-attachments/assets/60d6e221-28a6-4da9-ba84-22db664abf0f
+
   
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 # 방향
