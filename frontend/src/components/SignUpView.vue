@@ -10,9 +10,9 @@
           <input type="text" v-model="uid" placeholder="uid" class="input-field">
           <button class="check-duplicate" @click="checkDuplicateUid">중복 확인</button>
         </div>
-        
+<!--         
         <span v-if="isUidAvailable" class="available">사용 가능한 아이디입니다.</span>
-        <span v-if="!isUidAvailable && uidChecked" class="not-available">이미 사용 중인 아이디입니다.</span>
+        <span v-if="!isUidAvailable && uidChecked" class="not-available">이미 사용 중인 아이디입니다.</span> -->
       </div>
 
       <div class="register_pw">
