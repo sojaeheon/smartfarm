@@ -84,6 +84,23 @@ def signup():
     
     return jsonify({"success": True, "message": "회원가입이 완료되었습니다."})
 
+#아이디 중복확인
+@app.route('/api/check-uid', methods=['POST'])
+def check_uid():
+    data = request.get_json()
+    uid = data.get('uid')
+
+    connection = get_db_connection()
+
+    with connection.cursor() as cursor:
+         # 사용자 중복 체크
+        check_query = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(check_query, (uid))
+        if cursor.fetchone():
+            return jsonify({"available": False})
+        else:
+            return jsonify({"available": True})
+
 # 세션 상태 확인 API
 @app.route('/api/session-check', methods=['GET'])
 def session_check():
