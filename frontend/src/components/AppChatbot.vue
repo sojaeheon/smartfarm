@@ -14,7 +14,8 @@
       </div>
       <div class="messages" ref="messages">
         <div v-for="message in messages" :key="message.id" class="message" :class="message.sender">
-          <div class="message-text">{{ message.text }}</div>
+          <!-- <div class="message-text">{{ message.text }}</div> -->
+          <div class="message-text" v-html="message.text"></div>
         </div>
       </div>
       <div class="input-container">
@@ -50,20 +51,23 @@ export default {
       const userMessage = this.userInput.trim();
       if (!userMessage) return;
 
+      this.userInput = '';
+
       this.addMessage('user', userMessage);
 
       const aiResponse = await this.getAIResponse(userMessage);
       this.addMessage('ai', aiResponse);
 
-      this.userInput = '';
       this.scrollToBottom(); // 메시지 전송 후 스크롤 내리기
     },
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
+    // http://192.168.0.29:8888/api/get_answer
+    // http://192.168.25.5:8888/api/get_answer
     async getAIResponse(message) {
       try {
-        const response = await axios.post('http://192.168.0.29:8888/api/get_answer', {
+        const response = await axios.post('http://192.168.25.5:8888/api/get_answer', {
           question: message,
           // 다른 필요한 API 매개변수
         }, {
@@ -73,7 +77,7 @@ export default {
         });
 
 
-        return response.data.answer
+        return response.data.answer.replace(/\n/g, '<br>');
       } catch (error) {
         console.error('AI 응답 오류:', error);
         return '죄송합니다, 오류가 발생했습니다.';
