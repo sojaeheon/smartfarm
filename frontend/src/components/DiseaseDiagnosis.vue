@@ -26,12 +26,14 @@
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none;" />
 
     <!-- 진단 결과 모달 -->
-    <div v-if="showDiagnosis" class="modal-background">
-      <div class="modal">
-        <button class="close-button" @click="closeDiagnosis"></button>
+    <div v-if="showDiagnosis" class="modal-background-Diagnosis">
+      <div class="modal-Diagnosis">
+        <button class="close-button" @click="closeDiagnosis"></button><br>
         <h3>진단 결과</h3>
-        <p>병명: {{ diagnosis.disease }}</p>
-        <p>솔루션: {{ diagnosis.solution }}</p>
+        <div class="modal-p">
+            <p><b>병명:</b> {{ diagnosis.disease }}</p>
+            <p><b>솔루션:</b> {{ diagnosis.solution }}</p>
+        </div>
       </div>
     </div>
 
@@ -51,7 +53,6 @@ export default {
               disease: '',  //진단 결과의 병명
               solution: ''  //진단 결과의 솔루션
             },
-
             isMenuOpen: false,
         }
     },
@@ -105,15 +106,6 @@ export default {
                 alert('진단 중 오류가 발생했습니다.');
             }
         },
-        closeDiagnosis() {
-            this.showDiagnosis = false;
-        },
-        closeModal() {
-            this.ShowModal = false;
-        },
-        toggleMenu() {
-            this.isMenuOpen = !this.isMenuOpen;
-        },
     },
 }
 
@@ -153,6 +145,18 @@ export default {
     align-items: center; /* 중앙 정렬 */
 }
 
+.modal-background-Diagnosis {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 중앙 정렬 */
+}
+
 .modal {
     position: relative;
     background-color: white;
@@ -162,6 +166,29 @@ export default {
     max-width: 300px;
     text-align: center;
     cursor: pointer;
+}
+
+.modal-Diagnosis {
+    position: relative;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.modal-Diagnosis h3 {
+    margin-bottom: 13px;
+}
+
+.modal-Diagnosis p {
+    margin-bottom: 7px;
+}
+
+.modal-p {
+    margin: 13px;
 }
 
 .close-button {
