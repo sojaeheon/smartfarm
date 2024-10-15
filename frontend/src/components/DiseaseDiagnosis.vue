@@ -26,15 +26,16 @@
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none;" />
 
     <!-- 진단 결과 모달 -->
-    <div v-if="showDiagnosis" class="modal-background">
-      <div class="modal">
-        <button class="close-button" @click="closeDiagnosis"></button>
+    <div v-if="showDiagnosis" class="modal-background-Diagnosis">
+      <div class="modal-Diagnosis">
+        <button class="close-button" @click="closeDiagnosis"></button><br>
         <h3>진단 결과</h3>
-        <p>병명: {{ diagnosis.disease }}</p>
-        <p>솔루션: {{ diagnosis.solution }}</p>
+        <div class="modal-p">
+            <p><b>병명:</b> {{ diagnosis.disease }}</p>
+            <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
+        </div>
       </div>
     </div>
-
 </template>
 
 <script>
@@ -94,7 +95,7 @@ export default {
                 // http://192.168.0.29:8888/api/disease
                 // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('http://192.168.25.5:8888/api/disease', formData, {
+                const response = await axios.post('http://192.168.0.29:8888/api/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -102,7 +103,7 @@ export default {
 
                 // 서버에서 받은 진단 결과 처리
                 this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution;
+                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
                 this.showDiagnosis = true;  // 모달 열기
 
             } catch (error) {
@@ -158,6 +159,18 @@ export default {
     align-items: center; /* 중앙 정렬 */
 }
 
+.modal-background-Diagnosis {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    display: flex;
+    justify-content: center;
+    align-items: center; /* 중앙 정렬 */
+}
+
 .modal {
     position: relative;
     background-color: white;
@@ -167,6 +180,29 @@ export default {
     max-width: 300px;
     text-align: center;
     cursor: pointer;
+}
+
+.modal-Diagnosis {
+    position: relative;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.modal-Diagnosis h3 {
+    margin-bottom: 13px;
+}
+
+.modal-Diagnosis p {
+    margin-bottom: 7px;
+}
+
+.modal-p {
+    margin: 13px;
 }
 
 .close-button {

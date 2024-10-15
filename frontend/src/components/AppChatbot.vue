@@ -67,7 +67,7 @@ export default {
     // http://192.168.25.5:8888/api/get_answer
     async getAIResponse(message) {
       try {
-        const response = await axios.post('http://192.168.25.5:8888/api/get_answer', {
+        const response = await axios.post('http://192.168.0.29:8888/api/get_answer', {
           question: message,
           // 다른 필요한 API 매개변수
         }, {
