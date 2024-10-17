@@ -5,7 +5,6 @@
         <li><router-link to="/MainView">메인페이지</router-link></li>
         <li><router-link to="/DiseaseDiagnosis">병해진단</router-link></li>
         <li><router-link to="/AppChatbot">챗봇</router-link></li>
-        <li><router-link to="/Graph">환경그래프</router-link></li>
       </ul>
     </div>
     <div class="logout-container">
