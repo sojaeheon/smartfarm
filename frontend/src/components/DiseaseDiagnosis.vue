@@ -10,7 +10,7 @@
 
     <!-- 사진 미리보기 -->
     <div class="photo-gallery">
-      <img v-for="(photo, index) in photos" :key="index" :src="photo" @click="openDiagnosis(photo)" class="preview-image"/>
+      <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)" class="preview-image"/>
     </div>
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
@@ -26,15 +26,16 @@
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none;" />
 
     <!-- 진단 결과 모달 -->
-    <div v-if="showDiagnosis" class="modal-background">
-      <div class="modal">
-        <button class="close-button" @click="closeDiagnosis"></button>
+    <div v-if="showDiagnosis" class="modal-background-Diagnosis">
+      <div class="modal-Diagnosis">
+        <button class="close-button" @click="closeDiagnosis"></button><br>
         <h3>진단 결과</h3>
-        <p>병명: {{ diagnosis.disease }}</p>
-        <p>솔루션: {{ diagnosis.solution }}</p>
+        <div class="modal-p">
+            <p><b>병명:</b> {{ diagnosis.disease }}</p>
+            <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
+        </div>
       </div>
     </div>
-
 </template>
 
 <script>
@@ -78,7 +79,10 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
+                    this.photos.push({
+                        url:imageUrl,
+                        file:file
+                    });  // 배열에 추가하여 이미지 저장
                 }
             }
         },
@@ -87,9 +91,11 @@ export default {
                 // 파일을 FormData로 변환
                 const formData = new FormData();
                 formData.append('photo', photo.file);
-
+                
+                // http://192.168.0.29:8888/api/disease
+                // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/diagnosis', formData, {
+                const response = await axios.post('http://192.168.0.29:8888/api/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -97,7 +103,7 @@ export default {
 
                 // 서버에서 받은 진단 결과 처리
                 this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution;
+                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
                 this.showDiagnosis = true;  // 모달 열기
 
             } catch (error) {
@@ -126,8 +132,10 @@ export default {
     left: 20px;
     width: 37vw;
     height: 20%;
-    transform: transform 0.1s ease; /* 이동할 때 부드럽게 */
+    transform: transform 0.1s ease;
+    /* 이동할 때 부드럽게 */
 }
+
 .Selection {
     background-color: #f0f0f0;
     border-radius: 10px;
@@ -147,10 +155,26 @@ export default {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* 배경 어둡게 */
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 배경 어둡게 */
     display: flex;
     justify-content: center;
-    align-items: center; /* 중앙 정렬 */
+    align-items: center;
+    /* 중앙 정렬 */
+}
+
+.modal-background-Diagnosis {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    /* 배경 어둡게 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 중앙 정렬 */
 }
 
 .modal {
@@ -164,6 +188,50 @@ export default {
     cursor: pointer;
 }
 
+.modal-Diagnosis {
+    position: relative;
+    background-color: white;
+    padding: 15px;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 380px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.modal-Diagnosis h3 {
+    margin-bottom: 13px;
+}
+
+.modal-Diagnosis p {
+    margin-bottom: 7px;
+}
+
+.modal-p {
+    margin: 10px;
+    max-height: 300px;
+    /* 스크롤이 생길 최대 높이 설정 */
+    overflow-y: auto;
+    /* 세로 스크롤 활성화 */
+    padding-right: 10px;
+    /* 스크롤바와 텍스트 사이 여백 */
+    box-sizing: border-box;
+}
+
+.modal-p::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-p::-webkit-scrollbar-thumb {
+    background-color: #FA782D;
+    border-radius: 10px;
+}
+
+.modal-p::-webkit-scrollbar-track {
+    background-color: #f1f1f1;
+    border-radius: 10px;
+}
+
 .close-button {
     background-image: url('@/assets/closebutton.svg');
     background-size: contain;
@@ -173,55 +241,70 @@ export default {
     height: 30px;
     border: none;
     cursor: pointer;
-    position: absolute;  /* 절대 위치로 설정 */
-    top: 8px;  /* 모달의 상단에 붙이기 */
-    right: 8px;  /* 모달의 오른쪽에 붙이기 */
+    position: absolute;
+    /* 절대 위치로 설정 */
+    top: 8px;
+    /* 모달의 상단에 붙이기 */
+    right: 8px;
+    /* 모달의 오른쪽에 붙이기 */
 }
 
 
 /* li 태그 스타일 (버튼처럼 보이게) */
 .modal li {
-  list-style: none; /* 기본 리스트 스타일 제거 */
-  padding: 10px 0; /* 항목마다 여백 추가 */
-  border-bottom: 1px solid #ddd; /* 항목 구분선 */
-  cursor: pointer;
-  font-size: 1.25rem; /* 글자 크기 증가 */
-} 
+    list-style: none;
+    /* 기본 리스트 스타일 제거 */
+    padding: 10px 0;
+    /* 항목마다 여백 추가 */
+    border-bottom: 1px solid #ddd;
+    /* 항목 구분선 */
+    cursor: pointer;
+    font-size: 1.25rem;
+    /* 글자 크기 증가 */
+}
 
 /* 마지막 항목은 구분선을 제거 */
 .modal li:last-child {
-  border-bottom: none;
+    border-bottom: none;
 }
 
 .photo-gallery {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* 이미지가 화면에 맞게 정렬되도록 */
-    gap: 8px; /* 이미지 간의 간격을 설정 */
-    margin-top: 20px; /* 상단 여백 */
-    max-height: calc(100vh - 200px); /* 화면 높이에서 메뉴바 높이를 뺀 크기를 지정 */
-    overflow-y: auto; /* 세로로 스크롤이 생기도록 설정 */
-    padding-right: 10px; /* 스크롤바로 인한 오른쪽 여백 */
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    /* 이미지가 화면에 맞게 정렬되도록 */
+    gap: 8px;
+    /* 이미지 간의 간격을 설정 */
+    margin-top: 20px;
+    /* 상단 여백 */
+    max-height: calc(100vh - 200px);
+    /* 화면 높이에서 메뉴바 높이를 뺀 크기를 지정 */
+    overflow-y: auto;
+    /* 세로로 스크롤이 생기도록 설정 */
+    padding-right: 10px;
+    /* 스크롤바로 인한 오른쪽 여백 */
 }
 
 /* 이미지 미리보기 스타일 */
 .preview-image {
     width: 150px;
-    height: 200px; /* 이미지의 가로세로 비율을 유지하면서 자동으로 크기 조절 */
-    object-fit: contain; 
+    height: 200px;
+    /* 이미지의 가로세로 비율을 유지하면서 자동으로 크기 조절 */
+    object-fit: contain;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
     margin-left: 20px;
 }
+
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
 @media (max-aspect-ratio: 1/1) {
     .Selection {
         width: 50%;
         height: 30%;
     }
+
     .modal {
         width: 90%;
     }
 }
-
 </style>
