@@ -160,6 +160,7 @@ button {
 .message {
   display: flex;
 
+<<<<<<< HEAD
   justify-content: flex-end;
   /* 사용자 메시지를 오른쪽으로 정렬 */
   color: rgba(0, 0, 0, 0.7);
@@ -169,6 +170,15 @@ button {
   justify-content: flex-start;
   /* AI 메시지는 왼쪽으로 정렬 */
   color: white;
+=======
+  justify-content: flex-end; /* 사용자 메시지를 오른쪽으로 정렬 */
+  color: black;
+}
+
+.message.ai {
+  justify-content: flex-start; /* AI 메시지는 왼쪽으로 정렬 */
+  color: black;
+>>>>>>> rg
 }
 
 .message-text {
@@ -176,6 +186,8 @@ button {
   border-radius: 10px;
   max-width: 60%;
   background-color: rgba(250, 120, 45, 0.5);
+  font-weight: 600;
+  font-size: 1rem;
   z-index: 1;
 }
 
