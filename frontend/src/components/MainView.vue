@@ -3,13 +3,12 @@
         <AppHeader />
     </div>
     <div class="main">
-        <div class="grid-container">
-            <!-- Camera -->
-            <div class="grid-item" id="camera">
-                camera
-                <!-- <video ref="video" width="100%" autoplay></video> -->
-            </div>
-
+    <div class="grid-container">
+        <!-- Camera -->
+        <div class="grid-item" id="camera">
+            <img :src="videoSrc" alt="Camera Stream" />
+            <!-- <video ref="video" width="100%" autoplay></video> -->
+        </div>
             <!-- Actuator Buttons -->
             <div class="grid-item" id="actuator-container">
                 <div v-for="(actuator, index) in actuators" :key="index" class="actuator">
@@ -49,6 +48,7 @@ import AppHeader from '../components/AppHeader.vue';
 export default {
     data() {
         return {
+            videoSrc: 'http://192.168.0.38:7777/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -264,5 +264,17 @@ export default {
         color: black;
         margin: 0 1vw;
     }
+}
+#camera {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden; /* 내용이 넘치는 경우 숨김 처리 */
+}
+
+#camera img, #camera video {
+    width: 100%; /* 부모의 너비에 맞춰 100% 사용 */
+    height: auto; /* 높이는 자동 조절 */
+    max-height: 100%; /* 최대 높이를 100%로 설정 */
 }
 </style>
