@@ -35,7 +35,7 @@
                 <!-- <img :src="selectedPhoto" class="diagnosis-image" alt="진단 결과 이미지" /> -->
                 <img :src="diagnosis.resultImage" class="diagnosis-image" alt="diagnosis-image" />
                 <p><b>병명:</b> {{ diagnosis.disease }}</p>
-                <p><b>솔루션:</b> {{ diagnosis.solution }}</p>
+                <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
             </div>
         </div>
     </div>
@@ -58,9 +58,9 @@ export default {
             showDiagnosis: false, // 진단 결과 모달창 상태
             isLoading: false, // 로딩 상태
             diagnosis: {
-                disease: '',  //진단 결과의 병명
-                solution: '',  //진단 결과의 솔루션
-                resultImage: '',    // 인공지능 진단 결과 이미지
+                disease: '',     //진단 결과 병명
+                solution: '',    //진단 결과 솔루션
+                resultImage: '', //진단 결과 이미지
             },
             isMenuOpen: false,
 
@@ -114,15 +114,17 @@ export default {
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
 
+                // http://192.168.0.29:8888/api/disease
+                // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/diagnosis', formData, {
+                const response = await axios.post('http://192.168.0.29:8888/api/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
                 // 서버에서 받은 진단 결과 처리
                 this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution;
+                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
                 this.diagnosis.resultImage = response.data.resultImage;
                 this.showDiagnosis = true;  // 모달 열기
             } catch (error) {
