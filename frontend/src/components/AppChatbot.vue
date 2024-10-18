@@ -160,12 +160,14 @@ button {
 .message {
   display: flex;
 
-  justify-content: flex-end; /* 사용자 메시지를 오른쪽으로 정렬 */
+  justify-content: flex-end;
+  /* 사용자 메시지를 오른쪽으로 정렬 */
   color: rgba(0, 0, 0, 0.7);
 }
 
 .message.ai {
-  justify-content: flex-start; /* AI 메시지는 왼쪽으로 정렬 */
+  justify-content: flex-start;
+  /* AI 메시지는 왼쪽으로 정렬 */
   color: white;
 }
 
@@ -179,7 +181,8 @@ button {
 
 /* 사용자 메시지 스타일 추가 */
 .message.user .message-text {
-  background-color: rgba(250, 120, 45, 0.5); /* 사용자 메시지 배경색 */
+  background-color: rgba(250, 120, 45, 0.5);
+  /* 사용자 메시지 배경색 */
 }
 
 .input-container {
@@ -206,9 +209,10 @@ button {
   border-radius: 15px;
   background-color: rgba(99, 199, 88, 0.1);
 }
+
 @media (max-aspect-ratio: 1/1) {
-    .chat-bot {
-      width: 93vw;
-    }
+  .chat-bot {
+    width: 93vw;
+  }
 }
 </style>
