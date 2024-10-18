@@ -24,7 +24,17 @@
 
             <!-- Current Data -->
             <div class="grid-item" id="current-data">
+<<<<<<< HEAD
                 <button v-for="(value, key) in data" :key="key" id="data-button">{{ key }} <br> {{ value }}</button>
+=======
+                <div id="Chart">
+                    <Chart :ChartData="currentSensorData" />
+                </div>
+                <div id="button-container">
+                    <button type="button" v-for="(sensor, index) in sensors" :key="index" class="sensors-button"
+                        :class="{ 'on': sensor.isOn }" @click="toggleSwitch(sensor)">{{ sensor.label }}</button>
+                </div>
+>>>>>>> rg
             </div>
 
             <!-- Weather -->
@@ -45,6 +55,7 @@
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
+import Chart from './Chart.vue';
 
 export default {
     data() {
@@ -55,13 +66,14 @@ export default {
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
-            data: {
-                온도: '22°C',
-                습도: '45%',
-                CO2: '400ppm',
-                조도: '350lux',
-                수위: '50%',
-            },
+            sensors: [
+                { label: '조도', isOn: true, data: [10, 20, 30, 40, 50, 60] },
+                { label: 'CO2', isOn: false, data: [12, 22, 32, 42, 52, 62] },
+                { label: '온도', isOn: false, data: [15, 25, 35, 45, 55, 65] },
+                { label: '습도', isOn: false, data: [8, 18, 28, 38, 48, 58] },
+                { label: '수위', isOn: false, data: [9, 19, 29, 39, 49, 59] }
+            ],
+            currentSensorData: {},
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
             url_base: 'https://api.openweathermap.org/data/2.5/',
             lat: '35.9646',   //군산 위도
@@ -73,6 +85,9 @@ export default {
                 icon: '',
             },
         };
+    },
+    options: {
+        responsive: false
     },
     computed: {
         // weather.icon 값이 있을 때 아이콘 URL 생성
@@ -91,6 +106,9 @@ export default {
             .catch(error => {
                 console.error("카메라 접근 실패:", error);
             });*/
+
+        // 초기 센서 설정
+        this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
     },
@@ -99,6 +117,46 @@ export default {
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
+            // 액추에이터가 이미 켜져 있는 경우-시간설정
+            // if (this.actuators[index].isOn) {
+            //     this.actuators[index].isOn = false; // 바로 끄기
+            // } else {
+            //     // 액추에이터 켜기
+            //     this.actuators[index].isOn = true;
+            //     console.log(`Actuator ${this.actuators[index].label} is now ON`);
+
+            //     // 설정된 시간 후에 자동으로 끄기 (n분=n*60*1000, n시간=n*60*60*1000)
+            //     const offTime = 60000; // 1시간(밀리초 단위)
+            //     setTimeout(() => {
+            //         this.actuators[index].isOn = false;
+            //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
+            //     }, offTime);
+            // }
+        },
+        toggleSwitch(sensor) {
+            // 만약 클릭된 센서가 이미 켜져 있으면 끄기
+            if (sensor.isOn) {
+                sensor.isOn = false;
+            } else {
+                // 클릭된 센서가 꺼져 있으면 다른 모든 센서를 끄고 이 센서만 켜기
+                this.sensors.forEach(s => { s.isOn = false });
+                sensor.isOn = true;
+            }
+            this.currentSensorData = this.getSensorData(sensor);
+        },
+        getSensorData(sensor) {
+            return {
+                labels: ["1", "2", "3", "4", "5", "6"],  // x축 라벨 (예시)
+                datasets: [
+                    {
+                        label: sensor.label,
+                        data: sensor.data,
+                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    }
+                ]
+            };
         },
         fetchWeatherData() {
             const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
@@ -145,6 +203,7 @@ export default {
     },
     components: {
         AppHeader,
+        Chart
     }
 };
 </script>
@@ -189,7 +248,7 @@ export default {
 
 .actuator button {
     width: 7vw;
-    height: 9vh;
+    height: 10vh;
     border: 2px solid #F99E17;
     border-radius: 5px;
     text-align: center;
@@ -208,6 +267,48 @@ export default {
     margin: 0.5vw 0;
 }
 
+<<<<<<< HEAD
+=======
+#current-data {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* 중앙 정렬 */
+}
+
+#button-container {
+    /* margin-top: 5vh;
+    margin-left: 15vw; */
+    display: flex;
+    justify-content: center;
+    /* 버튼들을 중앙에 배치 */
+    margin-top: 10px;
+    gap: 10px;
+    /* 버튼 간 간격 */
+}
+
+.sensors-button {
+    width: 5vw;
+    height: 6vh;
+    border: 2px solid #F99E17;
+    border-radius: 5px;
+    text-align: center;
+    font-weight: bold;
+    display: inline-block;
+    cursor: pointer;
+}
+
+.sensors-button.on {
+    background-color: #F99E17;
+}
+
+#Chart {
+    margin: 0 10px;
+    position: relative;
+    width: 30vw;
+}
+
+>>>>>>> rg
 #data-button {
     width: 7vw;
     height: 10vh;
