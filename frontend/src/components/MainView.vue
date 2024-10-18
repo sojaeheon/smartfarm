@@ -9,37 +9,38 @@
             <img :src="videoSrc" alt="Camera Stream" />
             <!-- <video ref="video" width="100%" autoplay></video> -->
         </div>
-            <!-- Actuator Buttons -->
-            <div class="grid-item" id="actuator-container">
-                <div v-for="(actuator, index) in actuators" :key="index" class="actuator">
-                    <button type="button" :class="{ on: actuator.isOn }" @click="toggleActuator(index)">
-                        <img :src="actuator.imgSrc" alt="Actuator Image" /> <br> {{ actuator.isOn ? 'ON' : 'OFF' }}
-                    </button>
-                    <div id="actuator-label">
-                        {{ actuator.label }}
-                    </div>
+
+        <!-- Actuator Buttons -->
+        <div class="grid-item" id="actuator-container">
+            <div v-for="(actuator, index) in actuators" :key="index" class="actuator">
+                <button type="button" :class="{ on: actuator.isOn }" @click="toggleActuator(index)">
+                    <img :src="actuator.imgSrc" alt="Actuator Image" /> <br> {{ actuator.isOn ? 'ON' : 'OFF' }}
+                </button>
+                <div id="actuator-label">
+                    {{ actuator.label }}
                 </div>
             </div>
+        </div>
 
-            <!-- Current Data -->
-            <div class="grid-item" id="current-data">
-                <button v-for="(value, key) in data" :key="key" id="data-button">{{ key }} <br> {{ value }}</button>
-            </div>
+        <!-- Current Data -->
+        <div class="grid-item" id="current-data">
+            <button v-for="(value, key) in data" :key="key" id="data-button">{{ key }} <br> {{ value }}</button>
+        </div>
 
-            <!-- Weather -->
-            <div class="grid-item" id="weather">
-                <div class="weather-content">
-                    <img :src="weatherIconUrl" alt="Icon" />
-                    <div class="weather_text">
-                        <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
-                        <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
-                        <p v-if="weather.description">날씨: {{ weather.description }}</p>
-                        <p v-else> 날씨 정보를 불러오는 중...</p>
-                    </div>
+        <!-- Weather -->
+        <div class="grid-item" id="weather">
+            <div class="weather-content">
+                <img :src="weatherIconUrl" alt="Icon" />
+                <div class="weather_text">
+                    <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
+                    <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
+                    <p v-if="weather.description">날씨: {{ weather.description }}</p>
+                    <p v-else> 날씨 정보를 불러오는 중...</p>
                 </div>
             </div>
         </div>
     </div>
+</div>
 </template>
 
 <script>
@@ -74,12 +75,12 @@ export default {
         };
     },
     computed: {
-        // weather.icon 값이 있을 때 아이콘 URL 생성
-        weatherIconUrl() {
-            const iconUrl = this.weather.icon ? `https://openweathermap.org/img/wn/${this.weather.icon}@2x.png` : '';
+      // weather.icon 값이 있을 때 아이콘 URL 생성
+      weatherIconUrl() {
+        const iconUrl = this.weather.icon ? `https://openweathermap.org/img/wn/${this.weather.icon}@2x.png` : '';
             console.log("Weather icon URL:", iconUrl); // 아이콘 URL 로그 출력
             return iconUrl;
-        }
+      }
     },
     mounted() {
         // 웹캠 접근
@@ -102,21 +103,21 @@ export default {
         fetchWeatherData() {
             const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
             fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok. Status: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(data => { // 데이터 구조에 맞게 경로 설정
-                    console.log(data); // 응답 전체 확인
-                    this.setResult(data);
-                })
-                .catch(error => {
-                    console.error("날씨 정보 불러오기 실패:", error);
-                });
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok. Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => { // 데이터 구조에 맞게 경로 설정
+                console.log(data); // 응답 전체 확인
+                this.setResult(data);
+            })
+            .catch(error => {
+                console.error("날씨 정보 불러오기 실패:", error);
+            });
         },
-        setResult(data) {
+        setResult(data){
             if (data && data.main && data.weather && data.weather.length > 0) {
                 this.weather = {
                     temp: data.main.temp, // 온도
@@ -133,14 +134,14 @@ export default {
                 "1월", "2월", "3월", "4월", "5월", "6월",
                 "7월", "8월", "9월", "10월", "11월", "12월"
             ];
-            let days = ["월요일", "화요일", "수요일", "목요일", "금요일"];
+            let days = [ "월요일", "화요일", "수요일", "목요일", "금요일" ];
             let day = days[d.getDay()];
             let date = d.getDate();
             let month = months[d.getMonth()];
             let year = d.getFullYear();
             return `${day} ${date} ${month} ${year}`;
-        },
-
+        },        
+       
     },
     components: {
         AppHeader,
@@ -151,11 +152,10 @@ export default {
 <style>
 .main {
     display: flex;
-
+    
     margin-top: 10px;
     margin-left: 10px;
 }
-
 .grid-container {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -201,12 +201,11 @@ export default {
 .on {
     background-color: #F99E17;
 }
-
-#actuator-label {
+#actuator-label
+{
     text-align: center;
-    margin: 0.5vw 0;
+    margin: 0.5vw 0; 
 }
-
 #data-button {
     width: 7vw;
     height: 10vh;
@@ -217,34 +216,26 @@ export default {
     margin: 0 0.25vw;
     font-size: medium;
 }
-
 #weather {
     display: flex;
-    flex-direction: column;
-    /* 세로 정렬 */
-    align-items: center;
-    /* 가로 중앙 정렬 */
-    justify-content: center;
-    /* 세로 중앙 정렬 */
-    text-align: center;
-    /* 텍스트 중앙 정렬 */
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가로 중앙 정렬 */
+    justify-content: center; /* 세로 중앙 정렬 */
+    text-align: center; /* 텍스트 중앙 정렬 */
 }
 
 .weather-content {
-    display: flex;
-    /* 아이콘과 텍스트를 가로로 정렬 */
-    align-items: center;
-    /* 세로 중앙 정렬 */
+    display: flex; /* 아이콘과 텍스트를 가로로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
 }
 
 .weather_text p {
-    margin: 3px 0;
-    /* p 태그 간 간격 조정 */
+    margin: 3px 0; /* p 태그 간 간격 조정 */
 }
 
 .weather img {
-    width: 30px;
-    height: 30px;
+  width: 30px;
+  height: 30px;
 }
 
 @media (max-aspect-ratio: 1/1) {
@@ -253,12 +244,10 @@ export default {
         grid-template-rows: auto;
         /* margin: 2vw 0; */
     }
-
     .actuator button {
         width: 15vw;
         color: black;
     }
-
     #data-button {
         width: 15vw;
         color: black;
