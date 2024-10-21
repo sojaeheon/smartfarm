@@ -62,11 +62,11 @@ def draw_bounding_box(disease_image, predictions, disease_name):
     return image
 
 
-disease_image_path = 'white.jfif'
+# disease_image_path = 'white.jfif'
 
-name,test_data= sb_decision(disease_image_path)
+# name,test_data= sb_decision(disease_image_path)
 
-image_with_bounding_box = draw_bounding_box(disease_image_path, test_data,name)
+# image_with_bounding_box = draw_bounding_box(disease_image_path, test_data,name)
 
-# 바운딩 박스가 그려진 이미지 저장
-image_with_bounding_box.save("output_with_bounding_box.jpg")
+# # 바운딩 박스가 그려진 이미지 저장
+# image_with_bounding_box.save("output_with_bounding_box.jpg")

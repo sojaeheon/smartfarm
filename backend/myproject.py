@@ -175,7 +175,7 @@ def disease():
                 tmp_file_path = tmp_file.name
 
             # 모델 예측 수행
-            disease_name = sb_decision(tmp_file_path)
+            disease_name,__ = sb_decision(tmp_file_path)
             question = f'딸기 {disease_name} 치료방법을 알려주세요.'
             solution = get_answer_from_chain(chain, question)
 
