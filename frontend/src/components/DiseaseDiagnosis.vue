@@ -117,7 +117,7 @@ export default {
                 // http://192.168.0.29:8888/api/disease
                 // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('http://192.168.0.29:8888/api/disease', formData, {
+                const response = await axios.post('/api/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
