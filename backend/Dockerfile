@@ -7,8 +7,11 @@ WORKDIR /app
 # 필요한 파일 복사
 COPY . /app
 
+RUN mkdir -p /app/.cache/huggingface && chmod -R 777 /app/.cache
+
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
+
 
 EXPOSE 7000
 
