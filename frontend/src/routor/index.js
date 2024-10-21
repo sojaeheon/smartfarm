@@ -4,7 +4,6 @@ import LoginView from "@/components/LoginView.vue";
 import MainView from "@/components/MainView.vue";
 import DiseaseDiagnosis from "@/components/DiseaseDiagnosis.vue";
 import AppChatbot from "@/components/AppChatbot.vue";
-import GraphView from "@/components/GraphView.vue";
 
 const router = createRouter({
     history: createWebHistory(),
@@ -37,12 +36,6 @@ const router = createRouter({
             component: AppChatbot,
 
         },
-        {
-            path: "/Graph",
-            name: "Graph",
-            component: GraphView,
-
-        }
     ],
 });
 
