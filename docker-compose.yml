@@ -7,6 +7,8 @@ services:
     restart: always
     environment:
       - FLASK_ENV=development
+      #- HUGGINGFACEHUB_API_TOKEN=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
+      #- HUGGINGFACE_HUB_CACHE=/app/.cache/huggingface
     expose:
       - 7000
     networks:
