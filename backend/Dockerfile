@@ -11,6 +11,9 @@ COPY . /app
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
 
+ENV HF_TOKEN="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"
+ENV HF_HOME="/app/.cache/huggingface"
+ENV TRANSFORMERS_CACHE="/app/.cache/huggingface/hub"
 
 EXPOSE 7000
 
