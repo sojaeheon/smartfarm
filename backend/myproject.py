@@ -10,10 +10,15 @@ app = Flask(__name__)
 app.secret_key = '818188'
 CORS(app)
 
+# 전역 변수 설정
+embeddings_model = None
+retriever = None
+chain = None
+
 # 모델 로드
 def load_models():
     global embeddings_model, retriever, chain
-    texts = load_and_split_pdf("manual/농업기술길잡이40_딸기.pdf")
+    texts = load_and_split_pdf("manual/농업기술길잡이40_딸기.PDF")
     embeddings_model = create_embeddings_model()
     retriever = setup_document_search(texts, embeddings_model)
     prompt = create_prompt_template()
@@ -146,6 +151,7 @@ def get_answer():
         data = request.get_json()
         question = data.get('question')
         print(question)
+        print(chain)
         if not question:
             return jsonify({"error": "질문이 제공되지 않았습니다."}), 400
 
@@ -193,7 +199,8 @@ def disease():
             os.remove(tmp_file_path)
             
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=7000)
+    init()
+    app.run(host='0.0.0.0', port=7000, debug=True)
 
 
     
