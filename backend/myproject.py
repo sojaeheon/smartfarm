@@ -6,8 +6,8 @@ import pymysql
 
 app = Flask(__name__)
 app.secret_key = 'REDACTED_SECRET'
-CORS(app, resources={r'/*': {'origins': '*'}})
-
+CORS(app)
+    
 # 데이터베이스 설정 정보
 db_config = {
     'host': 'REDACTED_DB_HOST',
@@ -116,3 +116,6 @@ def logout():
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
+
+
+    
