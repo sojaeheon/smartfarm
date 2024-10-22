@@ -13,7 +13,7 @@ CORS(app)
 # 모델 로드
 def load_models():
     global embeddings_model, retriever, chain
-    texts = load_and_split_pdf("농업기술길잡이40_딸기.pdf")
+    texts = load_and_split_pdf("manual/농업기술길잡이40_딸기.pdf")
     embeddings_model = create_embeddings_model()
     retriever = setup_document_search(texts, embeddings_model)
     prompt = create_prompt_template()
