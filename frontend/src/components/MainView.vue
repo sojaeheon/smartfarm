@@ -35,16 +35,16 @@
 
             <!-- Weather -->
             <div class="grid-item" id="weather">
+                <h4>&lt; {{ weather.year }}년 {{ weather.month }} {{ weather.date }} {{ weather.days }} &gt;</h4>
                 <div class="weather-content">
                     <img :src="weatherIconUrl" alt="Icon" />
                     <div class="weather_text">
-                        <p>{{ weather.year }}년 {{ weather.month }} {{ weather.date }} {{ weather.days }}</p>
                         <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
                         <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
                         <p v-if="weather.description">날씨: {{ weather.description }}</p>
                         <p v-else> 날씨 정보를 불러오는 중...</p>
                     </div>
-                </div><br>
+                </div>
                 <div class="forecast">
                     <div class="forecast-list">
                         <div v-for="(hour, index) in hourlyForecast" :key="index" class="forecast-item">
