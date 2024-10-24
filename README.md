@@ -56,11 +56,10 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 <br/><br/>
 
 # 블록도
-![image](https://github.com/user-attachments/assets/fd68ece7-91a3-488e-8267-ff20a9ef9453)
-# 병해 진단
-![image](https://github.com/user-attachments/assets/39fdf106-4f69-4456-922f-8fc70a632726)
-# AI 챗봇
-![image](https://github.com/user-attachments/assets/cd64ab9e-5301-4530-8242-2d314b53e52f)
+![image](https://github.com/user-attachments/assets/b515da2e-6144-43fd-8766-6d53eaaef35b)
+<hr>
+![image](https://github.com/user-attachments/assets/e376084a-bb6c-4c1d-ba26-a5efa567a354)
+
 
 
 # 일정(간트차트)
