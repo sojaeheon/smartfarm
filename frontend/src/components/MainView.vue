@@ -56,7 +56,7 @@ import Chart from './Chart.vue';
 export default {
     data() {
         return {
-            videoSrc: 'http://192.168.0.38:7777/video_feed',
+            videoSrc: 'http://192.168.0.34:7777/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
