@@ -143,6 +143,7 @@ def get_answer():
         data = request.get_json()
         question = data.get('question')
         print(question)
+        print(chain)
         if not question:
             return jsonify({"error": "질문이 제공되지 않았습니다."}), 400
 
@@ -190,7 +191,8 @@ def disease():
             os.remove(tmp_file_path)
             
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=7000)
+    init()
+    app.run(host='0.0.0.0', port=7000, debug=True)
 
 
     

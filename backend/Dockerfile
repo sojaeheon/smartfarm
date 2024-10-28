@@ -7,15 +7,11 @@ WORKDIR /app
 # 필요한 파일 복사
 COPY . /app
 
-# 캐시 디렉토리 생성 및 소유자 변경
-RUN mkdir -p /app/.cache/huggingface
+RUN mkdir -p /app/.cache/huggingface && chmod -R 777 /app/.cache
 
 # 의존성 설치
 RUN pip install --no-cache-dir -r requirements.txt
 
-ENV HF_TOKEN="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"
-ENV HF_HOME="/app/.cache/huggingface"
-ENV TRANSFORMERS_CACHE="/app/.cache/huggingface/hub"
 
 EXPOSE 7000
 
