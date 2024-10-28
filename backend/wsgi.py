@@ -1,6 +1,4 @@
-from myproject import app, init
-
-init()
+from myproject import app
 
 if __name__ == "__main__":
     app.run()
