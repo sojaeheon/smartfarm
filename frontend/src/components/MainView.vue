@@ -7,6 +7,7 @@
             <!-- Camera -->
             <div class="grid-item" id="camera">
                 <img :src="videoSrc" alt="Camera Stream" />
+                <!-- <video ref="video" width="100%" autoplay></video> -->
             </div>
 
             <!-- Actuator Buttons -->
@@ -67,7 +68,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            videoSrc: 'http://202.31.150.31:9999/video_feed',
+            videoSrc: 'http://192.168.0.38:7777/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
