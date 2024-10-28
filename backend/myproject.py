@@ -7,18 +7,9 @@ app = Flask(__name__)
 app.secret_key = '818188'
 CORS(app)
 
-# 모델 로드
-def load_models():
-    global embeddings_model, retriever, chain
-    texts = load_and_split_pdf("manual/농업기술길잡이40_딸기.pdf")
-    embeddings_model = create_embeddings_model()
-    retriever = setup_document_search(texts, embeddings_model)
-    prompt = create_prompt_template()
-    chain = create_rag_chain(retriever, prompt)
+# CORS 설정: 쿠키 전송 활성화
+CORS(app, supports_credentials=True)
 
-def init():
-    load_models()
-    
 # 데이터베이스 설정 정보
 db_config = {
     'host': '192.168.0.7',
@@ -116,21 +107,24 @@ def check_uid():
         else:
             return jsonify({"available": True})
 
-# 세션 상태 확인 API
-@app.route('/api/session-check', methods=['GET'])
-def session_check():
-    """로그인 세션 상태를 확인합니다."""
-    if 'logged_in' in session and session['logged_in']:
-        return jsonify({"loggedIn": True, "username": session['username']})
-    else:
-        return jsonify({"loggedIn": False})
+#세션확인
+@app.route('/api/check-session', methods=['POST'])
+def check_session():
+    try:
+        if 'uid' in session:
+            return jsonify({"logged_in": True})
+        else:
+            return jsonify({"logged_in": False})
+    except Exception as e:
+        app.logger.error(f"Error in /api/check-session: {str(e)}")
+        return jsonify({"error": "Internal Server Error"}), 500
 
 # 로그아웃 처리
 @app.route('/api/logout', methods=['GET'])
 def logout():
     """세션에서 사용자 이름을 제거하여 로그아웃합니다."""
     session.pop('logged_in', None)
-    session.pop('username', None)
+    session.pop('uid', None)
     return jsonify({"success": True, "message": "Logged out successfully."})
 
 
