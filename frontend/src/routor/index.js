@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
+
 import SignUpView from "@/components/SignUpView.vue";
 import LoginView from "@/components/LoginView.vue";
 import MainView from "@/components/MainView.vue";
@@ -45,5 +46,6 @@ const router = createRouter({
         }
     ],
 });
+
 
 export default router;
