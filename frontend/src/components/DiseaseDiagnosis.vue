@@ -10,7 +10,7 @@
 
     <!-- 사진 미리보기 -->
     <div class="photo-gallery">
-        <img v-for="(photo, index) in photos" :key="index" :src="photo" @click="openDiagnosis(photo)"
+        <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)"
             class="preview-image" />
     </div>
 
@@ -33,7 +33,7 @@
             <h2>진단 결과</h2>
             <div class="modal-p">
                 <!-- <img :src="selectedPhoto" class="diagnosis-image" alt="진단 결과 이미지" /> -->
-                <img :src="diagnosis.resultImage" class="diagnosis-image" alt="diagnosis-image" />
+                <img :src="'data:image/png;base64,' + diagnosis.boundingImage" class="diagnosis-image" alt="진단 결과 이미지" />
                 <p><b>병명:</b> {{ diagnosis.disease }}</p>
                 <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
             </div>
@@ -90,7 +90,10 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
+                    this.photos.push({
+                        url: imageUrl,  // 미리보기 이미지 URL
+                        file: file      // 실제 파일 객체
+                    });
                 }
             }
         },
@@ -117,7 +120,7 @@ export default {
                 // http://192.168.0.29:8888/api/disease
                 // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/disease', formData, {
+                const response = await axios.post('/api/ai/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
@@ -125,7 +128,7 @@ export default {
                 // 서버에서 받은 진단 결과 처리
                 this.diagnosis.disease = response.data.disease;
                 this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
-                this.diagnosis.resultImage = response.data.resultImage;
+                this.diagnosis.boundingImage = response.data.boundingImage;
                 this.showDiagnosis = true;  // 모달 열기
             } catch (error) {
                 console.error('진단 중 오류 발생:', error);

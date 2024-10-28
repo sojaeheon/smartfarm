@@ -7,7 +7,7 @@
             <!-- Camera -->
             <div class="grid-item" id="camera">
                 <img :src="videoSrc" alt="Camera Stream" />
-                <!-- <video ref="video" width="100%" autoplay></video> -->
+                <!-- <video ref="video" src="videoSrc" width="100%" autoplay></video> -->
             </div>
 
             <!-- Actuator Buttons -->
@@ -35,6 +35,7 @@
 
             <!-- Weather -->
             <div class="grid-item" id="weather">
+                <h4>&lt; {{ weather.year }}년 {{ weather.month }} {{ weather.date }} {{ weather.days }} &gt;</h4>
                 <div class="weather-content">
                     <img :src="weatherIconUrl" alt="Icon" />
                     <div class="weather_text">
@@ -44,7 +45,17 @@
                         <p v-else> 날씨 정보를 불러오는 중...</p>
                     </div>
                 </div>
+                <div class="forecast">
+                    <div class="forecast-list">
+                        <div v-for="(hour, index) in hourlyForecast" :key="index" class="forecast-item">
+                            <p>{{ hour.time }}</p>
+                            <img :src="getWeatherIconUrl(hour.icon)" alt="예보 아이콘" />
+                            <p>{{ hour.temp }}℃</p>
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
     </div>
 </template>
@@ -56,7 +67,7 @@ import Chart from './Chart.vue';
 export default {
     data() {
         return {
-            videoSrc: 'http://192.168.0.38:7777/video_feed',
+            videoSrc: 'http://202.31.150.31:8888/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -70,11 +81,16 @@ export default {
                 { label: '수위', isOn: false, data: [9, 19, 29, 39, 49, 59] }
             ],
             currentSensorData: {},
+            forecastList: [],
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
             url_base: 'https://api.openweathermap.org/data/2.5/',
             lat: '35.9646',   //군산 위도
             lon: '126.7369',  //군산 경도
             weather: {
+                year: null,
+                month: null,
+                date: null,
+                days: null,
                 temp: null,
                 humidity: null,
                 description: '',
@@ -107,6 +123,7 @@ export default {
         this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
+        this.setDateInfo();  // 날짜 설정
     },
     methods: {
         toggleActuator(index) {
@@ -154,18 +171,32 @@ export default {
                 ]
             };
         },
+        getWeatherIconUrl(icon) {
+            return icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : '';
+        },
+        setDateInfo() {
+            const today = new Date();
+            const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+            const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+            // this.weather에 날짜 값 설정
+            this.weather.year = today.getFullYear();
+            this.weather.month = months[today.getMonth()];
+            this.weather.date = today.getDate();
+            this.weather.days = days[today.getDay()];
+        },
         fetchWeatherData() {
-            const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
-            fetch(url)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`Network response was not ok. Status: ${response.status}`);
+            const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&limit=5&lang=kr&units=metric`;
+            const forecastUrl = `${this.url_base}forecast?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&units=metric&lang=kr`;
+            Promise.all([fetch(url), fetch(forecastUrl)])
+                .then(async ([currentRes, forecastRes]) => {
+                    if (!currentRes.ok || !forecastRes.ok) {
+                        throw new Error("Failed to fetch weather data.");
                     }
-                    return response.json();
-                })
-                .then(data => { // 데이터 구조에 맞게 경로 설정
-                    console.log(data); // 응답 전체 확인
-                    this.setResult(data);
+                    const currentData = await currentRes.json();
+                    const forecastData = await forecastRes.json();
+                    this.setResult(currentData);
+                    this.setHourlyForecast(forecastData.list); // 예보 리스트 설정
                 })
                 .catch(error => {
                     console.error("날씨 정보 불러오기 실패:", error);
@@ -173,29 +204,21 @@ export default {
         },
         setResult(data) {
             if (data && data.main && data.weather && data.weather.length > 0) {
-                this.weather = {
-                    temp: data.main.temp, // 온도
-                    humidity: data.main.humidity, // 습도
-                    description: data.weather[0].description, // 날씨 설명
-                    icon: data.weather[0].icon // 아이콘 값 저장
-                };
+                this.weather.temp = data.main.temp; // 온도
+                this.weather.humidity = data.main.humidity; // 습도
+                this.weather.description = data.weather[0].description; // 날씨 설명
+                this.weather.icon = data.weather[0].icon; // 아이콘 값 저장
                 console.log("Weather icon:", this.weather.icon); // 아이콘 값 확인
             }
         },
-        dateBuilder: function () {
-            let d = new Date();
-            let months = [
-                "1월", "2월", "3월", "4월", "5월", "6월",
-                "7월", "8월", "9월", "10월", "11월", "12월"
-            ];
-            let days = ["월요일", "화요일", "수요일", "목요일", "금요일"];
-            let day = days[d.getDay()];
-            let date = d.getDate();
-            let month = months[d.getMonth()];
-            let year = d.getFullYear();
-            return `${day} ${date} ${month} ${year}`;
+        setHourlyForecast(forecast) {
+            // 24시간 예보 데이터를 저장합니다.
+            this.hourlyForecast = forecast.slice(0, 8).map(item => ({
+                time: item.dt_txt.split(' ')[1].slice(0, 5), // HH:MM 형태로 시간 추출
+                temp: item.main.temp,
+                icon: item.weather[0].icon,
+            }));
         },
-
     },
     components: {
         AppHeader,
@@ -340,6 +363,46 @@ export default {
 .weather img {
     width: 30px;
     height: 30px;
+}
+
+.forecast {
+    display: flex;
+    /* Flexbox로 일렬로 표시 */
+    flex-direction: column;
+    /* 세로 정렬 */
+    align-items: flex-start;
+    /* 왼쪽 정렬 */
+    margin-top: 10px;
+    /* 간격 추가 */
+}
+
+.forecast-list {
+    display: flex;
+    /* Flexbox로 일렬로 표시 */
+    overflow-x: auto;
+    /* 가로로 넘치는 경우 스크롤 가능 */
+}
+
+.forecast-item {
+    display: flex;
+    /* Flexbox로 내용 정렬 */
+    flex-direction: column;
+    /* 세로 정렬 */
+    align-items: center;
+    /* 중앙 정렬 */
+    margin-right: 10px;
+    /* 간격 추가 */
+    text-align: center;
+    /* 텍스트 중앙 정렬 */
+    font-size: 12px;
+    /* 글자 크기 조정 */
+}
+
+.forecast-item img {
+    width: 40px;
+    /* 아이콘 크기 조정 */
+    height: 40px;
+    /* 아이콘 크기 조정 */
 }
 
 @media (max-aspect-ratio: 1/1) {

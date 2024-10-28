@@ -63,11 +63,10 @@ export default {
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
-    // http://192.168.0.29:8888/api/get_answer
-    // http://192.168.25.5:8888/api/get_answer
+    
     async getAIResponse(message) {
       try {
-        const response = await axios.post('/api/get_answer', {
+        const response = await axios.post('/api/ai/get_answer', {
           question: message,
           // 다른 필요한 API 매개변수
         }, {
