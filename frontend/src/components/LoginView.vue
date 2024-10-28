@@ -29,7 +29,7 @@
 
 
 <script>
-import axios from 'axios'
+import { login } from '@/services/authService'; // Auth service에서 login 함수 가져오기
 
 export default {
   data() {
@@ -42,22 +42,16 @@ export default {
     async LoginClick() {
       try {
         // 서버에 POST 요청 보내기
-        const response = await axios.post('/api/logincheck', {
-          uid: this.uid,
-          password: this.upw,
-        });
+        const response = await login(this.uid, this.upw);
 
         // 서버 응답에 따른 처리
         if (response.data.success) {
           // 로그인 성공 시
-          localStorage.setItem('loggedIn', true);
-          alert(response.data.session['uid'])
-
-          this.$router.push('/MainView', { "session": response.data.session });
+          alert(`로그인 성공: ${response.data.session.uid}`);
+          this.$router.push({ path: '/MainView', query: { session: JSON.stringify(response.data.session) } });
         } else {
           // 로그인 실패 시
           alert('로그인 실패: 아이디나 비밀번호가 잘못되었습니다.');
-          localStorage.setItem('loggedIn', false);
           this.$router.push('/');
         }
       } catch (error) {
