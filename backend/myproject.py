@@ -1,8 +1,10 @@
 from flask import Flask, jsonify, g, request, session, redirect
+from flask_cors import CORS
 import pymysql
 
 app = Flask(__name__)
 app.secret_key = '818188'
+CORS(app)
 
 # 데이터베이스 설정 정보
 db_config = {
@@ -31,7 +33,7 @@ def get_db_connection():
 @app.route('/api/logincheck', methods=['POST'])
 def login_check():
     data = request.get_json()
-    uid = data.get('uid')
+    uid = data.get('username')
     password = data.get('password')
     # 데이터베이스 연결 및 쿼리 실행
     connection = get_db_connection()
@@ -46,7 +48,7 @@ def login_check():
     if user:
         # 세션에 로그인 정보 저장
         session['logged_in'] = True
-        session['uid'] = user['id']
+        session['username'] = user['id']
         session['rapa_ip'] = user['ip']
         session['port']=user['port']
 
@@ -61,7 +63,7 @@ def login_check():
 @app.route('/api/register', methods=['POST'])
 def signup():
     data = request.get_json()
-    uid = data.get('uid')
+    uid = data.get('username')
     upw = data.get('password')
     rapa_ip = data.get('rapa_ip')
     port = data.get('port')
@@ -120,7 +122,7 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=7000)
+    app.run(host='202.31.150.31', port=7000, debug=True)
 
 
     

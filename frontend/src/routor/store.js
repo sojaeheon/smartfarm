@@ -26,16 +26,21 @@ const store = createStore({
   actions: {
     async login({ commit }, credentials) {
       console.log(credentials);
-      const response = await axios.post('/api/logincheck', credentials);
-      if (response.data.success) {
-        commit('SET_LOGIN', {
-          userId: response.data.uid,
-          rapaIp: response.data.rapa_ip,
-          port: response.data.port,
-        });
-      } else {
-        throw new Error('Invalid login credentials');
+      try{
+        const response = await axios.post('/api/logincheck', credentials);
+        if (response.data.success) {
+          commit('SET_LOGIN', {
+            userId: response.data.uid,
+            rapaIp: response.data.rapa_ip,
+            port: response.data.port,
+          });
+        } else {
+          throw new Error('Invalid login credentials');
+        }
+      } catch(error){
+        console.error("An error occurred:", error);
       }
+      
     },
     async logout({ commit }) {
       await axios.post('/api/logout');
@@ -45,7 +50,7 @@ const store = createStore({
       const response = await axios.get('/api/session-check');
       if (response.data.loggedIn) {
         commit('SET_LOGIN', {
-          userId: response.data.uid,
+          userId: response.data.username,
           rapaIp: response.data.rapa_ip,
           port: response.data.port,
         });
