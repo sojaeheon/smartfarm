@@ -7,7 +7,6 @@
             <!-- Camera -->
             <div class="grid-item" id="camera">
                 <img :src="videoSrc" alt="Camera Stream" />
-                <!-- <video ref="video" width="100%" autoplay></video> -->
             </div>
 
             <!-- Actuator Buttons -->
@@ -55,7 +54,7 @@ import AppHeader from '../components/AppHeader.vue';
 export default {
     data() {
         return {
-            videoSrc: 'http://192.168.0.38:7777/video_feed',
+            videoSrc: 'http://202.31.150.31:9999/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -116,6 +115,60 @@ export default {
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
+            // 액추에이터가 이미 켜져 있는 경우-시간설정
+            // if (this.actuators[index].isOn) {
+            //     this.actuators[index].isOn = false; // 바로 끄기
+            // } else {
+            //     // 액추에이터 켜기
+            //     this.actuators[index].isOn = true;
+            //     console.log(`Actuator ${this.actuators[index].label} is now ON`);
+
+            //     // 설정된 시간 후에 자동으로 끄기 (n분=n*60*1000, n시간=n*60*60*1000)
+            //     const offTime = 60000; // 1시간(밀리초 단위)
+            //     setTimeout(() => {
+            //         this.actuators[index].isOn = false;
+            //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
+            //     }, offTime);
+            // }
+        },
+        toggleSwitch(sensor) {
+            // 만약 클릭된 센서가 이미 켜져 있으면 끄기
+            if (sensor.isOn) {
+                sensor.isOn = false;
+            } else {
+                // 클릭된 센서가 꺼져 있으면 다른 모든 센서를 끄고 이 센서만 켜기
+                this.sensors.forEach(s => { s.isOn = false });
+                sensor.isOn = true;
+            }
+            this.currentSensorData = this.getSensorData(sensor);
+        },
+        getSensorData(sensor) {
+            return {
+                labels: ["1", "2", "3", "4", "5", "6"],  // x축 라벨 (예시)
+                datasets: [
+                    {
+                        label: sensor.label,
+                        data: sensor.data,
+                        backgroundColor: "rgba(54, 162, 235, 0.2)",
+                        borderColor: "rgba(54, 162, 235, 1)",
+                        borderWidth: 1
+                    }
+                ]
+            };
+        },
+        getWeatherIconUrl(icon) {
+            return icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : '';
+        },
+        setDateInfo() {
+            const today = new Date();
+            const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
+            const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
+
+            // this.weather에 날짜 값 설정
+            this.weather.year = today.getFullYear();
+            this.weather.month = months[today.getMonth()];
+            this.weather.date = today.getDate();
+            this.weather.days = days[today.getDay()];
         },
         fetchWeatherData() {
             const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
