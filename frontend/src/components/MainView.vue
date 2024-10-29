@@ -7,7 +7,6 @@
             <!-- Camera -->
             <div class="grid-item" id="camera">
                 <img :src="videoSrc" alt="Camera Stream" />
-                <!-- <video ref="video" src="videoSrc" width="100%" autoplay></video> -->
             </div>
 
             <!-- Actuator Buttons -->
@@ -63,11 +62,12 @@
 <script>
 import AppHeader from '../components/AppHeader.vue';
 import Chart from './Chart.vue';
+import axios from 'axios';
 
 export default {
     data() {
         return {
-            videoSrc: 'http://202.31.150.31:8888/video_feed',
+            videoSrc: 'http://202.31.150.31:9999/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -145,6 +145,10 @@ export default {
             //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
             //     }, offTime);
             // }
+            // LED 액추에이터인 경우 서버에 상태 전송
+            if (this.actuators[index].label === 'LED') {
+                this.controlLed(index);
+            }
         },
         toggleSwitch(sensor) {
             // 만약 클릭된 센서가 이미 켜져 있으면 끄기
@@ -156,6 +160,17 @@ export default {
                 sensor.isOn = true;
             }
             this.currentSensorData = this.getSensorData(sensor);
+        },
+        controlLed(index){
+            // 서버에 POST 요청 보내기
+            const status = this.actuators[index].isOn ? 'on' : 'off';
+
+            axios.post(`http://202.31.150.31:9999/led`, {
+                status: status
+            })
+            .catch(error => {
+                console.error('There was a problem with the axios operation:', error);
+            });
         },
         getSensorData(sensor) {
             return {
