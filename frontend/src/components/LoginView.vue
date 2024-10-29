@@ -29,41 +29,35 @@
 
 
 <script>
-import { login } from '@/services/authService'; // Auth service에서 login 함수 가져오기
+import { mapActions } from 'vuex';
 
 export default {
   data() {
     return {
-      uid: "",
-      upw: "",
+      uid: '', // uid로 수정
+      upw: '', // upw로 수정
     };
   },
   methods: {
-    async LoginClick() {
+    ...mapActions(['login']),
+    async LoginClick() { // 템플릿의 메서드 이름과 일치
       try {
-        // 서버에 POST 요청 보내기
-        const response = await login(this.uid, this.upw);
-
-        // 서버 응답에 따른 처리
-        if (response.data.success) {
-          // 로그인 성공 시
-          alert(`로그인 성공: ${response.data.session.uid}`);
-          this.$router.push({ path: '/MainView', query: { session: JSON.stringify(response.data.session) } });
-        } else {
-          // 로그인 실패 시
-          alert('로그인 실패: 아이디나 비밀번호가 잘못되었습니다.');
-          this.$router.push('/');
+        const response = await this.login({ username: this.uid, password: this.upw });
+        if(response.data.success){
+          alert(`로그인 성공 : ${this.uid}`);
+          this.$router.push('/MainView');
+        }else{
+          alert('로그인 실패')
         }
+        
       } catch (error) {
-        // 서버 오류 발생 시
-        alert('서버와의 통신 중 오류가 발생했습니다.');
-        console.error(error);
-        this.$router.push('/');
+        console.error('Login failed', error);
       }
     },
   },
 };
 </script>
+
 
 <style>
 * {
