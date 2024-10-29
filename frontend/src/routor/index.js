@@ -5,7 +5,6 @@ import LoginView from "@/components/LoginView.vue";
 import MainView from "@/components/MainView.vue";
 import DiseaseDiagnosis from "@/components/DiseaseDiagnosis.vue";
 import AppChatbot from "@/components/AppChatbot.vue";
-import store from "@/routor/auth"; // Vuex 스토어를 가져옵니다.
 
 const router = createRouter({
     history: createWebHistory(),
@@ -41,8 +40,6 @@ const router = createRouter({
     ],
 });
 
-<<<<<<< HEAD
-=======
 // 네비게이션 가드 추가
 router.beforeEach((to, from, next) => {
     const isAuthenticated = store.state.auth.loggedIn; // 로그인 상태 확인
@@ -57,6 +54,4 @@ router.beforeEach((to, from, next) => {
       next(); // 다음 라우트로 이동
     }
 });
->>>>>>> e20ad392 (	modified:   frontend/dist/index.html)
-
 export default router;
