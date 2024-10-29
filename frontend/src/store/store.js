@@ -1,4 +1,3 @@
-// store.js (Vue 3용)
 import { createStore } from 'vuex';
 import axios from 'axios';
 
@@ -25,25 +24,23 @@ const store = createStore({
   },
   actions: {
     async login({ commit }, credentials) {
-      console.log(credentials);
-      try{
+      try {
         const response = await axios.post('/api/logincheck', credentials);
         if (response.data.success) {
           commit('SET_LOGIN', {
-            userId: response.data.uid,
-            rapaIp: response.data.rapa_ip,
-            port: response.data.port,
+            userId: response.data.session.username,
+            rapaIp: response.data.session.rapa_ip,
+            port: response.data.session.port,
           });
         } else {
           throw new Error('Invalid login credentials');
         }
-      } catch(error){
+      } catch (error) {
         console.error("An error occurred:", error);
       }
-      
     },
     async logout({ commit }) {
-      await axios.post('/api/logout');
+      await axios.get('/api/logout');
       commit('LOGOUT');
     },
     async checkSession({ commit }) {
@@ -51,8 +48,6 @@ const store = createStore({
       if (response.data.loggedIn) {
         commit('SET_LOGIN', {
           userId: response.data.username,
-          rapaIp: response.data.rapa_ip,
-          port: response.data.port,
         });
       }
     },
