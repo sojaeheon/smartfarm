@@ -10,3 +10,4 @@ PyMySQL==1.0.2
 uWSGI==2.0.26
 Werkzeug==3.0.4
 Flask-Session==0.8.0
+bycrypt==4.2.0
