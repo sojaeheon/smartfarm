@@ -18,8 +18,16 @@ db_config = {
 }
 
 def get_db_connection():
+    """데이터베이스 연결을 생성합니다."""
     if 'db' not in g:
-        g.db = pymysql.connect(**db_config)
+        g.db = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            db=db_config['db'],
+            charset=db_config['charset'],
+            cursorclass=db_config['cursorclass']
+        )
     return g.db
 
 @app.teardown_appcontext
@@ -40,7 +48,7 @@ def login_check():
         cursor.execute(query, (uid,))
         user = cursor.fetchone()
 
-    if user and check_password_hash(user['password'], password):
+    if user:
         session['logged_in'] = True
         session['username'] = user['id']
         session['rapa_ip'] = user['ip']
@@ -48,6 +56,7 @@ def login_check():
 
         return jsonify({"success": True, "session": dict(session)})
     else:
+        print(user)
         return jsonify({"success": False, "message": "Invalid username or password."})
 
 @app.route('/api/register', methods=['POST'])
