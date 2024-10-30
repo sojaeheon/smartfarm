@@ -41,7 +41,7 @@ def login_check():
     connection = get_db_connection()
 
     with connection.cursor() as cursor:
-        query = "SELECT * FROM users WHERE id = %s AND passwd = %s"
+        query = "SELECT * FROM users WHERE id = %s AND password = %s"
         cursor.execute(query, (uid, password))
         user = cursor.fetchone()
 
@@ -51,7 +51,7 @@ def login_check():
         # 세션에 로그인 정보 저장
         session['logged_in'] = True
         session['uid'] = user['id']
-        session['rapa_ip'] = user['rapa_ip']
+        session['rapa_ip'] = user['ip']
         session['port']=user['port']
 
         session_data = dict(session)
@@ -80,7 +80,7 @@ def signup():
             return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
 
         # 사용자 등록
-        insert_query = "INSERT INTO users (id, passwd, rapa_ip, port) VALUES (%s, %s, %s, %s)"
+        insert_query = "INSERT INTO users (id, password, ip, port) VALUES (%s, %s, %s, %s)"
         cursor.execute(insert_query, (uid, upw, rapa_ip, port))
         connection.commit()
 
@@ -127,7 +127,7 @@ def logout():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=6000)
+    app.run(host='0.0.0.0', port=7000)
 
 
     
