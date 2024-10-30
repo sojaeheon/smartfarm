@@ -185,8 +185,7 @@ def disease():
             os.remove(tmp_file_path)
             
 if __name__ == "__main__":
-    init()
-    app.run(host='0.0.0.0', port=7000, debug=True)
+    app.run(host='0.0.0.0', port=7000)
 
 
     

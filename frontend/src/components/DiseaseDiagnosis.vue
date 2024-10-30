@@ -10,8 +10,7 @@
 
     <!-- 사진 미리보기 -->
     <div class="photo-gallery">
-        <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)"
-            class="preview-image" />
+      <img v-for="(photo, index) in photos" :key="index" :src="photo" @click="openDiagnosis(photo)" class="preview-image"/>
     </div>
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
@@ -27,17 +26,13 @@
     <input ref="fileInput" type="file" accept="image/*" @change="onFileChange" style="display: none;" />
 
     <!-- 진단 결과 모달 -->
-    <div v-if="showDiagnosis" class="modal-background-Diagnosis">
-        <div class="modal-Diagnosis">
-            <button class="close-button" @click="closeDiagnosis"></button><br>
-            <h2>진단 결과</h2>
-            <div class="modal-p">
-                <!-- <img :src="selectedPhoto" class="diagnosis-image" alt="진단 결과 이미지" /> -->
-                <img :src="'data:image/png;base64,' + diagnosis.boundingImage" class="diagnosis-image" alt="진단 결과 이미지" />
-                <p><b>병명:</b> {{ diagnosis.disease }}</p>
-                <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
-            </div>
-        </div>
+    <div v-if="showDiagnosis" class="modal-background">
+      <div class="modal">
+        <button class="close-button" @click="closeDiagnosis"></button>
+        <h3>진단 결과</h3>
+        <p>병명: {{ diagnosis.disease }}</p>
+        <p>솔루션: {{ diagnosis.solution }}</p>
+      </div>
     </div>
 
     <!-- 로딩 화면 -->
@@ -90,28 +85,11 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push({
-                        url: imageUrl,  // 미리보기 이미지 URL
-                        file: file      // 실제 파일 객체
-                    });
+                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
                 }
             }
         },
-        // test용
-        // openDiagnosis(photo) {
-        //     this.selectedPhoto = photo;
-        //     try {
-        //         this.diagnosis.disease = "곰팡이";
-        //         this.diagnosis.solution = "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ";
-        //         this.showDiagnosis = true;  // 모달 열기
-        //     } catch (error) {
-        //         console.error('진단 중 오류 발생:', error);
-        //         alert('진단 중 오류가 발생했습니다.');
-        //     }
-        // },
-
-        // 병해진단 수행
-        async openDiagnosis(photo) {
+        async openDiagnosis(photo) {  
             try {
                 this.isLoading = true;                 // 로딩 화면 표시
                 const formData = new FormData();       // 파일을 FormData로 변환
@@ -120,15 +98,14 @@ export default {
                 // http://192.168.0.29:8888/api/disease
                 // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/ai/disease', formData, {
+                const response = await axios.post('/api/diagnosis', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
                 });
                 // 서버에서 받은 진단 결과 처리
                 this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
-                this.diagnosis.boundingImage = response.data.boundingImage;
+                this.diagnosis.solution = response.data.solution;
                 this.showDiagnosis = true;  // 모달 열기
             } catch (error) {
                 console.error('진단 중 오류 발생:', error);
