@@ -3,11 +3,12 @@
         <AppHeader />
     </div>
     <div class="main">
-        <div class="grid-container">
-            <!-- Camera -->
-            <div class="grid-item" id="camera">
-                <img :src="videoSrc" alt="Camera Stream" />
-            </div>
+    <div class="grid-container">
+        <!-- Camera -->
+        <div class="grid-item" id="camera">
+            camera
+            <!-- <video ref="video" width="100%" autoplay></video> -->
+        </div>
 
             <!-- Actuator Buttons -->
             <div class="grid-item" id="actuator-container">
@@ -32,56 +33,40 @@
                 </div>
             </div>
 
-            <!-- Weather -->
-            <div class="grid-item" id="weather">
-                <h4>&lt; {{ weather.year }}년 {{ weather.month }} {{ weather.date }} {{ weather.days }} &gt;</h4>
-                <div class="weather-content">
-                    <img :src="weatherIconUrl" alt="Icon" />
-                    <div class="weather_text">
-                        <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
-                        <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
-                        <p v-if="weather.description">날씨: {{ weather.description }}</p>
-                        <p v-else> 날씨 정보를 불러오는 중...</p>
-                    </div>
-                </div>
-                <div class="forecast">
-                    <div class="forecast-list">
-                        <div v-for="(hour, index) in hourlyForecast" :key="index" class="forecast-item">
-                            <p>{{ hour.time }}</p>
-                            <img :src="getWeatherIconUrl(hour.icon)" alt="예보 아이콘" />
-                            <p>{{ hour.temp }}℃</p>
-                        </div>
-                    </div>
+        <!-- Weather -->
+        <div class="grid-item" id="weather">
+            <div class="weather-content">
+                <img :src="weatherIconUrl" alt="Icon" />
+                <div class="weather_text">
+                    <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
+                    <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
+                    <p v-if="weather.description">날씨: {{ weather.description }}</p>
+                    <p v-else> 날씨 정보를 불러오는 중...</p>
                 </div>
             </div>
-
         </div>
     </div>
+</div>
 </template>
 
 <script>
 import AppHeader from '../components/AppHeader.vue';
-import Chart from './Chart.vue';
-import axios from 'axios';
 
 export default {
     data() {
         return {
-            videoSrc: 'http://202.31.150.31:9999/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
-            sensors: [
-                { label: '조도', isOn: true, data: [10, 20, 30, 40, 50, 60] },
-                { label: 'CO2', isOn: false, data: [12, 22, 32, 42, 52, 62] },
-                { label: '온도', isOn: false, data: [15, 25, 35, 45, 55, 65] },
-                { label: '습도', isOn: false, data: [8, 18, 28, 38, 48, 58] },
-                { label: '수위', isOn: false, data: [9, 19, 29, 39, 49, 59] }
-            ],
-            currentSensorData: {},
-            forecastList: [],
+            data: {
+                온도: '22°C',
+                습도: '45%',
+                CO2: '400ppm',
+                조도: '350lux',
+                수위: '50%',
+            },
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
             url_base: 'https://api.openweathermap.org/data/2.5/',
             lat: '35.9646',   //군산 위도
@@ -130,108 +115,25 @@ export default {
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
-            // 액추에이터가 이미 켜져 있는 경우-시간설정
-            // if (this.actuators[index].isOn) {
-            //     this.actuators[index].isOn = false; // 바로 끄기
-            // } else {
-            //     // 액추에이터 켜기
-            //     this.actuators[index].isOn = true;
-            //     console.log(`Actuator ${this.actuators[index].label} is now ON`);
-
-            //     // 설정된 시간 후에 자동으로 끄기 (n분=n*60*1000, n시간=n*60*60*1000)
-            //     const offTime = 60000; // 1시간(밀리초 단위)
-            //     setTimeout(() => {
-            //         this.actuators[index].isOn = false;
-            //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
-            //     }, offTime);
-            // }
-            // LED 액추에이터인 경우 서버에 상태 전송
-            if (this.actuators[index].label === 'LED') {
-                this.controlLed(index);
-            }
-            if (this.actuators[index].label === 'DC팬') {
-                this.controlDcfan(index);
-            }
-        },
-        toggleSwitch(sensor) {
-            // 만약 클릭된 센서가 이미 켜져 있으면 끄기
-            if (sensor.isOn) {
-                sensor.isOn = false;
-            } else {
-                // 클릭된 센서가 꺼져 있으면 다른 모든 센서를 끄고 이 센서만 켜기
-                this.sensors.forEach(s => { s.isOn = false });
-                sensor.isOn = true;
-            }
-            this.currentSensorData = this.getSensorData(sensor);
-        },
-        controlLed(index){
-            // 서버에 POST 요청 보내기
-            const status = this.actuators[index].isOn ? 'on' : 'off';
-
-            axios.post(`http://202.31.150.31:9999/led`, {
-                status: status
-            })
-            .catch(error => {
-                console.error('There was a problem with the axios operation:', error);
-            });
-        },
-        controlDcfan(index){
-            // 서버에 POST 요청 보내기
-            const status = this.actuators[index].isOn ? 'on' : 'off';
-
-            axios.post(`http://202.31.150.31:9999/dcfan`, {
-                status: status
-            })
-            .catch(error => {
-                console.error('There was a problem with the axios operation:', error);
-            });
-        },
-        getSensorData(sensor) {
-            return {
-                labels: ["1", "2", "3", "4", "5", "6"],  // x축 라벨 (예시)
-                datasets: [
-                    {
-                        label: sensor.label,
-                        data: sensor.data,
-                        backgroundColor: "rgba(54, 162, 235, 0.2)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        borderWidth: 1
-                    }
-                ]
-            };
-        },
-        getWeatherIconUrl(icon) {
-            return icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : '';
-        },
-        setDateInfo() {
-            const today = new Date();
-            const months = ["1월", "2월", "3월", "4월", "5월", "6월", "7월", "8월", "9월", "10월", "11월", "12월"];
-            const days = ["일요일", "월요일", "화요일", "수요일", "목요일", "금요일", "토요일"];
-
-            // this.weather에 날짜 값 설정
-            this.weather.year = today.getFullYear();
-            this.weather.month = months[today.getMonth()];
-            this.weather.date = today.getDate();
-            this.weather.days = days[today.getDay()];
         },
         fetchWeatherData() {
-            const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&limit=5&lang=kr&units=metric`;
-            const forecastUrl = `${this.url_base}forecast?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&units=metric&lang=kr`;
-            Promise.all([fetch(url), fetch(forecastUrl)])
-                .then(async ([currentRes, forecastRes]) => {
-                    if (!currentRes.ok || !forecastRes.ok) {
-                        throw new Error("Failed to fetch weather data.");
-                    }
-                    const currentData = await currentRes.json();
-                    const forecastData = await forecastRes.json();
-                    this.setResult(currentData);
-                    this.setHourlyForecast(forecastData.list); // 예보 리스트 설정
-                })
-                .catch(error => {
-                    console.error("날씨 정보 불러오기 실패:", error);
-                });
+            const url = `${this.url_base}weather?lat=${this.lat}&lon=${this.lon}&appid=${this.api_key}&lang=kr&units=metric`;
+            fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok. Status: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => { // 데이터 구조에 맞게 경로 설정
+                console.log(data); // 응답 전체 확인
+                this.setResult(data);
+            })
+            .catch(error => {
+                console.error("날씨 정보 불러오기 실패:", error);
+            });
         },
-        setResult(data) {
+        setResult(data){
             if (data && data.main && data.weather && data.weather.length > 0) {
                 this.weather.temp = data.main.temp; // 온도
                 this.weather.humidity = data.main.humidity; // 습도
@@ -240,14 +142,20 @@ export default {
                 console.log("Weather icon:", this.weather.icon); // 아이콘 값 확인
             }
         },
-        setHourlyForecast(forecast) {
-            // 24시간 예보 데이터를 저장합니다.
-            this.hourlyForecast = forecast.slice(0, 8).map(item => ({
-                time: item.dt_txt.split(' ')[1].slice(0, 5), // HH:MM 형태로 시간 추출
-                temp: item.main.temp,
-                icon: item.weather[0].icon,
-            }));
-        },
+        dateBuilder: function () {
+            let d = new Date();
+            let months = [
+                "1월", "2월", "3월", "4월", "5월", "6월",
+                "7월", "8월", "9월", "10월", "11월", "12월"
+            ];
+            let days = [ "월요일", "화요일", "수요일", "목요일", "금요일" ];
+            let day = days[d.getDay()];
+            let date = d.getDate();
+            let month = months[d.getMonth()];
+            let year = d.getFullYear();
+            return `${day} ${date} ${month} ${year}`;
+        },        
+       
     },
     components: {
         AppHeader,
