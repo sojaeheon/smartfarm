@@ -1,7 +1,6 @@
 from flask import Flask, jsonify, g, request, session
 from flask_cors import CORS
 import pymysql
-from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 app.secret_key = '818188'
@@ -48,7 +47,7 @@ def login_check():
         cursor.execute(query, (uid,))
         user = cursor.fetchone()
 
-    if user:
+    if user and user['password'] ==  password:
         session['logged_in'] = True
         session['username'] = user['id']
         session['rapa_ip'] = user['ip']
@@ -80,6 +79,23 @@ def signup():
         connection.commit()
 
     return jsonify({"success": True, "message": "회원가입이 완료되었습니다."})
+
+#아이디 중복확인
+@app.route('/api/check-uid', methods=['POST'])
+def check_uid():
+    data = request.get_json()
+    uid = data.get('uid')
+
+    connection = get_db_connection()
+
+    with connection.cursor() as cursor:
+         # 사용자 중복 체크
+        check_query = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(check_query, (uid))
+        if cursor.fetchone():
+            return jsonify({"available": False})
+        else:
+            return jsonify({"available": True})
 
 @app.route('/api/session-check', methods=['GET'])
 def session_check():
