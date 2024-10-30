@@ -14,7 +14,8 @@
       </div>
       <div class="messages" ref="messages">
         <div v-for="message in messages" :key="message.id" class="message" :class="message.sender">
-          <div class="message-text">{{ message.text }}</div>
+          <!-- <div class="message-text">{{ message.text }}</div> -->
+          <div class="message-text" v-html="message.text"></div>
         </div>
       </div>
       <div class="input-container">
@@ -50,17 +51,20 @@ export default {
       const userMessage = this.userInput.trim();
       if (!userMessage) return;
 
+      this.userInput = '';
+
       this.addMessage('user', userMessage);
 
       const aiResponse = await this.getAIResponse(userMessage);
       this.addMessage('ai', aiResponse);
 
-      this.userInput = '';
       this.scrollToBottom(); // 메시지 전송 후 스크롤 내리기
     },
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
+    // http://192.168.0.29:8888/api/get_answer
+    // http://192.168.25.5:8888/api/get_answer
     async getAIResponse(message) {
       try {
         const response = await axios.post('http://192.168.0.29:8888/api/get_answer', {
@@ -73,7 +77,7 @@ export default {
         });
 
 
-        return response.data.answer
+        return response.data.answer.replace(/\n/g, '<br>');
       } catch (error) {
         console.error('AI 응답 오류:', error);
         return '죄송합니다, 오류가 발생했습니다.';
@@ -157,12 +161,12 @@ button {
   display: flex;
 
   justify-content: flex-end; /* 사용자 메시지를 오른쪽으로 정렬 */
-  color: rgba(0, 0, 0, 0.7);
+  color: black;
 }
 
 .message.ai {
   justify-content: flex-start; /* AI 메시지는 왼쪽으로 정렬 */
-  color: white;
+  color: black;
 }
 
 .message-text {
@@ -170,12 +174,15 @@ button {
   border-radius: 10px;
   max-width: 60%;
   background-color: rgba(250, 120, 45, 0.5);
+  font-weight: 600;
+  font-size: 1rem;
   z-index: 1;
 }
 
 /* 사용자 메시지 스타일 추가 */
 .message.user .message-text {
-  background-color: rgba(250, 120, 45, 0.5); /* 사용자 메시지 배경색 */
+  background-color: rgba(250, 120, 45, 0.5);
+  /* 사용자 메시지 배경색 */
 }
 
 .input-container {
@@ -202,9 +209,10 @@ button {
   border-radius: 15px;
   background-color: rgba(99, 199, 88, 0.1);
 }
+
 @media (max-aspect-ratio: 1/1) {
-    .chat-bot {
-      width: 93vw;
-    }
+  .chat-bot {
+    width: 93vw;
+  }
 }
 </style>

@@ -7,10 +7,9 @@
       <div class="register_uid">
         <h4>ID</h4>
         <div class="uid-row">
-          <input type="text" v-model="uid" placeholder="uid" class="input-field">
+          <input type="text" v-model="uid" placeholder="ID" class="input-field">
           <button class="check-duplicate" @click="checkDuplicateUid">중복 확인</button>
         </div>
-<!--         
         <span v-if="isUidAvailable" class="available">사용 가능한 아이디입니다.</span>
         <span v-if="!isUidAvailable && uidChecked" class="not-available">이미 사용 중인 아이디입니다.</span> -->
       </div>
@@ -22,12 +21,12 @@
 
       <div class="register_rapa">
         <h4>Rapa_IP</h4>
-        <input type="text" v-model="rapa_ip" placeholder="rapa_ip" class="input-field">
+        <input type="text" v-model="rapa_ip" placeholder="Rapa_ip" class="input-field">
       </div>
 
       <div class="register_port">
         <h4>Port</h4>
-        <input type="text" v-model="port" placeholder="port" class="input-field">
+        <input type="text" v-model="port" placeholder="Port" class="input-field">
       </div>
 
       <div class="backlogin">
@@ -101,7 +100,7 @@ export default {
         alert('유효한 Port 번호를 입력하세요. (0-65535)');
         return;
       }
-      
+
       try {
         // 서버에 POST 요청 보내기
         const response = await axios.post('/api/register', {
@@ -183,10 +182,13 @@ export default {
 
 .uid-row {
   display: flex;
-  justify-content: flex-start; /* 왼쪽 정렬 */
+  justify-content: flex-start;
+  /* 왼쪽 정렬 */
   align-items: center;
-  width: 100%; /* 너비를 100%로 설정 */
-  gap: 10px; /* 입력 필드와 버튼 간 간격 설정 */
+  width: 100%;
+  /* 너비를 100%로 설정 */
+  gap: 10px;
+  /* 입력 필드와 버튼 간 간격 설정 */
 }
 
 h4 {
@@ -198,14 +200,18 @@ h4 {
   background-color: transparent;
   color: grey;
   border: 1px solid grey;
-  padding: 8px 12px; /* 버튼의 padding을 조절하여 크기를 적당히 설정 */
+  padding: 8px 12px;
+  /* 버튼의 padding을 조절하여 크기를 적당히 설정 */
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 0.8rem; /* 글씨 크기를 줄임 */
+  font-size: 0.8rem;
+  /* 글씨 크기를 줄임 */
   display: flex;
-  justify-content: center; /* 수평 중앙 정렬 */
-  align-items: center; /* 수직 중앙 정렬 */
+  justify-content: center;
+  /* 수평 중앙 정렬 */
+  align-items: center;
+  /* 수직 중앙 정렬 */
 }
 
 .check-duplicate:hover {

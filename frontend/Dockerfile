@@ -12,9 +12,6 @@ RUN npm install
 # 소스 복사 및 빌드
 COPY frontend/ .
 
-# devDependencies도 포함하여 설치
-# RUN npm install --include=dev
-
 RUN npm run build
 
 # Production 단계
