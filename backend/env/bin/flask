@@ -1,4 +1,4 @@
-#!/home/aim/Farmi/smartfarm/backend/env/bin/python3
+#!/home/farmi/smartfarm/backend/env/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
