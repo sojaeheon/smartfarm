@@ -25,7 +25,8 @@ const store = createStore({
   actions: {
     async login({ commit }, credentials) {
       try {
-        const response = await axios.post('/api/logincheck', credentials);
+        console.log(credentials);
+        const response = await axios.post('http://localhost:7000/api/logincheck', credentials);
         if (response.data.success) {
           commit('SET_LOGIN', {
             userId: response.data.session.username,
@@ -40,15 +41,19 @@ const store = createStore({
       }
     },
     async logout({ commit }) {
-      await axios.get('/api/logout');
+      await axios.get('http://localhost:7000/api/logout');
       commit('LOGOUT');
     },
     async checkSession({ commit }) {
-      const response = await axios.get('/api/session-check');
-      if (response.data.loggedIn) {
-        commit('SET_LOGIN', {
-          userId: response.data.username,
-        });
+      try {
+        const response = await axios.get('http://localhost:7000/api/session-check');
+        if (response.data.loggedIn) {
+          commit('SET_LOGIN', {
+            userId: response.data.username,
+          });
+        }
+      } catch (error) {
+        console.error("Session check failed:", error.response ? error.response.data : error.message);
       }
     },
   },
