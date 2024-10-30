@@ -42,8 +42,8 @@ export default {
     ...mapActions(['login']),
     async LoginClick() { // 템플릿의 메서드 이름과 일치
       try {
-        const response = await this.login({ username: this.uid, password: this.upw });
-        if(response.data.success){
+        await this.login({ username: this.uid, password: this.upw });
+        if(this.$store.state.isLoggedIn){
           alert(`로그인 성공 : ${this.uid}`);
           this.$router.push('/MainView');
         }else{
