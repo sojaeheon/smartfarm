@@ -4,7 +4,7 @@ import pymysql
 
 app = Flask(__name__)
 app.secret_key = '818188'
-CORS(app)
+CORS(app,resources={r'/*': {'origins': '*'}})
 
 # 데이터베이스 설정 정보
 db_config = {
@@ -47,7 +47,7 @@ def login_check():
         cursor.execute(query, (uid,))
         user = cursor.fetchone()
 
-    if user:
+    if user and user['password'] ==  password:
         session['logged_in'] = True
         session['username'] = user['id']
         session['rapa_ip'] = user['ip']
@@ -74,11 +74,28 @@ def signup():
             return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
 
         insert_query = "INSERT INTO users (id, password, ip, port) VALUES (%s, %s, %s, %s)"
-        hashed_password = generate_password_hash(upw)
+        hashed_password = upw
         cursor.execute(insert_query, (uid, hashed_password, rapa_ip, port))
         connection.commit()
 
     return jsonify({"success": True, "message": "회원가입이 완료되었습니다."})
+
+#아이디 중복확인
+@app.route('/api/check-uid', methods=['POST'])
+def check_uid():
+    data = request.get_json()
+    uid = data.get('uid')
+
+    connection = get_db_connection()
+
+    with connection.cursor() as cursor:
+         # 사용자 중복 체크
+        check_query = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(check_query, (uid))
+        if cursor.fetchone():
+            return jsonify({"available": False})
+        else:
+            return jsonify({"available": True})
 
 @app.route('/api/session-check', methods=['GET'])
 def session_check():
