@@ -26,7 +26,11 @@ const store = createStore({
     async login({ commit }, credentials) {
       try {
         console.log(credentials);
-        const response = await axios.post('/api/logincheck', credentials);
+        const response = await axios.post('/api/logincheck', credentials, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        });
         if (response.data.success) {
           commit('SET_LOGIN', {
             userId: response.data.session.username,
