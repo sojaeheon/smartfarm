@@ -149,6 +149,9 @@ export default {
             if (this.actuators[index].label === 'LED') {
                 this.controlLed(index);
             }
+            if (this.actuators[index].label === 'DC팬') {
+                this.controlDcfan(index);
+            }
         },
         toggleSwitch(sensor) {
             // 만약 클릭된 센서가 이미 켜져 있으면 끄기
@@ -166,6 +169,17 @@ export default {
             const status = this.actuators[index].isOn ? 'on' : 'off';
 
             axios.post(`http://202.31.150.31:9999/led`, {
+                status: status
+            })
+            .catch(error => {
+                console.error('There was a problem with the axios operation:', error);
+            });
+        },
+        controlDcfan(index){
+            // 서버에 POST 요청 보내기
+            const status = this.actuators[index].isOn ? 'on' : 'off';
+
+            axios.post(`http://202.31.150.31:9999/dcfan`, {
                 status: status
             })
             .catch(error => {
