@@ -7,6 +7,8 @@ services:
     restart: always
     environment:
       - FLASK_ENV=development
+    ports:
+      - "7000:7000"  # 호스트:컨테이너 포트 매핑
     expose:
       - 7000
     networks:
@@ -41,6 +43,8 @@ services:
       - /app/node_modules
     container_name: frontend
     restart: always
+    ports:
+      - "8080:8080"
     networks:
       - app-network
     depends_on:
