@@ -3,6 +3,7 @@ from flask_cors import CORS
 import pymysql
 from werkzeug.security import generate_password_hash, check_password_hash
 
+
 app = Flask(__name__)
 app.secret_key = '818188'
 CORS(app)
@@ -87,6 +88,24 @@ def session_check():
         return jsonify({"loggedIn": True, "username": session['username']})
     else:
         return jsonify({"loggedIn": False})
+#아이디 중복확인
+@app.route('/api/check-uid', methods=['POST'])
+def check_uid():
+    data = request.get_json()
+    uid = data.get('uid')
+
+    connection = get_db_connection()
+
+    with connection.cursor() as cursor:
+         # 사용자 중복 체크
+        check_query = "SELECT * FROM users WHERE id = %s"
+        cursor.execute(check_query, (uid))
+        if cursor.fetchone():
+            return jsonify({"available": False})
+        else:
+            return jsonify({"available": True})
+
+
 
 @app.route('/api/logout', methods=['GET'])
 def logout():
