@@ -2,6 +2,8 @@ from flask import Flask, jsonify, g, request, session
 from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
+from flask_cors import CORS
+import os
 
 app = Flask(__name__)
 app.secret_key = '818188'
@@ -113,6 +115,6 @@ def session_check():
 def logout():
     session.clear()
     return jsonify({"success": True, "message": "Logged out successfully."})
-
+            
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
