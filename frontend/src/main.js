@@ -2,6 +2,10 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router/index'
 import store from './store/store'; // Vuex 스토어 임포트
+// import axios from 'axios';
+
+// // Axios 기본 URL 설정
+// axios.defaults.baseURL = 'http://backend:7000';
 
 const app = createApp(App)
 app.use(router)
