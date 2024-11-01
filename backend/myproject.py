@@ -51,8 +51,6 @@ def login_check():
         query = "SELECT * FROM users WHERE id = %s"
         cursor.execute(query, uid)
         user = cursor.fetchone()
-        print("여기는 오고있냐?")
-        print(user['password'])
 
     if user:
         session['logged_in'] = True
@@ -80,7 +78,7 @@ def signup():
             return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
 
         insert_query = "INSERT INTO users (id, password, ip, port) VALUES (%s, %s, %s, %s)"
-        hashed_password = generate_password_hash(upw)
+        hashed_password = upw
         cursor.execute(insert_query, (uid, hashed_password, rapa_ip, port))
         connection.commit()
 

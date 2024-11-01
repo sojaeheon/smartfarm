@@ -68,6 +68,7 @@ export default {
       try {
         const response = await axios.post('/api/ai/get_answer', {
           question: message,
+          username: this.$store.state.userId,
           // 다른 필요한 API 매개변수
         }, {
           headers: {
