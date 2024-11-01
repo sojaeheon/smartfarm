@@ -7,6 +7,7 @@ import tempfile
 from llm import *
 import base64
 from io import BytesIO
+from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = '818188'
@@ -16,6 +17,36 @@ CORS(app)
 embeddings_model = None
 retriever = None
 chain = None
+
+# 데이터베이스 설정 정보
+db_config = {
+    'host': '192.168.0.7',
+    'user': 'farmi_db',
+    'password': '818188',
+    'db': 'farmi_db',
+    'charset': 'utf8mb4',
+    'cursorclass': pymysql.cursors.DictCursor
+}
+
+def get_db_connection():
+    """데이터베이스 연결을 생성합니다."""
+    if 'db' not in g:
+        g.db = pymysql.connect(
+            host=db_config['host'],
+            user=db_config['user'],
+            password=db_config['password'],
+            db=db_config['db'],
+            charset=db_config['charset'],
+            cursorclass=db_config['cursorclass']
+        )
+    return g.db
+
+@app.teardown_appcontext
+def close_db_connection(exception=None):
+    db = g.pop('db', None)
+    if db is not None:
+        db.close()
+
 
 # 모델 로드
 def load_models():
@@ -37,6 +68,7 @@ def get_answer():
     if request.method == 'POST':
         data = request.get_json()
         question = data.get('question')
+        username = data.get('')
         print(question)
         print(chain)
         if not question:
@@ -45,7 +77,13 @@ def get_answer():
         try:
             answer = get_answer_from_chain(chain, question)
             print(answer,flush=True)
-                        
+
+            connection = get_db_connection()
+            with connection.cursor() as cursor: 
+                  insert_query = "INSERT INTO chatbot (id,question,answer,date) VALUES (%s, %s, %s, %s)"
+                  cursor.execute(insert_query, (username, question, answer, datetime.now()))
+                  connection.commit()
+                  
             return jsonify({"answer": answer}), 200
         except Exception as e:
             return jsonify({"error": str(e)}), 500
