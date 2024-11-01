@@ -1,5 +1,5 @@
 # Stage 1: CUDA와 cuDNN이 포함된 NVIDIA 이미지 사용
-#FROM nvidia/cuda:12.6.2-runtime-ubuntu24.04 AS base
+FROM nvidia/cuda:12.6.2-runtime-ubuntu24.04 AS base
 
 FROM python:3.12.3
 
