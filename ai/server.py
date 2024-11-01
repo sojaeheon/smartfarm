@@ -1,4 +1,4 @@
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request,g 
 import pymysql
 from flask_cors import CORS
 from robo import *
@@ -68,7 +68,7 @@ def get_answer():
     if request.method == 'POST':
         data = request.get_json()
         question = data.get('question')
-        username = data.get('')
+        username = data.get('username')
         print(question)
         print(chain)
         if not question:
