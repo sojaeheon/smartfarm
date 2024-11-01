@@ -115,7 +115,7 @@ def logout():
     return jsonify({"success": True, "message": "Logged out successfully."})
 
 # 센서데이터
-@app.route('api/sensor_data', methods=['POST'])
+@app.route('/api/sensor_data', methods=['POST'])
 def sensor_data():
     print(request.get_json())
 
