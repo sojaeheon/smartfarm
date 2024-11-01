@@ -22,7 +22,7 @@ services:
     restart: always
     environment:
       - FLASK_ENV=development
-    expose:
+    ports:
       - "7777:7777"
     networks:
       - app-network

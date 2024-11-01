@@ -114,6 +114,12 @@ def logout():
     session.clear()
     return jsonify({"success": True, "message": "Logged out successfully."})
 
+          
+# 센서데이터
+@app.route('/api/sensor_data', methods=['POST'])
+def sensor_data():
+    print(request.get_json())
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
 
