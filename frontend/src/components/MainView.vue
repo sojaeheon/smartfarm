@@ -59,7 +59,6 @@ export default {
             videoSrc: 'http://192.168.0.38:7777/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
-                { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: '워터펌프(배수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
