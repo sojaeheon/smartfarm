@@ -3,9 +3,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 from flask_cors import CORS
-from werkzeug.security import generate_password_hash, check_password_hash
-import pymysql
-
+import os
 
 app = Flask(__name__)
 app.secret_key = '818188'
