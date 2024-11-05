@@ -97,15 +97,28 @@ def create_rag_chain(retriever, prompt):
     return rag_chain
 
 # 사용자 입력 및 답변 출력
-def get_answer_from_chain(chain, user_input):
+def get_answer_from_chain(chain, user_input, llm):
     """질문에 대한 답변을 얻는 함수"""
     answer = chain.stream(user_input)
     previous_chunk = ""
-    final_answer = ""  # 최종 답변을 저장할 변수
+    final_answer = ""
 
     for chunk in answer:
         new_text = chunk.replace(previous_chunk, "")
-        final_answer += new_text  # 매번 새로운 부분을 최종 답변에 추가
+        final_answer += new_text
         previous_chunk += new_text
-    
-    return final_answer  # 최종적으로 하나의 문자열로 응답
+
+    # 키워드 리스트 정의
+    keywords = ["죄송","제공된 정보","찾을 수 없","제공해주신","추천해 드릴 수 없","내용과 맞지 않","주어진 정보","관련이 없","제시된 내용"]
+
+    # 키워드가 포함된 경우 LLM 기반으로 새로운 답변 생성
+    if any(keyword in final_answer for keyword in keywords):
+        messages = [
+            {"role": "user", "content": user_input}
+        ]
+        
+        # LLM에 올바른 형식으로 요청
+        response = llm.invoke(messages)
+        return response.content  # LLM 응답에서 내용 추출
+    else:
+        return final_answer  # 키워드가 없는 경우 기존 답변 반환
