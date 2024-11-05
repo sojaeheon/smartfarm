@@ -70,7 +70,8 @@ export default {
             videoSrc: 'http://202.31.150.31:8888/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
-                { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
+                { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
+                { label: '워터펌프(배수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
             sensors: [
@@ -127,6 +128,21 @@ export default {
     },
     methods: {
         toggleActuator(index) {
+            if (this.actuators[index].label === '워터펌프(급수)') {
+                // '워터펌프(급수)' 버튼을 눌렀을 때 '워터펌프(배수)'를 비활성화
+                this.actuators.forEach((actuator, idx) => {
+                    if (actuator.label === '워터펌프(배수)') {
+                        this.actuators[idx].isOn = false;
+                    }
+                });
+            } else if (this.actuators[index].label === '워터펌프(배수)') {
+                // '워터펌프(배수)' 버튼을 눌렀을 때 '워터펌프(급수)'를 비활성화
+                this.actuators.forEach((actuator, idx) => {
+                    if (actuator.label === '워터펌프(급수)') {
+                        this.actuators[idx].isOn = false;
+                    }
+                });
+            }
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);

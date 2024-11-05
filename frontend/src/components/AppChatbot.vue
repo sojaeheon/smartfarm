@@ -94,6 +94,10 @@ export default {
     AppHeader,
     AppChatbotModal,
   },
+  created() {
+    // 초기 AI 메시지 추가
+    this.addMessage('ai', '😀안녕하세요! 딸기🍓에 관해서 물어봐주세요!😀');
+  },
   updated() {
     // 컴포넌트 업데이트 후 스크롤을 맨 아래로 자동 조정
     this.scrollToBottom();

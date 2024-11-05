@@ -75,7 +75,7 @@ def get_answer():
             return jsonify({"error": "질문이 제공되지 않았습니다."}), 400
 
         try:
-            answer = get_answer_from_chain(chain, question)
+            answer = get_answer_from_chain(chain, question,llm)
             print(answer,flush=True)
 
             connection = get_db_connection()
