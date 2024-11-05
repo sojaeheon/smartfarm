@@ -10,7 +10,7 @@
 
     <!-- 사진 미리보기 -->
     <div class="photo-gallery">
-      <img v-for="(photo, index) in photos" :key="index" :src="photo" @click="openDiagnosis(photo)" class="preview-image"/>
+      <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)" class="preview-image"/>
     </div>
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
@@ -85,7 +85,8 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
+                    // 사진과 URL을 객체 형태로 배열에 추가
+                    this.photos.push({ file: file, url: imageUrl });
                 }
             }
         },
@@ -95,10 +96,8 @@ export default {
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
 
-                // http://192.168.0.29:8888/api/disease
-                // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/diagnosis', formData, {
+                const response = await axios.post('/api/ai/diagnosis', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
