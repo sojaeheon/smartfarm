@@ -109,7 +109,7 @@ def get_answer_from_chain(chain, user_input, llm):
         previous_chunk += new_text
 
     # 키워드 리스트 정의
-    keywords = ["죄송","제공된 정보","찾을 수 없","제공해주신","추천해 드릴 수 없","내용과 맞지 않","주어진 정보","관련이 없","제시된 내용"]
+    keywords = ["죄송","제공된 정보","찾을 수 없","제공해주신","추천해 드릴 수 없","내용과 맞지 않","주어진 정보","관련이 없","제시된 내용","대한 정보만"]
 
     # 키워드가 포함된 경우 LLM 기반으로 새로운 답변 생성
     if any(keyword in final_answer for keyword in keywords):
