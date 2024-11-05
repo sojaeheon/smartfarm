@@ -117,8 +117,6 @@ export default {
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
 
-                // http://192.168.0.29:8888/api/disease
-                // http://192.168.25.5:8888/api/disease
                 // 서버에 진단 요청 보내기
                 const response = await axios.post('/api/ai/disease', formData, {
                     headers: {
