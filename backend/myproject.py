@@ -3,6 +3,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 from flask_cors import CORS
+from datetime import datetime, timezone
 import os
 
 app = Flask(__name__)
@@ -117,7 +118,28 @@ def logout():
 # 센서데이터
 @app.route('/api/sensor_data', methods=['POST'])
 def sensor_data():
-    print(request.get_json())
+    data = request.get_json()
+    rapa_name = data.get('rapa_name')
+    temperature = data.get('temperature')
+    humidity = data.get('humidity')
+    light = data.get('light')
+    waterlevel = data.get('waterlevel')
+    co2 = data.get('co2')
+    date = data.get('date')
+
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        insert_query = """
+            INSERT INTO sensor (rapa_name, temperature, humidity, light, waterlevel, co2, date)
+            VALUES (%s, %s, %s, %s, %s, %s, %s)
+        """
+        cursor.execute(insert_query, (
+            rapa_name, temperature, humidity, light, waterlevel, co2,
+            datetime.strptime(date, '%Y-%m-%d %H:%M:%S') if date else datetime.now(timezone.utc)
+        ))
+        connection.commit()
+
+    return jsonify({"message": "Sensor data added successfully"}), 201
           
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
