@@ -97,7 +97,7 @@ export default {
                 formData.append('photo', photo.file);  // 파일 객체 전송
 
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/ai/diagnosis', formData, {
+                const response = await axios.post('/api/ai/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
