@@ -33,6 +33,19 @@ def get_db_connection():
         )
     return g.db
 
+# 센서 데이터
+def get_sensor_data():
+    connection = get_db_connection()  # g 객체에서 DB 연결 가져오기
+    try:
+        with connection.cursor() as cursor:
+            sql = "SELECT device_name, temperature, humidity, light, waterlevel, co2, date FROM sensor"  # 테이블 이름에 맞게 수정
+            cursor.execute(sql)
+            result = cursor.fetchall()
+            return result  # 데이터 반환
+    except Exception as e:
+        print(f"Error occurred: {e}")  # 에러 메시지 출력 (디버깅 용도)
+        return []  # 오류 발생 시 빈 리스트 반환
+
 @app.teardown_appcontext
 def close_db_connection(exception=None):
     db = g.pop('db', None)
@@ -119,7 +132,7 @@ def logout():
 @app.route('/api/sensor_data', methods=['POST'])
 def sensor_data():
     data = request.get_json()
-    rapa_name = data.get('rapa_name')
+    device_name = data.get('device_name')
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     light = data.get('light')
@@ -130,17 +143,24 @@ def sensor_data():
     connection = get_db_connection()
     with connection.cursor() as cursor:
         insert_query = """
-            INSERT INTO sensor (rapa_name, temperature, humidity, light, waterlevel, co2, date)
+            INSERT INTO sensor (device_name, temperature, humidity, light, waterlevel, co2, date)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (
-            rapa_name, temperature, humidity, light, waterlevel, co2,
-            datetime.strptime(date, '%Y-%m-%d %H:%M:%S') if date else datetime.now(timezone.utc)
+            device_name, temperature, humidity, light, waterlevel, co2,
+            datetime.fromisoformat(date) if date else datetime.now(timezone.utc)
         ))
         connection.commit()
 
     return jsonify({"message": "Sensor data added successfully"}), 201
-          
+
+# 센서데이터
+@app.route('/api/sensor_graph', methods=['GET'])
+def sensor_grap():
+    data = get_sensor_data()  # 데이터베이스에서 데이터 가져오기
+    print(data)
+    return jsonify(data)  # JSON 형식으로 반환
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
 

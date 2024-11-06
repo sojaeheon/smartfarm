@@ -67,7 +67,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            videoSrc: 'http://202.31.150.31:8888/video_feed',
+            videoSrc: 'http://202.31.150.31:9999/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -111,15 +111,6 @@ export default {
         }
     },
     mounted() {
-        // 웹캠 접근
-        /*navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                this.$refs.video.srcObject = stream;
-            })
-            .catch(error => {
-                console.error("카메라 접근 실패:", error);
-            });*/
-
         // 초기 센서 설정
         this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
         // 날씨 데이터 가져오기
@@ -146,21 +137,7 @@ export default {
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
-            // 액추에이터가 이미 켜져 있는 경우-시간설정
-            // if (this.actuators[index].isOn) {
-            //     this.actuators[index].isOn = false; // 바로 끄기
-            // } else {
-            //     // 액추에이터 켜기
-            //     this.actuators[index].isOn = true;
-            //     console.log(`Actuator ${this.actuators[index].label} is now ON`);
-
-            //     // 설정된 시간 후에 자동으로 끄기 (n분=n*60*1000, n시간=n*60*60*1000)
-            //     const offTime = 60000; // 1시간(밀리초 단위)
-            //     setTimeout(() => {
-            //         this.actuators[index].isOn = false;
-            //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
-            //     }, offTime);
-            // }
+          
             // LED 액추에이터인 경우 서버에 상태 전송
             if (this.actuators[index].label === 'LED') {
                 this.controlLed(index);
@@ -180,22 +157,22 @@ export default {
             }
             this.currentSensorData = this.getSensorData(sensor);
         },
-        controlLed(index){
+        async controlLed(index){
             // 서버에 POST 요청 보내기
             const status = this.actuators[index].isOn ? 'on' : 'off';
 
-            axios.post(`http://202.31.150.31:9999/led`, {
+            await axios.post(`http://202.31.150.31:9999/led`, {
                 status: status
             })
             .catch(error => {
                 console.error('There was a problem with the axios operation:', error);
             });
         },
-        controlDcfan(index){
+        async controlDcfan(index){
             // 서버에 POST 요청 보내기
             const status = this.actuators[index].isOn ? 'on' : 'off';
 
-            axios.post(`http://202.31.150.31:9999/dcfan`, {
+            await axios.post(`http://202.31.150.31:9999/dcfan`, {
                 status: status
             })
             .catch(error => {
