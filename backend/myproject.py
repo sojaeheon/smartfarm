@@ -69,8 +69,7 @@ def signup():
     data = request.get_json()
     uid = data.get('username')
     upw = data.get('password')
-    rapa_ip = data.get('rapa_ip')
-    port = data.get('port')
+    device_name = data.get('device_name')
     
     connection = get_db_connection()
     with connection.cursor() as cursor:
@@ -79,9 +78,9 @@ def signup():
         if cursor.fetchone():
             return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
 
-        insert_query = "INSERT INTO users (id, password, ip, port) VALUES (%s, %s, %s, %s)"
+        insert_query = "INSERT INTO users (id, password, device_name) VALUES (%s, %s, %s)"
         hashed_password = upw
-        cursor.execute(insert_query, (uid, hashed_password, rapa_ip, port))
+        cursor.execute(insert_query, (uid, hashed_password, device_name))
         connection.commit()
 
     return jsonify({"success": True, "message": "회원가입이 완료되었습니다."})
@@ -119,7 +118,7 @@ def logout():
 @app.route('/api/sensor_data', methods=['POST'])
 def sensor_data():
     data = request.get_json()
-    rapa_name = data.get('rapa_name')
+    device_name = data.get('device_name')
     temperature = data.get('temperature')
     humidity = data.get('humidity')
     light = data.get('light')
@@ -130,11 +129,11 @@ def sensor_data():
     connection = get_db_connection()
     with connection.cursor() as cursor:
         insert_query = """
-            INSERT INTO sensor (rapa_name, temperature, humidity, light, waterlevel, co2, date)
+            INSERT INTO sensor (device_name, temperature, humidity, light, waterlevel, co2, date)
             VALUES (%s, %s, %s, %s, %s, %s, %s)
         """
         cursor.execute(insert_query, (
-            rapa_name, temperature, humidity, light, waterlevel, co2,
+            device_name, temperature, humidity, light, waterlevel, co2,
             datetime.strptime(date, '%Y-%m-%d %H:%M:%S') if date else datetime.now(timezone.utc)
         ))
         connection.commit()

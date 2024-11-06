@@ -19,14 +19,9 @@
         <input type="password" v-model="password" placeholder="Password" class="input-field">
       </div>
 
-      <div class="register_rapa">
-        <h4>Rapa_IP</h4>
-        <input type="text" v-model="rapa_ip" placeholder="Rapa_ip" class="input-field">
-      </div>
-
-      <div class="register_port">
-        <h4>Port</h4>
-        <input type="text" v-model="port" placeholder="Port" class="input-field">
+      <div class="device_name">
+        <h4>Device_name</h4>
+        <input type="text" v-model="device_name" placeholder="Rapa_ip" class="input-field">
       </div>
 
       <div class="backlogin">
@@ -50,23 +45,12 @@ export default {
     return {
       uid: "",
       password: "",
-      rapa_ip: "",
-      port: "",
+      device_name: "",
       isUidAvailable: false,
       uidChecked: false,
     };
   },
   methods: {
-    // Rapa_IP 유효성 검사
-    isValidIP(ip) {
-      const ipPattern = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.((25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){2}(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
-      return ipPattern.test(ip);
-    },
-    // Port 유효성 검사
-    isValidPort(port) {
-      const portPattern = /^(6553[0-5]|655[0-2][0-9]|65[0-4][0-9]{2}|6[0-4][0-9]{3}|[1-5]?[0-9]{0,4})$/; // 0-65535 범위
-      return portPattern.test(port);
-    },
     // 아이디 중복 확인
     async checkDuplicateUid() {
       if (!this.uid) {
@@ -90,24 +74,12 @@ export default {
       }
     },
     async RegisterClick() {
-      // Rapa_IP와 Port 유효성 검사
-      if (!this.isValidIP(this.rapa_ip)) {
-        alert('유효한 Rapa_IP 주소를 입력하세요.');
-        return;
-      }
-
-      if (!this.isValidPort(this.port)) {
-        alert('유효한 Port 번호를 입력하세요. (0-65535)');
-        return;
-      }
-
       try {
         // 서버에 POST 요청 보내기
         const response = await axios.post('/api/register', {
           uid: this.uid,
           password: this.password,
-          rapa_ip: this.rapa_ip,
-          port: this.port,
+          device_name: this.device_name,
         });
 
         if (response.data.success) {
@@ -169,15 +141,10 @@ export default {
 }
 
 .register_uid,
-.register_rapa,
+.device_name,
 .register_pw {
   width: 95%;
   margin-bottom: 20px;
-}
-
-.register_port {
-  width: 95%;
-  margin-bottom: 10px;
 }
 
 .uid-row {
@@ -205,7 +172,7 @@ h4 {
   border-radius: 5px;
   cursor: pointer;
   transition: background-color 0.3s ease, color 0.3s ease;
-  font-size: 0.8rem;
+  font-size: 50%;
   /* 글씨 크기를 줄임 */
   display: flex;
   justify-content: center;
@@ -217,6 +184,7 @@ h4 {
 .check-duplicate:hover {
   background-color: #FA782D;
   color: white;
+  font-size: 50%;
 }
 
 .input-field {

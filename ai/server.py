@@ -100,6 +100,9 @@ def disease():
         
         image = request.files['photo']
         try:
+            # 원본 이미지를 Base64로 인코딩
+            original_image_base64 = base64.b64encode(image.read()).decode("utf-8")
+
             # 이미지 파일을 임시로 저장
             with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
                 tmp_file.write(image.read())
@@ -116,14 +119,27 @@ def disease():
             # 이미지를 BytesIO 객체에 저장
             buffered = BytesIO()
             boundingImage.save(buffered, format="PNG")  # PNG 형식으로 저장
-            img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")  # Base64 인코딩
+            bounding_image_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
             
+            # MySQL 데이터베이스에 진단 결과 저장
+            connection = get_db_connection()
+            with connection.cursor() as cursor:
+                insert_query = """
+                    INSERT INTO disease_info (disease_name, original_image, bounding_image, solution, date)
+                    VALUES (%s, %s, %s, %s, %s)
+                """
+                # 현재 날짜와 시간
+                current_date = datetime.now()
+                cursor.execute(insert_query, (disease_name, original_image_base64, bounding_image_base64, solution, current_date))
+                connection.commit()
+
             print(question)
             print(solution)
             data = {
                 "disease": disease_name,
                 "solution": solution,
-                "boundingImage":img_str
+                "originalImage": original_image_base64,
+                "boundingImage": bounding_image_base64
             }
             return jsonify(data), 200
         except Exception as e:
