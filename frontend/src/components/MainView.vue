@@ -52,6 +52,7 @@
 <script>
 import AppHeader from '../components/AppHeader.vue';
 import Chart from './Chart.vue';
+import axios from 'axios'; // axios를 사용해 API 호출을 합니다.
 
 export default {
     data() {
@@ -64,11 +65,11 @@ export default {
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
             sensors: [
-                { label: '조도', isOn: true, data: [10, 20, 30, 40, 50, 60] },
-                { label: 'CO2', isOn: false, data: [12, 22, 32, 42, 52, 62] },
-                { label: '온도', isOn: false, data: [15, 25, 35, 45, 55, 65] },
-                { label: '습도', isOn: false, data: [8, 18, 28, 38, 48, 58] },
-                { label: '수위', isOn: false, data: [9, 19, 29, 39, 49, 59] }
+                { label: '조도', isOn: true},
+                { label: 'CO2', isOn: false},
+                { label: '온도', isOn: false},
+                { label: '습도', isOn: false},
+                { label: '수위', isOn: false}
             ],
             currentSensorData: {},
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
@@ -106,6 +107,8 @@ export default {
 
         // 초기 센서 설정
         this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
+        // 센서 데이터 가져오기(차트)
+        this.fetchSensorData();  
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
     },
@@ -156,17 +159,34 @@ export default {
             }
             this.currentSensorData = this.getSensorData(sensor);
         },
-        getSensorData(sensor) {
-            return {
-                labels: ["1", "2", "3", "4", "5", "6"],  // x축 라벨 (예시)
+        async fetchSensorData() {
+            try {
+                const response = await axios.get('/api/sensor_graph');  // 데이터베이스에서 센서 데이터 가져오기
+                const data = response.data.slice(-10);  // 최근 10개 데이터만 가져옵니다.
+
+                this.sensors = data.map(item => ({
+                    date: item.date,
+                    temperature: item.temperature,
+                    humidity: item.humidity,
+                    light: item.light,
+                    waterlevel: item.waterlevel,
+                    co2: item.co2,
+                }));
+
+                this.updateChartData();  // 차트 데이터 업데이트
+            } catch (error) {
+                console.error("센서 데이터를 불러오지 못했습니다:", error);
+            }
+        },
+        updateChartData() {
+            this.currentSensorData = {
+                labels: this.sensors.map(item => item.date),  // x축에 날짜 설정
                 datasets: [
-                    {
-                        label: sensor.label,
-                        data: sensor.data,
-                        backgroundColor: "rgba(54, 162, 235, 0.2)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        borderWidth: 1
-                    }
+                    { label: '온도', data: this.sensors.map(item => item.temperature)},
+                    { label: '습도', data: this.sensors.map(item => item.humidity)},
+                    { label: '조도', data: this.sensors.map(item => item.light)},
+                    { label: '수위', data: this.sensors.map(item => item.waterlevel)},
+                    { label: 'CO2', data: this.sensors.map(item => item.co2)},
                 ]
             };
         },
