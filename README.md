@@ -79,12 +79,17 @@
 
 ### 5. 테스트 영상
 https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-7248a1e67bcf
+<br/>
+
+### 6. 최종 결과
+  - 다음 챗봇에서 나올 RAG와 접목하여 병해 솔루션 제공
+![병해진단](https://github.com/user-attachments/assets/b22a5af1-7353-4e06-bcd7-904c4f61e3b4)
 <br/><br/>
 
 # 챗봇
-## Google Gemini 이용
+## Google Gemini 사용
 ### 1. LLM 모델 : gemini-1.5-pro-001
-![gemini](https://github.com/user-attachments/assets/ecbfd7c3-e5c0-40ab-ae94-98d157fa9f77)
+![gemini](https://github.com/user-attachments/assets/a06d925f-2d42-410e-92ec-68d87ec26cd9)
 <br/>
 
 ## RAG 검색 증강 생성
@@ -96,6 +101,22 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
   - 랭체인이란 개발자가 언어 모델을 기반으로 한 애플리케이션 개발 작업을 수월하게 진행할 수 있도록 설계된 오픈 소스 프레임워크
   - 한마디로 프롬포트, AI모델, 모델 답변 텍스트 도출을 하나의 연속적인 과정으로 만드는 것을 말함
 ![랭체인 흐름](https://github.com/user-attachments/assets/988bae61-fba3-4e6e-9115-26192e8865a9)
+  - 흐름 예시
+    #### 1. 데이터 소스 : LLM이 해당 작업을 수행하는 데 필요한 정보 (pdf, csv 등 외부 소스 데이터)
+      - 농업 딸기 매뉴얼 pdf 사용
+    #### 2. 단어 임베딩 : 데이터 소스를 벡터로 변환
+      - pytorch기반의 HuggingFace 다국어 임베딩 모델 BAAI/bge-m3을 사용
+    #### 3. 벡터 데이터베이스 : 생성된 임베딩을 유사성 검색을 위해 벡터 데이터베이스에 저장
+      - ChromaDB 사용
+    #### 4. 대규모 언어 모델(LLM) : 검색된 데이터를 기반으로 의미 있는 정보를 생성하는 데 필수적인 역할
+      - gemini-1.5-pro-001 모델 사용
+<br/>
+
+### 3. 결과
+![RAG1](https://github.com/user-attachments/assets/24702f7e-7517-48d3-b8bf-2bf1c0f7e8de)
+![RAG2](https://github.com/user-attachments/assets/2cfab811-a350-42ee-88e0-f2ca8c9061bd)
+
+
 
 
 
