@@ -2,7 +2,10 @@
   <div class="modal-overlay" @click="$emit('closeModal')">
     <div class="modal" @click.stop>
       <ul>
-        <li v-for="(list, index) in lists" :key="index" class="modal-item">{{ list }}</li>
+        <li v-for="(list, index) in lists" :key="index" class="modal-item">
+          {{ list.text }}
+          <button @click="$emit('deleteItem', index)">삭제</button>
+        </li>
       </ul>
     </div>
   </div>
