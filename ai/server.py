@@ -108,7 +108,7 @@ def disease():
             # 모델 예측 수행
             disease_name,disease_data = sb_decision(tmp_file_path)
             question = f'딸기 {disease_name} 치료방법을 알려주세요.'
-            solution = get_answer_from_chain(chain, question)
+            solution = get_answer_from_chain(chain, question,llm)
 
             # 바운딩 박스
             boundingImage = draw_bounding_box(image,disease_data,disease_name)
