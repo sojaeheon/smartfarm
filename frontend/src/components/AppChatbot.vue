@@ -7,9 +7,9 @@
   <section class="main">
     <div class="chat-bot">
       <div>
-        <button id="search-list" @click="showSearchList"></button>
+        <button id="search-list" @click="fetchSearchHistory"></button>
         <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
-          <AppChatbotModal :lists="lists" @closeModal="closeModal" />
+          <AppChatbotModal :lists="lists" @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem" />
         </div>
       </div>
       <div class="messages" ref="messages">
@@ -35,17 +35,32 @@ export default {
   data() {
     return {
       isListOpen: false, // 모달의 상태
-      lists: ['이거', '저거', '요거'],
+      lists: [],
       userInput: '',
       messages: []
     };
   },
   methods: {
-    showSearchList() {
-      this.isListOpen = true; // 모달 열기
+    async fetchSearchHistory() {
+      try {
+        const response = await axios.get('http://192.168.0.29:8888/api/search_history'); //DB받기 수정필요
+        this.lists = response.data.history; // 서버에서 받은 검색 기록 저장 --> 있어야하는거 맞음?
+        this.isListOpen = true; // 모달 열기
+      } catch (error) {
+        console.error('검색 기록을 불러오는 중 오류 발생:', error);
+      }
     },
     closeModal() {
       this.isListOpen = false; // 모달 닫기
+    },
+    async deleteSearchHistoryItem(index) {
+      const item = this.lists[index];
+      try {
+        await axios.delete(`http://192.168.0.29:8888/api/delete_history/${item.id}`);
+        this.lists.splice(index, 1); // 배열에서 해당 항목 제거
+      } catch (error) {
+        console.error('검색 기록 삭제 오류:', error);
+      }
     },
     async sendMessage() {
       const userMessage = this.userInput.trim();
