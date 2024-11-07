@@ -59,6 +59,7 @@ def login_check():
     print(data)
     uid = data.get('username')
     password = data.get('password')
+    device_name= data.get('device_name')
     print(uid+" "+password)
     
     connection = get_db_connection()
@@ -70,8 +71,7 @@ def login_check():
     if user:
         session['logged_in'] = True
         session['uid'] = user['id']
-        session['rapa_ip'] = user['ip']
-        session['port'] = user['port']
+        session['device_name'] = user['device_name']
         return jsonify({"success": True, "session": dict(session)})
     else:
         return jsonify({"success": False, "message": "Invalid username or password."})
