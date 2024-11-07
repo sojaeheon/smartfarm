@@ -186,7 +186,7 @@ export default {
                 const response = await axios.get('/api/sensor_graph');  // 데이터베이스에서 센서 데이터 가져오기
                 const data = response.data.slice(-10);  // 최근 10개 데이터만 가져옵니다.
 
-                this.sensors = data.map(item = > ({
+                this.sensors = data.map(item => ({
                     date: item.date,
                     temperature : item.temperature,
                     humidity : item.humidity,
@@ -203,13 +203,13 @@ export default {
         },
         updateChartData() {
             this.currentSensorData = {
-                labels: this.sensors.map(item = > item.date),  // x축에 날짜 설정
+                labels: this.sensors.map(item => item.date),  // x축에 날짜 설정
                 datasets : [
-                    { label: '온도', data : this.sensors.map(item = > item.temperature)},
-                    { label: '습도', data : this.sensors.map(item = > item.humidity)},
-                    { label: '조도', data : this.sensors.map(item = > item.light)},
-                    { label: '수위', data : this.sensors.map(item = > item.waterlevel)},
-                    { label: 'CO2', data : this.sensors.map(item = > item.co2)},
+                    { label: '온도', data : this.sensors.map(item => item.temperature)},
+                    { label: '습도', data : this.sensors.map(item => item.humidity)},
+                    { label: '조도', data : this.sensors.map(item => item.light)},
+                    { label: '수위', data : this.sensors.map(item => item.waterlevel)},
+                    { label: 'CO2', data : this.sensors.map(item => item.co2)},
                 ]
             };
         },
