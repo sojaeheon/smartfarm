@@ -32,7 +32,44 @@
 
 ### 4. 챗봇페이지
 #### 4.1 질문에 대한 답변을 얻을 수 있음
-<br/>
+<br/><br/>
+
+# 프로젝트 서버
+### WSL2
+  -  Windows에서 리눅스 커널을 가상화하여 리눅스 환경을 제공
+  -  기존의 VM과 달리 WSL2는 훨씬 더 가볍고 빠름
+  -  Docker는 본래 리눅스 기반으로 개발되었기 때문에, Windows에서 도커를 원활하게 사용하려면 WSL2가 필요
+### Nginx
+  - 리버스 프록시와 정적 파일 서비스를 제공하고, 트래픽 관리 및 부하 분산 기능을 담당하기 위해 사용
+  - 빠르고 가벼운 웹 서버 동적인 것은 Flask로 보내고, 정적 파일들을 제공하여 서버 부하를 줄임
+### uWSGI
+  -  Flask와 같은 Python 웹 애플리케이션을 Nginx와 연결하기 위해 사용
+  -   다중 프로세스 및 다중 스레드로 애플리케이션을 실행할 수 있음
+### Flask
+  - Python 기반의 경량 웹 프레임워크로, 간단하고 빠르게 웹 애플리케이션을 구축할 수 있음
+  - 유연성과 확장성이 뛰어남
+### Vue
+  - 프론트엔드 사용자 인터페이스(UI)를 구축하고, 동적인 사용자 경험을 제공
+### MySQL
+  - 데이터의 저장 및 관리를 위해 사용
+  - 프로젝트에서는 ai, sensor, disease 테이블에 각 해당 데이터를 저장
+### Docker
+  -  애플리케이션을 컨테이너(Container) 라는 격리된 환경에 배포하고 실행할 수 있게 해주는 플랫폼
+![도커 컨테이너](https://github.com/user-attachments/assets/47da0289-d223-4602-b4bf-554f58870afe)
+
+  - 각 이미지
+    #### 1. ai image
+      - AI 기능을 처리하는 서버로, 질병 진단과 같은 AI 관련 작업을 수행
+      - Flask, Huggingface, uWSGI 등 사용
+    #### 2. frontend image
+      - Vue.js를 기반으로 하며, 사용자에게 UI를 제공하고 AI 서버 및 백엔드 서버와 통신하여 데이터를 표시
+    #### 3. backend image
+      - Flask 기반의 백엔드 서버로, 데이터베이스와 통신하며 사용자 요청을 처리합니다. AI 서버와 프론트엔드 간의 데이터         흐름을 관리
+      - Flask, uWSGI등을 사용
+    #### 4. Nginx image
+      - 리버스 프록시 역할을 하는 Nginx 서버로, 모든 HTTP 요청을 프론트엔드, 백엔드 및 AI 서버로 라우팅
+      - 배포된 이미지를 사용
+<br/><br/>
 
 # 로그인
 <br/><br/>
@@ -146,57 +183,11 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 ![image](https://github.com/sojaeheon/smartfarm/assets/119103469/41a0e586-e9b7-4d3b-ae74-360f9b4de652)
 
 
-5. 테스트 영상
-https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-7248a1e67bcf
-
-# Block #3
-* AI의 답변
-1. 위의 모델로 얻은 결과를 프롬포트로 만들어 AI모델을 호출
-   * SIONIC AI사의 xionic-ko-llama-3-70b이라는 한국어 모델을 사용-(https://github.com/sionic-ai/xionic-ko-llama-3-70b)
-   ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/b6645dc4-f96d-46b8-8856-cc328fca33e9)
-2. 체인 생성
-   * 프롬포트, AI모델, 모델 답변 텍스트 도출을 체인
-   * 여기서 체인이란 일련의 작업 단계를 하나의 연속적인 과정을 만드는 것을 말함
-3. AI의 답변
-![image](https://github.com/sojaeheon/smartfarm/assets/144245586/600552a6-3324-47d4-bc74-f294ff175586)
-
-<br/><br/>
-<hr>
-<br/><br/>
-
-# 블록도
-![image](https://github.com/user-attachments/assets/b515da2e-6144-43fd-8766-6d53eaaef35b)
-<hr>
-![image](https://github.com/user-attachments/assets/e376084a-bb6c-4c1d-ba26-a5efa567a354)
-
 
 
 # 일정(간트차트)
 ![image](https://github.com/user-attachments/assets/30d6a1e8-1827-4669-bd0a-5c428edcbf68)
 
-
-# 주요 기능
-### 1. 로그인
-#### 1.1 사용자 로그인
-
-### 2. 메인
-#### 2.1 실시간 환경 센서값
-#### 2.2 엑츄에이터 작동
-#### 2.3 일기예보 API
-
-### 3. 병해진단페이지
-#### 3.1 사진을 넣거나 찍어서 병해 확인
-
-### 4. 챗봇페이지
-#### 4.1 질문에 대한 답변을 얻을 수 있음
-
-### 5. 스마트팜 환경그래프 페이지 
-#### 5.1 스마트팜 내 환경을 그래프로 확인 
-
-## 영상
-https://github.com/user-attachments/assets/60d6e221-28a6-4da9-ba84-22db664abf0f
-
-  
 <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
 # 방향
 
