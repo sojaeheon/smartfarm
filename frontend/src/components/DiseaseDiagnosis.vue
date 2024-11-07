@@ -9,10 +9,32 @@
     </div>
 
     <!-- 사진 미리보기 -->
-    <div class="photo-gallery">
+    <!-- <div class="photo-gallery">
         <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)"
             class="preview-image" />
+    </div> -->
+    <!-- 사진 미리보기 -->
+    <div class="photo-gallery">
+        <div
+            v-for="(photo, index) in photos"
+            :key="index"
+            class="photo-container"
+            @mouseenter="photo.hovered = true"
+            @mouseleave="photo.hovered = false"
+        >
+            <img
+                :src="photo.url"
+                @click="openDiagnosis(photo)"
+                class="preview-image"
+            />
+            <button
+                v-if="photo.hovered"
+                class="delete-button"
+                @click="removePhoto(index)"
+            ></button>
+        </div>
     </div>
+
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
     <div class="modal-background" v-if="ShowModal">
@@ -32,7 +54,6 @@
             <button class="close-button" @click="closeDiagnosis"></button><br>
             <h2>진단 결과</h2>
             <div class="modal-p">
-                <!-- <img :src="selectedPhoto" class="diagnosis-image" alt="진단 결과 이미지" /> -->
                 <img :src="'data:image/png;base64,' + diagnosis.boundingImage" class="diagnosis-image" alt="진단 결과 이미지" />
                 <p><b>병명:</b> {{ diagnosis.disease }}</p>
                 <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
@@ -63,8 +84,6 @@ export default {
                 resultImage: '', //진단 결과 이미지
             },
             isMenuOpen: false,
-
-            //selectedPhoto: '', // 선택된 업로드 사진(test)
         }
     },
     components: {
@@ -92,7 +111,8 @@ export default {
                     const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
                     this.photos.push({
                         url: imageUrl,  // 미리보기 이미지 URL
-                        file: file      // 실제 파일 객체
+                        file: file,      // 실제 파일 객체
+                        hovered: false, // 마우스 오버 상태를 위한 변수
                     });
                 }
             }
@@ -122,6 +142,9 @@ export default {
             } finally {
                 this.isLoading = false;  // 로딩 화면 숨기기
             }
+        },
+        removePhoto(index) {
+            this.photos.splice(index, 1); // 해당 인덱스의 사진 삭제
         },
         closeDiagnosis() {
             this.showDiagnosis = false;
@@ -301,15 +324,43 @@ export default {
     padding-right: 10px;
 }
 
-/* 이미지 미리보기 스타일 */
-.preview-image {
+.photo-container {  /*수정*/
+    position: relative;
     width: 150px;
     height: 200px;
+}
+
+/* 이미지 미리보기 스타일 */
+.preview-image {
+    width: 100%;
+    height: 100%;
+    /* width: 150px;
+    height: 200px; */
     object-fit: contain;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
     margin-left: 20px;
+}
+
+.delete-button {
+    background-image: url('@/assets/delete.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 30px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    z-index: 2;
+}
+
+/* hover 효과 */
+.photo-container:hover .preview-image {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
