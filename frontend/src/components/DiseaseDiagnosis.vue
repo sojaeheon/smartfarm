@@ -100,6 +100,9 @@ export default {
         // 병해진단 수행
         async openDiagnosis(photo) {
             try {
+
+                await axios.post('/api/disease_load', { username: this.$store.state.userId });
+
                 this.isLoading = true;                 // 로딩 화면 표시
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
