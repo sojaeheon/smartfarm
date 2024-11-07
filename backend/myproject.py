@@ -86,11 +86,6 @@ def signup():
     
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        check_query = "SELECT * FROM users WHERE id = %s"
-        cursor.execute(check_query, (uid,))
-        if cursor.fetchone():
-            return jsonify({"success": False, "message": "이미 존재하는 사용자 ID입니다."})
-
         insert_query = "INSERT INTO users (id, password, device_name) VALUES (%s, %s, %s)"
         hashed_password = upw
         cursor.execute(insert_query, (uid, hashed_password, device_name))
@@ -158,6 +153,23 @@ def sensor_data():
 def sensor_grap():
     data = get_sensor_data()  # 데이터베이스에서 데이터 가져오기
     print(data)
+    return jsonify(data)  # JSON 형식으로 반환
+
+@app.route('/api/disease_load', methods=['GET'])
+def disease_load():
+    data = request.get_json()
+    username = data.get('username')
+
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        check_query = "SELECT * FROM disease WHERE id = %s"
+        cursor.execute(check_query, (username))
+        disease_list = cursor.fetchone()
+
+
+    print(disease_list[0])
+
+
     return jsonify(data)  # JSON 형식으로 반환
 
 if __name__ == "__main__":
