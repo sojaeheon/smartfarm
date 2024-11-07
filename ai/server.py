@@ -97,40 +97,44 @@ def disease():
     if request.method == 'POST':
         if 'photo' not in request.files:
             return jsonify({"error": "이미지가 제공되지 않았습니다."}), 400
-        
-        image = request.files['photo']
-        try:
-            # 원본 이미지를 Base64로 인코딩
-            original_image_base64 = base64.b64encode(image.read()).decode("utf-8")
 
-            # 이미지 파일을 임시로 저장
+        image_file = request.files['photo']
+        username = request.form['username']
+        tmp_file_path = None  # finally 블록에서 삭제할 파일 경로를 저장
+        
+        try:
+            # 이미지를 메모리에 로드하여 여러 작업에 사용
+            image_data = image_file.read()  # 파일 데이터를 메모리에 저장
+            original_image_base64 = base64.b64encode(image_data).decode("utf-8")
+
+            # 임시 파일로 저장
             with tempfile.NamedTemporaryFile(delete=False, suffix='.jpg') as tmp_file:
-                tmp_file.write(image.read())
+                tmp_file.write(image_data)
                 tmp_file_path = tmp_file.name
 
             # 모델 예측 수행
-            disease_name,disease_data = sb_decision(tmp_file_path)
+            disease_name, disease_data = sb_decision(tmp_file_path)
             question = f'딸기 {disease_name} 치료방법을 알려주세요.'
-            solution = get_answer_from_chain(chain, question,llm)
+            solution = get_answer_from_chain(chain, question, llm)
 
-            # 바운딩 박스
-            boundingImage = draw_bounding_box(image,disease_data,disease_name)
-            
-            # 이미지를 BytesIO 객체에 저장
+            # 바운딩 박스 그리기 위해 이미지 로드
+            bounding_image = draw_bounding_box(tmp_file_path, disease_data, disease_name)
+
+            # 바운딩 박스 이미지 저장 및 인코딩
             buffered = BytesIO()
-            boundingImage.save(buffered, format="PNG")  # PNG 형식으로 저장
+            bounding_image.save(buffered, format="PNG")  # PNG 형식으로 저장
             bounding_image_base64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
-            
+
             # MySQL 데이터베이스에 진단 결과 저장
             connection = get_db_connection()
             with connection.cursor() as cursor:
                 insert_query = """
-                    INSERT INTO disease_info (disease_name, original_image, bounding_image, solution, date)
-                    VALUES (%s, %s, %s, %s, %s)
+                    INSERT INTO disease (id, disease_name, original_image, bounding_image, answer, date)
+                    VALUES (%s, %s, %s, %s, %s, %s)
                 """
                 # 현재 날짜와 시간
                 current_date = datetime.now()
-                cursor.execute(insert_query, (disease_name, original_image_base64, bounding_image_base64, solution, current_date))
+                cursor.execute(insert_query, (username, disease_name, original_image_base64, bounding_image_base64, solution, current_date))
                 connection.commit()
 
             print(question)
@@ -145,7 +149,8 @@ def disease():
         except Exception as e:
             return jsonify({"error": f"질병 진단 처리 중 오류 발생: {str(e)}"}), 500
         finally:
-            os.remove(tmp_file_path)
+            if tmp_file_path and os.path.exists(tmp_file_path):
+                os.remove(tmp_file_path)
             
 if __name__ == "__main__":
     init()
