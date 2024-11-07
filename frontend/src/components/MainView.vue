@@ -34,6 +34,19 @@
 
             <!-- Weather -->
             <div class="grid-item" id="weather">
+                <div class="weather-content">
+                    <img :src="weatherIconUrl" alt="Icon" />
+                    <div class="weather_text">
+                        <p v-if="weather.temp !== null">온도: {{ weather.temp }}℃</p>
+                        <p v-if="weather.humidity !== null">습도: {{ weather.humidity }}%</p>
+                        <p v-if="weather.description">날씨: {{ weather.description }}</p>
+                        <p v-else> 날씨 정보를 불러오는 중...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Weather -->
+            <div class="grid-item" id="weather">
                 <h4>&lt; {{ weather.year }}년 {{ weather.month }} {{ weather.date }} {{ weather.days }} &gt;</h4>
                 <div class="weather-content">
                     <img :src="weatherIconUrl" alt="Icon" />
@@ -111,6 +124,15 @@ export default {
         }
     },
     mounted() {
+        // 웹캠 접근
+        /*navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                this.$refs.video.srcObject = stream;
+            })
+            .catch(error => {
+                console.error("카메라 접근 실패:", error);
+            });*/
+
         // 초기 센서 설정
         this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
         // 날씨 데이터 가져오기
@@ -233,14 +255,20 @@ export default {
                 console.log("Weather icon:", this.weather.icon); // 아이콘 값 확인
             }
         },
-        setHourlyForecast(forecast) {
-            // 24시간 예보 데이터를 저장합니다.
-            this.hourlyForecast = forecast.slice(0, 8).map(item => ({
-                time: item.dt_txt.split(' ')[1].slice(0, 5), // HH:MM 형태로 시간 추출
-                temp: item.main.temp,
-                icon: item.weather[0].icon,
-            }));
+        dateBuilder: function () {
+            let d = new Date();
+            let months = [
+                "1월", "2월", "3월", "4월", "5월", "6월",
+                "7월", "8월", "9월", "10월", "11월", "12월"
+            ];
+            let days = ["월요일", "화요일", "수요일", "목요일", "금요일"];
+            let day = days[d.getDay()];
+            let date = d.getDate();
+            let month = months[d.getMonth()];
+            let year = d.getFullYear();
+            return `${day} ${date} ${month} ${year}`;
         },
+
     },
     components: {
         AppHeader,
