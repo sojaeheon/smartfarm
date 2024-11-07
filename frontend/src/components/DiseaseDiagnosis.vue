@@ -103,6 +103,7 @@ export default {
                 this.isLoading = true;                 // 로딩 화면 표시
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
+                formData.append('username',this.$store.state.userId);
 
                 // 서버에 진단 요청 보내기
                 const response = await axios.post('/api/ai/disease', formData, {
