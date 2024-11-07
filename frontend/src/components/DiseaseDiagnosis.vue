@@ -112,7 +112,6 @@ export default {
                     this.photos.push({
                         url: imageUrl,  // 미리보기 이미지 URL
                         file: file,      // 실제 파일 객체
-                        hovered: false, // 마우스 오버 상태를 위한 변수
                     });
                 }
             }
@@ -334,13 +333,12 @@ export default {
 .preview-image {
     width: 100%;
     height: 100%;
-    /* width: 150px;
-    height: 200px; */
     object-fit: contain;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
     margin-left: 20px;
+    position: relative;
 }
 
 .delete-button {
@@ -348,19 +346,14 @@ export default {
     background-size: contain;
     background-repeat: no-repeat;
     background-position: center;
-    width: 30px;
-    height: 30px;
+    width: 20px;
+    height: 20px;
     border: none;
     cursor: pointer;
     position: absolute;
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    left: 150px;
     z-index: 2;
-}
-
-/* hover 효과 */
-.photo-container:hover .preview-image {
-    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* 모바일 화면에서 버튼 크기와 여백 조정 */

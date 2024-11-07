@@ -1,32 +1,34 @@
 <template>
   <div class="wrap">
-    <form @submit.prevent="LoginClick"></form>
-    <div class="login">
-      <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
+    <!-- form 요소에서 submit 이벤트를 처리하도록 수정 -->
+    <form @submit.prevent="LoginClick">
+      <div class="login">
+        <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
 
-      <div class="login_id">
-        <h4>ID</h4>
-        <input type="text" v-model="uid" placeholder="ID" class="input-field">
-      </div>
+        <div class="login_id">
+          <h4>ID</h4>
+          <input type="text" v-model="uid" placeholder="ID" class="input-field" required>
+        </div>
 
-      <div class="login_pw">
-        <h4>Password</h4>
-        <input type="password" v-model="upw" placeholder="Password" class="input-field">
-      </div>
+        <div class="login_pw">
+          <h4>Password</h4>
+          <input type="password" v-model="upw" placeholder="Password" class="input-field" required>
+        </div>
 
-      <div class="signup">
-        <p class="signup-text">
-          <router-link to="/SignUpView">회원가입</router-link>
-        </p>
-      </div>
+        <div class="signup">
+          <p class="signup-text">
+            <router-link to="/SignUpView">회원가입</router-link>
+          </p>
+        </div>
 
-      <div class="submit">
-        <button class="submit_button" @click="LoginClick">Login</button>
+        <div class="submit">
+          <!-- 여기서 type="submit"을 추가하여 버튼 클릭 시 폼 제출을 트리거 -->
+          <button type="submit" class="submit_button">Login</button>
+        </div>
       </div>
-    </div>
+    </form>
   </div>
 </template>
-
 
 <script>
 import { mapActions } from 'vuex';
@@ -40,14 +42,16 @@ export default {
   },
   methods: {
     ...mapActions(['login']),
-    async LoginClick() { // 템플릿의 메서드 이름과 일치
+    async LoginClick() {
       try {
+        // 로그인 처리
         await this.login({ username: this.uid, password: this.upw });
-        if(this.$store.state.isLoggedIn){
+        
+        if (this.$store.state.isLoggedIn) {
           alert(`로그인 성공 : ${this.uid}`);
-          this.$router.push('/MainView');
-        }else{
-          alert('로그인 실패')
+          this.$router.push('/MainView'); // 메인 화면으로 이동
+        } else {
+          alert('로그인 실패');
         }
         
       } catch (error) {
@@ -57,7 +61,6 @@ export default {
   },
 };
 </script>
-
 
 <style>
 * {
