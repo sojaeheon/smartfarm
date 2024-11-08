@@ -89,18 +89,32 @@ export default {
     components: {
         AppHeader
     },
-    created(){
-        this.loadDiseaselist();
+    created() {
+        this.loadDiseaseList();
     },
     methods: {
-        async loadPhotosFromDB() {
+        async loadDiseaseList() {
             try {
-                const response = await axios.get('/api/photos');  // DB에서 사진 목록 가져오기
-                // 받은 데이터를 photos 배열에 저장
-                this.photos = response.data.map(photo => ({
-                    url: photo.imageUrl,
-                    file: null // 기존에 DB에 있는 데이터는 파일 객체가 없으므로 null로 설정
-                }));
+
+                const username = this.$store.state.userId;
+
+                // API 요청 보내기
+                const response = await axios.get('/api/disease_load', {
+                    params: {
+                        username: username
+                    }
+                });
+
+                // 받아온 데이터를 photos 배열에 추가
+                if (response.data.success && response.data.disease_list) {
+                    this.photos = response.data.disease_list.map(item => ({
+                        url: 'data:image/png;base64,' + item.bounding_image, // Base64 인코딩된 이미지 표시
+                        disease: item.disease_name,
+                        solution: item.answer,
+                        date: item.date,
+                        file: null, // 기존 DB 데이터에는 파일 객체가 없으므로 null로 설정
+                    }));
+                }
             } catch (error) {
                 console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
             }
@@ -134,13 +148,20 @@ export default {
         // 병해진단 수행
         async openDiagnosis(photo) {
             try {
+
+                if(response.data.success){
+
+                }else{
+                    
+                }
+
                 this.isLoading = true;                 // 로딩 화면 표시
                 const formData = new FormData();       // 파일을 FormData로 변환
                 formData.append('photo', photo.file);  // 파일 객체 전송
                 formData.append('username',this.$store.state.userId);
 
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/ai/disease', formData, {
+                response = await axios.post('/api/ai/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
