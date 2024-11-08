@@ -70,7 +70,36 @@ export default {
     components: {
         AppHeader
     },
+    created() {
+        this.loadDiseaseList();
+    },
     methods: {
+        async loadDiseaseList() {
+            try {
+
+                const username = this.$store.state.userId;
+
+                // API 요청 보내기
+                const response = await axios.get('/api/disease_load', {
+                    params: {
+                        username: username
+                    }
+                });
+
+                // 받아온 데이터를 photos 배열에 추가
+                if (response.data.success && response.data.disease_list) {
+                    this.photos = response.data.disease_list.map(item => ({
+                        url: 'data:image/png;base64,' + item.bounding_image, // Base64 인코딩된 이미지 표시
+                        disease: item.disease_name,
+                        solution: item.answer,
+                        date: item.date,
+                        file: null, // 기존 DB 데이터에는 파일 객체가 없으므로 null로 설정
+                    }));
+                }
+            } catch (error) {
+                console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
+            }
+        },
         // 카메라를 열기 위한 메서드 (모바일 카메라를 사용 가능)
         openCamera() {
             this.$refs.fileInput.setAttribute('capture', 'camera'); // 카메라로 사진 촬영
@@ -100,8 +129,6 @@ export default {
         // 병해진단 수행
         async openDiagnosis(photo) {
             try {
-
-                const response = await axios.post('/api/disease_load', { username: this.$store.state.userId });
 
                 if(response.data.success){
 
