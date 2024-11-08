@@ -115,8 +115,6 @@ export default {
     mounted() {
         // 초기 센서 설정
         this.fetchSensorData();
-        this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
-        this.isDataLoaded=true;
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
@@ -210,7 +208,11 @@ export default {
 
                 console.log("Date Array:", this.dateArray);
                 console.log("Temperature Array:", this.temperatureArray);
-
+                
+                const sensor = this.sensors.find(sensor => sensor.isOn); // 활성화된 센서 찾기
+                if (sensor) {
+                    this.currentSensorData = this.getSensorData(sensor); // getSensorData로 데이터를 업데이트
+                }
                 // 데이터 로드 완료 표시
                 this.isDataLoaded = true;
 
