@@ -101,7 +101,13 @@ export default {
         async openDiagnosis(photo) {
             try {
 
-                await axios.post('/api/disease_load', { username: this.$store.state.userId });
+                const response = await axios.post('/api/disease_load', { username: this.$store.state.userId });
+
+                if(response.data.success){
+
+                }else{
+                    
+                }
 
                 this.isLoading = true;                 // 로딩 화면 표시
                 const formData = new FormData();       // 파일을 FormData로 변환
@@ -109,7 +115,7 @@ export default {
                 formData.append('username',this.$store.state.userId);
 
                 // 서버에 진단 요청 보내기
-                const response = await axios.post('/api/ai/disease', formData, {
+                response = await axios.post('/api/ai/disease', formData, {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
