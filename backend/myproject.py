@@ -181,6 +181,22 @@ def disease_load():
 
     return jsonify({"success": True, "disease_list":disease_list})  # JSON 형식으로 반환
 
+@app.route('/api/disease_delete', methods=['POST'])
+def delete_disease():
+    data = request.get_json()
+    disease_id = data.get('disease_id')
+
+    if not disease_id:
+        return jsonify({"error": "disease_id가 제공되지 않았습니다."}), 400
+
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        delete_query = "DELETE FROM disease WHERE disease_id = %s"
+        cursor.execute(delete_query, (disease_id,))
+        connection.commit()
+
+    return jsonify({"success": True, "message": "이미지가 성공적으로 삭제되었습니다."})
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
 
