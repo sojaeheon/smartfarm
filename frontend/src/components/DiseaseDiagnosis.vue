@@ -89,7 +89,22 @@ export default {
     components: {
         AppHeader
     },
+    created(){
+        this.loadDiseaselist();
+    },
     methods: {
+        async loadPhotosFromDB() {
+            try {
+                const response = await axios.get('/api/photos');  // DB에서 사진 목록 가져오기
+                // 받은 데이터를 photos 배열에 저장
+                this.photos = response.data.map(photo => ({
+                    url: photo.imageUrl,
+                    file: null // 기존에 DB에 있는 데이터는 파일 객체가 없으므로 null로 설정
+                }));
+            } catch (error) {
+                console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
+            }
+        },
         // 카메라를 열기 위한 메서드 (모바일 카메라를 사용 가능)
         openCamera() {
             this.$refs.fileInput.setAttribute('capture', 'camera'); // 카메라로 사진 촬영
