@@ -108,11 +108,14 @@ export default {
                 // 받아온 데이터를 photos 배열에 추가
                 if (response.data.success && response.data.disease_list) {
                     this.photos = response.data.disease_list.map(item => ({
-                        url: 'data:image/png;base64,' + item.bounding_image, // Base64 인코딩된 이미지 표시
+                        url: 'data:image/png;base64,' + item.original_image, // 원본 이미지 표시
+                        disease_id: item.disease_id,  // disease_id 추가
                         disease: item.disease_name,
                         solution: item.answer,
                         date: item.date,
-                        file: null, // 기존 DB 데이터에는 파일 객체가 없으므로 null로 설정
+                        boundingImage: item.bounding_image,
+                        isExisting: true, // DB에서 불러온 데이터 표시
+                        file: null,
                     }));
                 }
             } catch (error) {
@@ -147,39 +150,60 @@ export default {
         },
         // 병해진단 수행
         async openDiagnosis(photo) {
-            try {
+            if (photo.isExisting) {
+                // 기존 DB 데이터라면, DB에 저장된 진단 결과를 표시
+                this.diagnosis.disease = photo.disease;
+                this.diagnosis.solution = photo.solution.replace(/\n/g, '<br>');
+                this.diagnosis.boundingImage = 'data:image/png;base64,' + photo.boundingImage;
+                this.showDiagnosis = true;
+            } else {
+                // 새로 업로드된 이미지라면, 진단 API 호출
+                try {
+                    this.isLoading = true;
+                    const formData = new FormData();
+                    formData.append('photo', photo.file);
+                    formData.append('username', this.$store.state.userId);
 
-                if(response.data.success){
+                    const response = await axios.post('/api/ai/disease', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
 
-                }else{
-                    
+                    this.diagnosis.disease = response.data.disease;
+                    this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
+                    this.diagnosis.boundingImage = response.data.boundingImage;
+                    this.showDiagnosis = true;
+                } catch (error) {
+                    console.error('진단 중 오류 발생:', error);
+                    alert('진단 중 오류가 발생했습니다.');
+                } finally {
+                    this.isLoading = false;
                 }
-
-                this.isLoading = true;                 // 로딩 화면 표시
-                const formData = new FormData();       // 파일을 FormData로 변환
-                formData.append('photo', photo.file);  // 파일 객체 전송
-                formData.append('username',this.$store.state.userId);
-
-                // 서버에 진단 요청 보내기
-                response = await axios.post('/api/ai/disease', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                // 서버에서 받은 진단 결과 처리
-                this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
-                this.diagnosis.boundingImage = response.data.boundingImage;
-                this.showDiagnosis = true;  // 모달 열기
-            } catch (error) {
-                console.error('진단 중 오류 발생:', error);
-                alert('진단 중 오류가 발생했습니다.');
-            } finally {
-                this.isLoading = false;  // 로딩 화면 숨기기
             }
         },
-        removePhoto(index) {
-            this.photos.splice(index, 1); // 해당 인덱스의 사진 삭제
+        async removePhoto(index) {
+            const photo = this.photos[index];
+
+            if (photo.isExisting) {
+                // DB에 있는 데이터인 경우 서버에 삭제 요청 전송
+                try {
+                    const response = await axios.post('/api/disease_delete', {
+                        disease_id: photo.disease_id
+                    });
+
+                    if (response.data.success) {
+                        this.photos.splice(index, 1); // 삭제 성공 시 배열에서 항목 제거
+                        alert('이미지가 성공적으로 삭제되었습니다.');
+                    }
+                } catch (error) {
+                    console.error("이미지 삭제 중 오류가 발생했습니다:", error);
+                    alert('이미지 삭제 중 오류가 발생했습니다.');
+                }
+            } else {
+                // 새로 추가된 데이터인 경우 로컬 배열에서만 삭제
+                this.photos.splice(index, 1);
+            }
         },
         closeDiagnosis() {
             this.showDiagnosis = false;
