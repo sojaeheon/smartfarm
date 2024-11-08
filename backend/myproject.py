@@ -166,8 +166,7 @@ def sensor_grap():
 
 @app.route('/api/disease_load', methods=['GET'])
 def disease_load():
-    data = request.get_json()
-    username = data.get('username')
+    username = request.args.get('username')  # URL 파라미터에서 값 가져오기
 
     connection = get_db_connection()
     with connection.cursor() as cursor:
