@@ -164,13 +164,13 @@ def disease_load():
     with connection.cursor() as cursor:
         check_query = "SELECT * FROM disease WHERE id = %s"
         cursor.execute(check_query, (username))
-        disease_list = cursor.fetchone()
+        disease_list = cursor.fetchall()
 
 
-    print(disease_list[0])
+    print(disease_list)
 
 
-    return jsonify({"success": True, "session": disease_list})  # JSON 형식으로 반환
+    return jsonify({"success": True, "disease_list":disease_list})  # JSON 형식으로 반환
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
