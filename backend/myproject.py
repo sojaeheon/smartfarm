@@ -170,7 +170,7 @@ def disease_load():
     print(disease_list[0])
 
 
-    return jsonify(data)  # JSON 형식으로 반환
+    return jsonify({"success": True, "session": disease_list})  # JSON 형식으로 반환
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
