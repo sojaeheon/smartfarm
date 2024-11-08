@@ -156,9 +156,19 @@ def sensor_data():
 # 센서데이터
 @app.route('/api/sensor_graph', methods=['GET'])
 def sensor_grap():
-    data = get_sensor_data()  # 데이터베이스에서 데이터 가져오기
-    print(data)
-    return jsonify(data)  # JSON 형식으로 반환
+    data = request.get_json()
+    device_name=data.get('device_name')
+
+    
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        check_query = "SELECT * FROM sensor WHERE device_name = %s"
+        cursor.execute(check_query, (device_name))
+        sensor_list = cursor.fetchone()
+
+    print(sensor_list)
+    
+    return jsonify({"success": True, "data": sensor_list })  # JSON 형식으로 반환
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)

@@ -24,7 +24,7 @@
             <!-- Current Data -->
             <div class="grid-item" id="current-data">
                 <div id="Chart">
-                    <Chart :ChartData="currentSensorData" />
+                    <Chart v-if="isDataLoaded" :ChartData="currentSensorData" />
                 </div>
                 <div id="button-container">
                     <button type="button" v-for="(sensor, index) in sensors" :key="index" class="sensors-button"
@@ -75,13 +75,14 @@ export default {
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
             sensors: [
-                { label: '조도', isOn : true},
-                { label: 'CO2', isOn : false},
-                { label: '온도', isOn : false},
-                { label: '습도', isOn : false},
-                { label: '수위', isOn : false}
+                { label: '조도', isOn: true },
+                { label: 'CO2', isOn: false },
+                { label: '온도', isOn: false },
+                { label: '습도', isOn: false },
+                { label: '수위', isOn: false }
 
             ],
+            isDataLoaded: false,
             currentSensorData: {},
             forecastList: [],
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
@@ -113,9 +114,9 @@ export default {
     },
     mounted() {
         // 초기 센서 설정
-        this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
-        // 센서 데이터 가져오기(차트)
         this.fetchSensorData();
+        this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
+        this.isDataLoaded=true;
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
@@ -140,7 +141,7 @@ export default {
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
-          
+
             // LED 액추에이터인 경우 서버에 상태 전송
             if (this.actuators[index].label === 'LED') {
                 this.controlLed(index);
@@ -159,61 +160,102 @@ export default {
                 sensor.isOn = true;
             }
             this.currentSensorData = this.getSensorData(sensor);
+            this.isDataLoaded = true; // 차트 데이터가 로드되었음을 표시
         },
-        async controlLed(index){
+        async controlLed(index) {
             // 서버에 POST 요청 보내기
             const status = this.actuators[index].isOn ? 'on' : 'off';
 
             await axios.post(`http://202.31.150.31:9999/led`, {
                 status: status
             })
-            .catch(error => {
-                console.error('There was a problem with the axios operation:', error);
-            });
+                .catch(error => {
+                    console.error('There was a problem with the axios operation:', error);
+                });
         },
-        async controlDcfan(index){
+        async controlDcfan(index) {
             // 서버에 POST 요청 보내기
             const status = this.actuators[index].isOn ? 'on' : 'off';
 
             await axios.post(`http://202.31.150.31:9999/dcfan`, {
                 status: status
             })
-            .catch(error => {
-                console.error('There was a problem with the axios operation:', error);
-            });
-        },                async fetchSensorData() {
+                .catch(error => {
+                    console.error('There was a problem with the axios operation:', error);
+                });
+        },
+        async fetchSensorData() {
             try {
-                const response = await axios.get('/api/sensor_graph');  // 데이터베이스에서 센서 데이터 가져오기
-                const data = response.data.slice(-10);  // 최근 10개 데이터만 가져옵니다.
+                const response = await axios.get('/api/sensor_graph', {
+                    params: {
+                        device_name: this.$store.state.device_name  // 쿼리 파라미터로 전달
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
 
-                this.sensors = data.map(item => ({
-                    date: item.date,
-                    temperature : item.temperature,
-                    humidity : item.humidity,
-                    light : item.light,
-                    waterlevel : item.waterlevel,
-                    co2 : item.co2,
-                    }));
+                const datas = response.data.data.slice(-10); // 최근 10개 데이터만 가져오기
 
-                this.updateChartData();  // 차트 데이터 업데이트
-            }
-            catch (error) {
+                // 센서 데이터 각각을 별도의 배열에 저장
+                this.dateArray = datas.map(item => {
+                    const date = new Date(item.date);  // 'date'를 Date 객체로 변환
+                    return date.toLocaleTimeString(); // 시간만 추출하여 반환 (HH:mm:ss 형식)
+                });
+                this.co2Array = datas.map(item => item.co2);
+                this.temperatureArray = datas.map(item => item.temperature);
+                this.humidityArray = datas.map(item => item.humidity);
+                this.lightArray = datas.map(item => item.light);
+                this.waterLevelArray = datas.map(item => item.waterlevel);
+
+                console.log("Date Array:", this.dateArray);
+                console.log("Temperature Array:", this.temperatureArray);
+
+                // 데이터 로드 완료 표시
+                this.isDataLoaded = true;
+
+                this.updateChartData(); // 차트 데이터 업데이트
+            } catch (error) {
                 console.error("센서 데이터를 불러오지 못했습니다:", error);
             }
+
         },
-        updateChartData() {
-            this.currentSensorData = {
-                labels: this.sensors.map(item => item.date),  // x축에 날짜 설정
-                datasets : [
-                    { label: '온도', data : this.sensors.map(item => item.temperature)},
-                    { label: '습도', data : this.sensors.map(item => item.humidity)},
-                    { label: '조도', data : this.sensors.map(item => item.light)},
-                    { label: '수위', data : this.sensors.map(item => item.waterlevel)},
-                    { label: 'CO2', data : this.sensors.map(item => item.co2)},
-                ]
+        getSensorData(sensor) {
+            if (!sensor) return {}; // sensor가 undefined일 경우 빈 객체 반환
+
+            let sensorData = [];
+            switch (sensor.label) {
+                case '온도':
+                    sensorData = this.temperatureArray;
+                    break;
+                case '습도':
+                    sensorData = this.humidityArray;
+                    break;
+                case '조도':
+                    sensorData = this.lightArray;
+                    break;
+                case '수위':
+                    sensorData = this.waterLevelArray;
+                    break;
+                case 'CO2':
+                    sensorData = this.co2Array;
+                    break;
+                default:
+                    sensorData = [];
+            }
+            console.log("Chart Data:", sensorData);  // 콘솔에 데이터 확인
+            return {
+                dates: this.dateArray,
+                datasets: [{
+                    label: sensor.label,
+                    data: sensorData,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1,
+                    fill: false,  // 선 그래프의 선만 표시하도록 설정
+                }]
             };
         },
-
         getWeatherIconUrl(icon) {
             return icon ? `https://openweathermap.org/img/wn/${icon}@2x.png` : '';
         },
@@ -363,9 +405,9 @@ export default {
 }
 
 #Chart {
-    margin: 0 10px;
+    /*margin: 0 10px;*/
     position: relative;
-    width: 30vw;
+    width: 35vw;
 }
 
 #data-button {
