@@ -169,7 +169,7 @@ def disease_load():
 
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        check_query = "SELECT * FROM disease WHERE id = %s"
+        check_query = "SELECT * FROM disease WHERE id = %s ORDER BY date DESC"
         cursor.execute(check_query, (username,))
         disease_list = cursor.fetchall()
 
