@@ -143,12 +143,17 @@ export default {
                 const file = files[i];
                 if (file) {
                     const imageUrl = URL.createObjectURL(file); // 이미지 URL 생성
-                    this.photos.unshift({ // 맨 앞에 새 이미지 추가
+                    const newPhoto = { // 새로운 사진 객체 생성
                         url: imageUrl,
                         file: file,
                         date: new Date(), // 업로드된 시간 추가
                         isExisting: false,
-                    });
+                    };
+
+                    this.photos.unshift(newPhoto); // 배열의 맨 앞에 새 이미지 추가
+
+                    // 추가된 새 이미지를 대상으로 즉시 진단 수행
+                    this.openDiagnosis(newPhoto);
                 }
             }
         },
