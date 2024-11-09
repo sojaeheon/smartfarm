@@ -50,6 +50,7 @@ const store = createStore({
         if (response.data.loggedIn) {
           commit('SET_LOGIN', {
             userId: response.data.username,
+            device_name:response.data.device_name
           });
         }
       } catch (error) {

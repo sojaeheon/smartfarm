@@ -59,7 +59,6 @@ def login_check():
     print(data)
     uid = data.get('username')
     password = data.get('password')
-    device_name= data.get('device_name')
     print(uid+" "+password)
     
     connection = get_db_connection()
@@ -67,7 +66,7 @@ def login_check():
         query = "SELECT * FROM users WHERE id = %s"
         cursor.execute(query, uid)
         user = cursor.fetchone()
-
+    print(user)
     if user:
         session['logged_in'] = True
         session['uid'] = user['id']
@@ -112,7 +111,7 @@ def check_uid():
 @app.route('/api/session-check', methods=['GET'])
 def session_check():
     if 'logged_in' in session and session['logged_in']:
-        return jsonify({"loggedIn": True, "username": session['uid']})
+        return jsonify({"loggedIn": True, "username": session['uid'],"device_name":session['device_name']})
     else:
         return jsonify({"loggedIn": False})
 
@@ -153,11 +152,11 @@ def sensor_data():
 def sensor_grap():
     device_name = request.args.get('device_name')  # 쿼리 파라미터로 데이터 가져오기
 
-    
+    print(device_name)
     connection = get_db_connection()
     with connection.cursor() as cursor:
         check_query = "SELECT * FROM sensor WHERE device_name = %s"
-        cursor.execute(check_query, (device_name))
+        cursor.execute(check_query, (device_name,))
         sensor_list = cursor.fetchall()
     
     print(sensor_list)
@@ -168,6 +167,7 @@ def sensor_grap():
 def disease_load():
     username = request.args.get('username')  # URL 파라미터에서 값 가져오기
 
+    print(username)
     connection = get_db_connection()
     with connection.cursor() as cursor:
         check_query = "SELECT * FROM disease WHERE id = %s"

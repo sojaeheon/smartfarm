@@ -48,7 +48,7 @@ export default {
         await this.login({ username: this.uid, password: this.upw });
         
         if (this.$store.state.isLoggedIn) {
-          alert(`로그인 성공 : ${this.uid}`);
+          alert(`로그인 성공 : ${this.uid} + ${this.$store.state.device_name}`);
           this.$router.push('/MainView'); // 메인 화면으로 이동
         } else {
           alert('로그인 실패');
