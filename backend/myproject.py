@@ -3,6 +3,7 @@ from flask_cors import CORS
 from werkzeug.security import generate_password_hash, check_password_hash
 import pymysql
 from flask_cors import CORS
+import base64
 from datetime import datetime, timezone
 import os
 
@@ -149,7 +150,7 @@ def sensor_data():
 
 # 센서데이터
 @app.route('/api/sensor_graph', methods=['GET'])
-def sensor_grap():
+def sensor_graph():
     device_name = request.args.get('device_name')  # 쿼리 파라미터로 데이터 가져오기
 
     print(device_name)
@@ -159,26 +160,38 @@ def sensor_grap():
         cursor.execute(check_query, (device_name,))
         sensor_list = cursor.fetchall()
     
-    print(sensor_list)
 
     return jsonify({"success": True, "data": sensor_list })  # JSON 형식으로 반환
 
 @app.route('/api/disease_load', methods=['GET'])
 def disease_load():
-    username = request.args.get('username')  # URL 파라미터에서 값 가져오기
+    username = request.args.get('username')
 
-    print(username)
     connection = get_db_connection()
     with connection.cursor() as cursor:
         check_query = "SELECT * FROM disease WHERE id = %s"
-        cursor.execute(check_query, (username))
+        cursor.execute(check_query, (username,))
         disease_list = cursor.fetchall()
 
+        # 데이터가 없으면 오류 메시지 반환
+        if not disease_list:
+            return jsonify({"success": False, "message": "No data found"})
 
-    print(disease_list)
+        # Base64 데이터를 포함한 JSON 응답 준비
+        disease_data = []
+        for disease in disease_list:
+            disease_data.append({
+                "disease_id": disease["disease_id"],
+                "disease_name": disease["disease_name"],
+                "original_image": disease["original_image"].decode('utf-8'),  # Base64 문자열로 변환
+                "bounding_image": disease["bounding_image"].decode('utf-8'),  # Base64 문자열로 변환
+                "answer": disease["answer"],
+                "date": disease["date"].isoformat()
+            })
+
+    return jsonify({"success": True, "disease_list": disease_data})
 
 
-    return jsonify({"success": True, "disease_list":disease_list})  # JSON 형식으로 반환
 
 @app.route('/api/disease_delete', methods=['POST'])
 def delete_disease():
