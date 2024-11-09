@@ -107,18 +107,18 @@ export default {
 
                 console.log(response)
                 // 받아온 데이터를 photos 배열에 추가
-                // if (response.data.success && response.data.disease_list) {
-                //     this.photos = response.data.disease_list.map(item => ({
-                //         url: 'data:image/png;base64,' + item.original_image, // 원본 이미지 표시
-                //         disease_id: item.disease_id,  // disease_id 추가
-                //         disease: item.disease_name,
-                //         solution: item.answer,
-                //         date: item.date,
-                //         boundingImage: item.bounding_image,
-                //         isExisting: true, // DB에서 불러온 데이터 표시
-                //         file: null,
-                //     }));
-                // }
+                if (response.data.success && response.data.disease_list) {
+                    this.photos = response.data.disease_list.map(item => ({
+                        url: 'data:image/png;base64,' + item.original_image, // 원본 이미지 표시
+                        disease_id: item.disease_id,  // disease_id 추가
+                        disease: item.disease_name,
+                        solution: item.answer,
+                        date: item.date,
+                        boundingImage: item.bounding_image,
+                        isExisting: true, // DB에서 불러온 데이터 표시
+                        file: null,
+                    }));
+                }
             } catch (error) {
                 console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
             }
@@ -158,6 +158,7 @@ export default {
                 this.diagnosis.solution = photo.solution.replace(/\n/g, '<br>');
                 this.diagnosis.boundingImage = 'data:image/png;base64,' + photo.boundingImage;
                 this.showDiagnosis = true;
+                
             } else {
                 // 새로 업로드된 이미지라면, 진단 API 호출
                 try {

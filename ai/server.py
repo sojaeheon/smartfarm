@@ -134,7 +134,7 @@ def disease():
                 """
                 # 현재 날짜와 시간
                 current_date = datetime.now()
-                cursor.execute(insert_query, (username, disease_name, original_image_base64, bounding_image_base64, solution, current_date))
+                cursor.execute(insert_query, (username, disease_name, image_data, bounding_image, solution, current_date))
                 connection.commit()
 
             print(question)
