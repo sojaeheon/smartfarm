@@ -29,7 +29,7 @@
             />
             <button
                 v-if="photo.hovered"
-                class="close-button"
+                class="delete-button"
                 @click="removePhoto(index)"
             ></button>
         </div>
@@ -145,7 +145,6 @@ export default {
                     this.photos.push({
                         url: imageUrl,  // 미리보기 이미지 URL
                         file: file,      // 실제 파일 객체
-                        hovered: false, // 마우스 오버 상태를 위한 변수
                     });
                 }
             }
@@ -400,6 +399,8 @@ export default {
 .preview-image {
     width: 100%;
     height: 100%;
+    /* width: 150px;
+    height: 200px; */
     object-fit: contain;
     border-radius: 5px;
     cursor: pointer;

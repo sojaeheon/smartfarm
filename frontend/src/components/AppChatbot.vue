@@ -60,11 +60,7 @@ export default {
     async deleteSearchHistoryItem(index) {
       const item = this.lists[index];
       try {
-<<<<<<< HEAD
         await axios.delete(`http://192.168.0.29:8888/api/delete_history/${item.id}`);
-=======
-        await axios.delete("http://192.168.0.29:8888/api/delete_history/${item.id}");
->>>>>>> df2abf24 (	modified:   frontend/src/components/AppChatbot.vue)
         this.lists.splice(index, 1); // 배열에서 해당 항목 제거
       } catch (error) {
         console.error('검색 기록 삭제 오류:', error);
