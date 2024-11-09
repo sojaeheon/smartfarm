@@ -14,21 +14,21 @@
 </template>
 
 <script>
-import axios from 'axios';
+import { mapActions } from 'vuex';
 
 export default {
   methods: {
+    ...mapActions(['logout']),
     async handleLogout() {
       try {
-        // 서버에 로그아웃 요청 보내기
-        const response = await axios.get('/api/logout');
+        
+        await this.logout();
 
-        if (response.data.success) {
-          localStorage.removeItem('loggedIn');  // 로컬 스토리지에서 로그인 상태 제거
+        if (this.$store.state.isLoggedIn) {
+          alert('로그아웃 실패');
+        } else {
           this.$router.push('/');          // 로그인 페이지로 이동
           alert('로그아웃 되었습니다.');
-        } else {
-          alert('로그아웃 실패');
         }
       } catch (error) {
         console.error('로그아웃 중 오류 발생:', error);

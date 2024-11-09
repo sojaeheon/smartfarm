@@ -123,7 +123,7 @@ export default {
                 console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
             }
         },
-        
+
         // 카메라를 열기 위한 메서드 (모바일 카메라를 사용 가능)
         openCamera() {
             this.$refs.fileInput.setAttribute('capture', 'camera'); // 카메라로 사진 촬영
@@ -206,9 +206,6 @@ export default {
                 // 새로 추가된 데이터인 경우 로컬 배열에서만 삭제
                 this.photos.splice(index, 1);
             }
-        },
-        removePhoto(index) {
-            this.photos.splice(index, 1); // 해당 인덱스의 사진 삭제
         },
         closeDiagnosis() {
             this.showDiagnosis = false;
