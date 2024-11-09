@@ -9,7 +9,8 @@
       <div>
         <button id="search-list" @click="showSearchList"></button>
         <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
-          <AppChatbotModal :lists="lists" @closeModal="closeModal" />
+          <AppChatbotModal :lists="lists" @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem"
+            @selectSession="loadSessionData" />
         </div>
       </div>
       <div class="messages" ref="messages">
@@ -35,7 +36,7 @@ export default {
   data() {
     return {
       isListOpen: false, // 모달의 상태
-      lists: ['이거', '저거', '요거'],
+      lists: ['이거', '저거', '여거'],
       userInput: '',
       messages: []
     };
@@ -44,8 +45,55 @@ export default {
     showSearchList() {
       this.isListOpen = true; // 모달 열기
     },
+    async fetchSearchHistory() {
+      try {
+        //const response = await axios.get('http://192.168.0.29:8888/api/search_history');
+        //this.lists = response.data.history; // 서버에서 받은 검색 기록 저장
+        this.isListOpen = true; // 모달 열기
+      } catch (error) {
+        console.error('검색 기록을 불러오는 중 오류 발생:', error);
+      }
+    },
     closeModal() {
       this.isListOpen = false; // 모달 닫기
+    },
+    async deleteSearchHistoryItem(index) {
+      const item = this.lists[index];
+      try {
+<<<<<<< HEAD
+        await axios.delete(`http://192.168.0.29:8888/api/delete_history/${item.id}`);
+=======
+        await axios.delete("http://192.168.0.29:8888/api/delete_history/${item.id}");
+>>>>>>> df2abf24 (	modified:   frontend/src/components/AppChatbot.vue)
+        this.lists.splice(index, 1); // 배열에서 해당 항목 제거
+      } catch (error) {
+        console.error('검색 기록 삭제 오류:', error);
+      }
+    }, 
+    async loadSessionData(sessionId) {
+      try {
+        const response = await axios.get(`http://192.168.0.29:8888/api/session/${sessionId}`);
+        const sessionData = response.data; // DB에서 반환된 question과 answer
+
+        // question과 answer를 messages 배열로 변환
+        this.messages = sessionData.map((item) => ({
+        id: item.id + '-user',  // 유저 메시지 ID 생성
+        sender: 'user',         // 유저 메시지로 설정
+        text: item.question,    // question을 텍스트로 설정
+        date: item.date
+      },
+      {
+        id: item.id + '-ai',    // AI 응답 메시지 ID 생성
+        sender: 'ai',           // AI 응답으로 설정
+        text: item.answer,      // answer을 텍스트로 설정
+        date: item.date
+      }));
+
+        // 모달 닫기
+        this.closeModal();
+      } catch (error) {
+        console.error('세션 데이터 불러오기 오류:', error);
+      }
     },
     async sendMessage() {
       const userMessage = this.userInput.trim();
@@ -63,7 +111,7 @@ export default {
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
-    
+
     async getAIResponse(message) {
       try {
         const response = await axios.post('/api/ai/get_answer', {
@@ -164,12 +212,14 @@ button {
 .message {
   display: flex;
 
-  justify-content: flex-end; /* 사용자 메시지를 오른쪽으로 정렬 */
+  justify-content: flex-end;
+  /* 사용자 메시지를 오른쪽으로 정렬 */
   color: black;
 }
 
 .message.ai {
-  justify-content: flex-start; /* AI 메시지는 왼쪽으로 정렬 */
+  justify-content: flex-start;
+  /* AI 메시지는 왼쪽으로 정렬 */
   color: black;
 }
 

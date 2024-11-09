@@ -2,7 +2,11 @@
   <div class="modal-overlay" @click="$emit('closeModal')">
     <div class="modal" @click.stop>
       <ul>
-        <li v-for="(list, index) in lists" :key="index" class="modal-item">{{ list }}</li>
+        <li v-for="(list, index) in lists" :key="index" @click="$emit('selectSession', session.id)"
+         class="modal-item">
+          {{ list }}
+          <button class="del_button" @click="$emit('deleteItem', index)"></button>
+        </li>
       </ul>
     </div>
   </div>
@@ -50,5 +54,14 @@ export default {
 
 .modal-item {
   list-style: none;
+}
+
+.del_button {
+  background-image: url('@/assets/closebutton.svg');
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 3vw; 
+
 }
 </style>

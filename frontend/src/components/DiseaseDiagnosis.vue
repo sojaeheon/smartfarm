@@ -29,7 +29,7 @@
             />
             <button
                 v-if="photo.hovered"
-                class="delete-button"
+                class="close-button"
                 @click="removePhoto(index)"
             ></button>
         </div>
@@ -145,6 +145,7 @@ export default {
                     this.photos.push({
                         url: imageUrl,  // 미리보기 이미지 URL
                         file: file,      // 실제 파일 객체
+                        hovered: false, // 마우스 오버 상태를 위한 변수
                     });
                 }
             }
@@ -205,6 +206,9 @@ export default {
                 // 새로 추가된 데이터인 경우 로컬 배열에서만 삭제
                 this.photos.splice(index, 1);
             }
+        },
+        removePhoto(index) {
+            this.photos.splice(index, 1); // 해당 인덱스의 사진 삭제
         },
         closeDiagnosis() {
             this.showDiagnosis = false;
@@ -358,6 +362,8 @@ export default {
     position: absolute;
     top: 8px;
     right: 8px;
+
+    z-index: 2;
 }
 
 /* li 태그 스타일 (버튼처럼 보이게) */
@@ -415,6 +421,11 @@ export default {
     top: 10px;
     left: 150px;
     z-index: 2;
+}
+
+/* hover 효과 */
+.photo-container:hover .preview-image {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
