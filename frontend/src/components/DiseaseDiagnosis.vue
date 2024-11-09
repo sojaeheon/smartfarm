@@ -106,18 +106,18 @@ export default {
                 });
 
                 console.log(response)
-                // 받아온 데이터를 photos 배열에 추가
+                // 받아온 데이터를 photos 배열에 추가하고 최신순으로 정렬
                 if (response.data.success && response.data.disease_list) {
                     this.photos = response.data.disease_list.map(item => ({
-                        url: 'data:image/png;base64,' + item.original_image, // 원본 이미지 표시
-                        disease_id: item.disease_id,  // disease_id 추가
+                        url: 'data:image/png;base64,' + item.original_image,
+                        disease_id: item.disease_id,
                         disease: item.disease_name,
                         solution: item.answer,
-                        date: item.date,
+                        date: new Date(item.date),
                         boundingImage: item.bounding_image,
-                        isExisting: true, // DB에서 불러온 데이터 표시
+                        isExisting: true,
                         file: null,
-                    }));
+                    })).sort((a, b) => b.date - a.date); // 최신순 정렬
                 }
             } catch (error) {
                 console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
@@ -142,10 +142,12 @@ export default {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file) {
-                    const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push({
-                        url: imageUrl,  // 미리보기 이미지 URL
-                        file: file,      // 실제 파일 객체
+                    const imageUrl = URL.createObjectURL(file); // 이미지 URL 생성
+                    this.photos.unshift({ // 맨 앞에 새 이미지 추가
+                        url: imageUrl,
+                        file: file,
+                        date: new Date(), // 업로드된 시간 추가
+                        isExisting: false,
                     });
                 }
             }
@@ -156,7 +158,7 @@ export default {
                 // 기존 DB 데이터라면, DB에 저장된 진단 결과를 표시
                 this.diagnosis.disease = photo.disease;
                 this.diagnosis.solution = photo.solution.replace(/\n/g, '<br>');
-                this.diagnosis.boundingImage = 'data:image/png;base64,' + photo.boundingImage;
+                this.diagnosis.boundingImage = photo.boundingImage;
                 this.showDiagnosis = true;
                 
             } else {
@@ -177,6 +179,17 @@ export default {
                     this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
                     this.diagnosis.boundingImage = response.data.boundingImage;
                     this.showDiagnosis = true;
+
+                    this.photos = this.photos.map(p => 
+                        p === photo ? {
+                            ...p,
+                            disease: response.data.disease,
+                            solution: response.data.solution,
+                            boundingImage: response.data.boundingImage, // Base64로 인코딩된 바운딩 이미지
+                            isExisting: true // 진단 완료된 사진으로 표시
+                        } : p
+                    );
+
                 } catch (error) {
                     console.error('진단 중 오류 발생:', error);
                     alert('진단 중 오류가 발생했습니다.');
