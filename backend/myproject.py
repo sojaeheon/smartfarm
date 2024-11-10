@@ -192,7 +192,6 @@ def disease_load():
     return jsonify({"success": True, "disease_list": disease_data})
 
 
-
 @app.route('/api/disease_delete', methods=['POST'])
 def delete_disease():
     data = request.get_json()
@@ -247,6 +246,34 @@ def create_session():
     except Exception as e:
         print(f"Error occurred: {e}")
         return jsonify({'error': 'Failed to create session'}), 500
+
+@app.route('/api/chat_history', methods=['GET'])
+def disease_load():
+    username = request.args.get('username')
+
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        check_query = "SELECT * FROM disease WHERE id = %s ORDER BY date DESC"
+        cursor.execute(check_query, (username,))
+        disease_list = cursor.fetchall()
+
+        # 데이터가 없으면 오류 메시지 반환
+        if not disease_list:
+            return jsonify({"success": False, "message": "No data found"})
+
+        # Base64 데이터를 포함한 JSON 응답 준비
+        disease_data = []
+        for disease in disease_list:
+            disease_data.append({
+                "disease_id": disease["disease_id"],
+                "disease_name": disease["disease_name"],
+                "original_image": disease["original_image"].decode('utf-8'),  # Base64 문자열로 변환
+                "bounding_image": disease["bounding_image"].decode('utf-8'),  # Base64 문자열로 변환
+                "answer": disease["answer"],
+                "date": disease["date"].isoformat()
+            })
+
+    return jsonify({"success": True, "disease_list": disease_data})
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
