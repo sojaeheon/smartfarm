@@ -214,9 +214,10 @@ def delete_disease():
 def create_session():
     data = request.get_json()
     username = data.get('username')
+    question = data.get('question')  # 질문 내용 가져오기
     
-    if not username:
-        return jsonify({'error': 'username is required'}), 400
+    if not username or not question:
+        return jsonify({'error': 'username and question are required'}), 400
 
     # 데이터베이스 연결 및 새로운 세션 추가
     connection = get_db_connection()
@@ -224,11 +225,11 @@ def create_session():
         with connection.cursor() as cursor:
             # 새 세션을 추가하는 SQL 쿼리 작성
             insert_query = """
-                INSERT INTO session (id, started_at, ended_at)
-                VALUES (%s, %s, %s)
+                INSERT INTO session (id, started_at, ended_at, question)
+                VALUES (%s, %s, %s, %s)
             """
             started_at = datetime.now()
-            cursor.execute(insert_query, (username, started_at, None))
+            cursor.execute(insert_query, (username, started_at, None, question))
             connection.commit()
 
             # 방금 추가한 세션의 ID를 가져오기
@@ -238,6 +239,7 @@ def create_session():
         return jsonify({
             "session_id": session_id,
             "username": username,
+            "question": question,  # 질문 내용 반환
             "started_at": started_at.isoformat(),
             "ended_at": None
         }), 201
