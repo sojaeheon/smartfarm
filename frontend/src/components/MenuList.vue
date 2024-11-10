@@ -79,7 +79,7 @@ a {
   float: left;
   background-color: rgb(251, 244, 244);
   width: 130px;
-  height: 90vh;
+  height: 92.5vh;
 }
 
 a:hover {

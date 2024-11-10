@@ -1,7 +1,5 @@
 <template>
   <div class="wrap">
-    <!-- form 요소에서 submit 이벤트를 처리하도록 수정 -->
-    <form @submit.prevent="LoginClick">
       <div class="login">
         <img src="../assets/Farmi.svg" alt="Logo" class="login-logo"><br>
 
@@ -12,7 +10,7 @@
 
         <div class="login_pw">
           <h4>Password</h4>
-          <input type="password" v-model="upw" placeholder="Password" class="input-field" required>
+          <input type="password" v-model="upw" placeholder="Password" class="input-field"  @keyup.enter="LoginClick" required>
         </div>
 
         <div class="signup">
@@ -22,11 +20,9 @@
         </div>
 
         <div class="submit">
-          <!-- 여기서 type="submit"을 추가하여 버튼 클릭 시 폼 제출을 트리거 -->
-          <button type="submit" class="submit_button">Login</button>
+          <button type="submit" class="submit_button" @click="LoginClick">Login</button>
         </div>
       </div>
-    </form>
   </div>
 </template>
 
@@ -84,11 +80,10 @@ export default {
 
 .login {
   width: 80%;
-  /* 화면 너비의 80% */
+  /* 화면 너비의 100% */
   height: auto;
   max-width: 300px;
   /* 최대 너비 */
-  max-height: 1000vh;
   background: white;
   border-radius: 20px;
   display: flex;
