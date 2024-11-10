@@ -199,7 +199,7 @@ export default {
                 this.dateArray = datas.map(item => {
                     const date = new Date(item.date);  // 'date'를 Date 객체로 변환
                     return date.toLocaleTimeString(); // 시간만 추출하여 반환 (HH:mm:ss 형식)
-                });
+                }).reverse();
                 this.co2Array = datas.map(item => item.co2);
                 this.temperatureArray = datas.map(item => item.temperature);
                 this.humidityArray = datas.map(item => item.humidity);

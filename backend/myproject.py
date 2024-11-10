@@ -156,7 +156,7 @@ def sensor_graph():
     print(device_name)
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        check_query = "SELECT * FROM sensor WHERE device_name = %s"
+        check_query = "SELECT * FROM sensor WHERE device_name = %s ORDER BY date DESC"
         cursor.execute(check_query, (device_name,))
         sensor_list = cursor.fetchall()
     
