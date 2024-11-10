@@ -192,7 +192,6 @@ def disease_load():
     return jsonify({"success": True, "disease_list": disease_data})
 
 
-
 @app.route('/api/disease_delete', methods=['POST'])
 def delete_disease():
     data = request.get_json()
@@ -208,6 +207,127 @@ def delete_disease():
         connection.commit()
 
     return jsonify({"success": True, "message": "이미지가 성공적으로 삭제되었습니다."})
+
+# 세션 추가 엔드포인트
+@app.route('/api/session/new', methods=['POST'])
+def create_session():
+    data = request.get_json()
+    username = data.get('username')
+    question = data.get('question')  # 질문 내용 가져오기
+    
+    if not username or not question:
+        return jsonify({'error': 'username and question are required'}), 400
+
+    # 데이터베이스 연결 및 새로운 세션 추가
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            # 새 세션을 추가하는 SQL 쿼리 작성
+            insert_query = """
+                INSERT INTO chat_sessions (id, started_at, ended_at, question)
+                VALUES (%s, %s, %s, %s)
+            """
+            started_at = datetime.now()
+            cursor.execute(insert_query, (username, started_at, None, question))
+            connection.commit()
+
+            # 방금 추가한 세션의 ID를 가져오기
+            session_id = cursor.lastrowid
+
+        # 성공적으로 추가된 세션 정보를 반환
+        return jsonify({
+            "session_id": session_id,
+            "username": username,
+            "question": question,  # 질문 내용 반환
+            "started_at": started_at.isoformat(),
+            "ended_at": None
+        }), 201
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'error': 'Failed to create session'}), 500
+
+@app.route('/api/chat_history', methods=['GET'])
+def chat_history():
+    username = request.args.get('username')
+
+    connection = get_db_connection()
+    with connection.cursor() as cursor:
+        check_query = "SELECT * FROM chat_sessions WHERE id = %s ORDER BY started_at DESC"
+        cursor.execute(check_query, (username,))
+        history = cursor.fetchall()
+
+        # 데이터가 없으면 오류 메시지 반환
+        if not history:
+            return jsonify({"success": False, "message": "No data found"})
+
+
+    return jsonify({"success": True, "history": history})
+
+@app.route('/api/session/<int:session_id>/end', methods=['POST'])
+def end_session(session_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            update_query = """
+                UPDATE chat_sessions SET ended_at = %s WHERE session_id = %s
+            """
+            ended_at = datetime.now()
+            cursor.execute(update_query, (ended_at, session_id))
+            connection.commit()
+
+        return jsonify({'success': True, 'message': 'Session ended successfully.'}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'error': 'Failed to end session'}), 500
+    
+@app.route('/api/delete_history/<int:session_id>', methods=['DELETE'])
+def delete_history(session_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            # 메시지 삭제 쿼리
+            delete_messages_query = """
+                DELETE FROM messages WHERE session_id = %s
+            """
+            cursor.execute(delete_messages_query, (session_id,))
+
+            # 세션 삭제 쿼리
+            delete_session_query = """
+                DELETE FROM chat_sessions WHERE session_id = %s
+            """
+            cursor.execute(delete_session_query, (session_id,))
+
+            # 모든 변경사항을 커밋
+            connection.commit()
+
+        return jsonify({'success': True, 'message': 'Session and related messages deleted successfully.'}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'error': 'Failed to delete session and messages'}), 500
+    
+@app.route('/api/session/<int:session_id>', methods=['GET'])
+def message_load(session_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            # 메시지를 불러오는 쿼리
+            check_query = "SELECT * FROM messages WHERE session_id = %s ORDER BY timestamp ASC"
+            cursor.execute(check_query, (session_id,))
+            history = cursor.fetchall()
+
+            # 데이터가 없으면 오류 메시지 반환
+            if not history:
+                return jsonify({"success": False, "message": "No data found"}), 404
+
+            # 데이터가 있으면 메시지와 함께 성공 메시지 반환
+            return jsonify({"success": True, "history": history}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({"error": "Failed to load messages", "details": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)

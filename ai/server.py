@@ -69,6 +69,7 @@ def get_answer():
         data = request.get_json()
         question = data.get('question')
         username = data.get('username')
+        session_id=data.get('session_id')
         print(question)
         print(chain)
         if not question:
@@ -80,8 +81,10 @@ def get_answer():
 
             connection = get_db_connection()
             with connection.cursor() as cursor: 
-                  insert_query = "INSERT INTO chatbot (id,question,answer,date) VALUES (%s, %s, %s, %s)"
-                  cursor.execute(insert_query, (username, question, answer, datetime.now()))
+                  insert_query = "INSERT INTO messages (session_id,sender,message_text,timestamp) VALUES (%s, %s, %s, %s)"
+                  cursor.execute(insert_query, (session_id, 'user', question, datetime.now()))
+
+                  cursor.execute(insert_query, (session_id, 'ai', answer, datetime.now()))
                   connection.commit()
                   
             return jsonify({"answer": answer}), 200

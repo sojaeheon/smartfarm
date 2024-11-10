@@ -2,10 +2,10 @@
   <div class="modal-overlay" @click="$emit('closeModal')">
     <div class="modal" @click.stop>
       <ul>
-        <li v-for="(list, index) in lists" :key="index" @click="$emit('selectSession', session.id)"
+        <li v-for="(list, index) in lists" :key="index" @click="$emit('selectSession', list.session_id)"
          class="modal-item">
-          {{ list }}
-          <button class="del_button" @click="$emit('deleteItem', index)"></button>
+          {{ list.question }}
+          <button class="del_button" @click.stop="$emit('deleteItem', index)"></button>
         </li>
       </ul>
     </div>
@@ -53,7 +53,11 @@ export default {
 }
 
 .modal-item {
-  list-style: none;
+  display: block;
+  width: 100%; /* 도형의 크기에 맞게 조정 */
+  white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 부분을 줄임표(...)로 표시 */
 }
 
 .del_button {
