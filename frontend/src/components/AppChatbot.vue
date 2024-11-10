@@ -7,9 +7,9 @@
   <section class="main">
     <div class="chat-bot">
       <div>
-        <button id="search-list" @click="showSearchList"></button>
+        <button id="search-list" @click="fetchSearchHistory"></button>
         <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
-          <AppChatbotModal :lists="lists.question" @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem"
+          <AppChatbotModal :lists=lists @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem"
             @selectSession="loadSessionData" />
         </div>
       </div>
@@ -36,10 +36,10 @@ export default {
   data() {
     return {
       isListOpen: false, // 모달의 상태
-      lists: ['이거', '저거', '여거'],
+      lists: ["이거","저거","요거"],
       userInput: '',
       messages: [],
-      chat_sessions:null,
+      chat_sessions: null,
     };
   },
   methods: {
@@ -68,7 +68,7 @@ export default {
     async deleteSearchHistoryItem(index) {
       const item = this.lists[index];
       try {
-        await axios.delete(`/api/delete_history/${item.id}`);
+        await axios.delete(`/api/delete_history/${item.session_id}`);
         this.lists.splice(index, 1); // 배열에서 해당 항목 제거
       } catch (error) {
         console.error('검색 기록 삭제 오류:', error);
@@ -79,21 +79,15 @@ export default {
     async loadSessionData(sessionId) {
       try {
         const response = await axios.get(`/api/session/${sessionId}`);
-        const sessionData = response.data; // DB에서 반환된 question과 answer
+        const sessionData = response.data.history; // DB에서 반환된 question과 answer
 
-        // question과 answer를 messages 배열로 변환
+        // 서버에서 불러온 데이터를 messages 배열로 변환
         this.messages = sessionData.map((item) => ({
-        id: item.id + '-user',  // 유저 메시지 ID 생성
-        sender: 'user',         // 유저 메시지로 설정
-        text: item.question,    // question을 텍스트로 설정
-        date: item.date
-      },
-      {
-        id: item.id + '-ai',    // AI 응답 메시지 ID 생성
-        sender: 'ai',           // AI 응답으로 설정
-        text: item.answer,      // answer을 텍스트로 설정
-        date: item.date
-      }));
+          id: item.message_id,          // 메시지의 고유 ID
+          sender: item.sender,          // 메시지의 발신자 ('user' 또는 'ai')
+          text: item.message_text,      // 메시지 내용
+          date: item.timestamp          // 메시지 전송 시간
+        }));
 
         // 모달 닫기
         this.closeModal();
@@ -105,9 +99,7 @@ export default {
     async sendMessage() {
       const userMessage = this.userInput.trim();
       if (!userMessage) return;
-
       this.userInput = '';
-
       this.addMessage('user', userMessage);
 
       
@@ -121,12 +113,11 @@ export default {
 
           // 새로운 세션 정보 받아오기
           const newSession = response.data;
-          // 질문 내용의 일부분을 잘라서 표시 (예: 첫 20자)
-          newSession.displayQuestion = newSession.question.slice(0, 20) + '...';
 
+          this.chat_sessions = newSession.session_id;
           // 새로운 세션을 목록의 첫번째에 추가
           this.lists.unshift(newSession);
-          this.chat_sessions = newSession.chat_sessions;
+          
         } catch (error) {
           console.error('새로운 세션 생성 오류:', error);
         }
@@ -157,6 +148,7 @@ export default {
         const response = await axios.post('/api/ai/get_answer', {
           question: message,
           username: this.$store.state.userId,
+          session_id: this.chat_sessions
           // 다른 필요한 API 매개변수
         }, {
           headers: {
