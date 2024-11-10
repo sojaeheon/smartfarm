@@ -209,6 +209,43 @@ def delete_disease():
 
     return jsonify({"success": True, "message": "이미지가 성공적으로 삭제되었습니다."})
 
+# 세션 추가 엔드포인트
+@app.route('/api/session/new', methods=['POST'])
+def create_session():
+    data = request.get_json()
+    username = data.get('username')
+    
+    if not username:
+        return jsonify({'error': 'username is required'}), 400
+
+    # 데이터베이스 연결 및 새로운 세션 추가
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            # 새 세션을 추가하는 SQL 쿼리 작성
+            insert_query = """
+                INSERT INTO session (id, started_at, ended_at)
+                VALUES (%s, %s, %s)
+            """
+            started_at = datetime.now()
+            cursor.execute(insert_query, (username, started_at, None))
+            connection.commit()
+
+            # 방금 추가한 세션의 ID를 가져오기
+            session_id = cursor.lastrowid
+
+        # 성공적으로 추가된 세션 정보를 반환
+        return jsonify({
+            "session_id": session_id,
+            "username": username,
+            "started_at": started_at.isoformat(),
+            "ended_at": None
+        }), 201
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'error': 'Failed to create session'}), 500
+
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
 

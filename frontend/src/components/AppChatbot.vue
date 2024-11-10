@@ -57,18 +57,22 @@ export default {
     closeModal() {
       this.isListOpen = false; // 모달 닫기
     },
+    
+    //세션 항목 제거하기
     async deleteSearchHistoryItem(index) {
       const item = this.lists[index];
       try {
-        await axios.delete(`http://192.168.0.29:8888/api/delete_history/${item.id}`);
+        await axios.delete(`/api/delete_history/${item.id}`);
         this.lists.splice(index, 1); // 배열에서 해당 항목 제거
       } catch (error) {
         console.error('검색 기록 삭제 오류:', error);
       }
     }, 
+
+    //해당 세션 대화 불러오기
     async loadSessionData(sessionId) {
       try {
-        const response = await axios.get(`http://192.168.0.29:8888/api/session/${sessionId}`);
+        const response = await axios.get(`/api/session/${sessionId}`);
         const sessionData = response.data; // DB에서 반환된 question과 answer
 
         // question과 answer를 messages 배열로 변환
@@ -91,6 +95,7 @@ export default {
         console.error('세션 데이터 불러오기 오류:', error);
       }
     },
+
     async sendMessage() {
       const userMessage = this.userInput.trim();
       if (!userMessage) return;
@@ -98,6 +103,20 @@ export default {
       this.userInput = '';
 
       this.addMessage('user', userMessage);
+
+      // 새로운 세션을 서버에 생성하는 API 호출
+      try {
+        const response = await axios.post('/api/session/new', {
+          question: userMessage,
+          username: this.$store.state.userId,
+        });
+
+        // 새로운 세션 정보 받아오기
+        const newSession = response.data;
+        this.lists.unshift(newSession); // 새로운 세션을 목록의 첫번째에 추가
+      } catch (error) {
+        console.error('새로운 세션 생성 오류:', error);
+      }
 
       const aiResponse = await this.getAIResponse(userMessage);
       this.addMessage('ai', aiResponse);
@@ -140,7 +159,7 @@ export default {
   },
   created() {
     // 초기 AI 메시지 추가
-    this.addMessage('ai', '😀안녕하세요! 딸기🍓에 관해서 물어봐주세요!😀');
+    this.addMessage('ai', '😀안녕하세요! 팜이입니다!😀');
   },
   updated() {
     // 컴포넌트 업데이트 후 스크롤을 맨 아래로 자동 조정
