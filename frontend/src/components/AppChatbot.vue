@@ -113,7 +113,11 @@ export default {
 
         // 새로운 세션 정보 받아오기
         const newSession = response.data;
-        this.lists.unshift(newSession); // 새로운 세션을 목록의 첫번째에 추가
+        // 질문 내용의 일부분을 잘라서 표시 (예: 첫 20자)
+        newSession.displayQuestion = newSession.question.slice(0, 20) + '...';
+
+        // 새로운 세션을 목록의 첫번째에 추가
+        this.lists.unshift(newSession);
       } catch (error) {
         console.error('새로운 세션 생성 오류:', error);
       }
