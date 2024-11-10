@@ -38,7 +38,8 @@ export default {
       isListOpen: false, // 모달의 상태
       lists: ['이거', '저거', '여거'],
       userInput: '',
-      messages: []
+      messages: [],
+      chat_sessions:null,
     };
   },
   methods: {
@@ -47,8 +48,8 @@ export default {
     },
     async fetchSearchHistory() {
       try {
-        //const response = await axios.get('http://192.168.0.29:8888/api/search_history');
-        //this.lists = response.data.history; // 서버에서 받은 검색 기록 저장
+        const response = await axios.get('/api/chat_history');
+        this.lists = response.data.history; // 서버에서 받은 검색 기록 저장
         this.isListOpen = true; // 모달 열기
       } catch (error) {
         console.error('검색 기록을 불러오는 중 오류 발생:', error);
@@ -104,22 +105,26 @@ export default {
 
       this.addMessage('user', userMessage);
 
-      // 새로운 세션을 서버에 생성하는 API 호출
-      try {
-        const response = await axios.post('/api/session/new', {
-          question: userMessage,
-          username: this.$store.state.userId,
-        });
+      
+      if(this.chat_sessions === null){
+        // 새로운 세션을 서버에 생성하는 API 호출
+        try {
+          const response = await axios.post('/api/session/new', {
+            question: userMessage,
+            username: this.$store.state.userId,
+          });
 
-        // 새로운 세션 정보 받아오기
-        const newSession = response.data;
-        // 질문 내용의 일부분을 잘라서 표시 (예: 첫 20자)
-        newSession.displayQuestion = newSession.question.slice(0, 20) + '...';
+          // 새로운 세션 정보 받아오기
+          const newSession = response.data;
+          // 질문 내용의 일부분을 잘라서 표시 (예: 첫 20자)
+          newSession.displayQuestion = newSession.question.slice(0, 20) + '...';
 
-        // 새로운 세션을 목록의 첫번째에 추가
-        this.lists.unshift(newSession);
-      } catch (error) {
-        console.error('새로운 세션 생성 오류:', error);
+          // 새로운 세션을 목록의 첫번째에 추가
+          this.lists.unshift(newSession);
+          this.chat_sessions = newSession.chat_sessions;
+        } catch (error) {
+          console.error('새로운 세션 생성 오류:', error);
+        }
       }
 
       const aiResponse = await this.getAIResponse(userMessage);
