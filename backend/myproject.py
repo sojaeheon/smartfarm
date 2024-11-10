@@ -253,27 +253,34 @@ def disease_load():
 
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        check_query = "SELECT * FROM disease WHERE id = %s ORDER BY date DESC"
+        check_query = "SELECT * FROM chat_sessions WHERE id = %s ORDER BY ended_at DESC"
         cursor.execute(check_query, (username,))
-        disease_list = cursor.fetchall()
+        history = cursor.fetchall()
 
         # 데이터가 없으면 오류 메시지 반환
-        if not disease_list:
+        if not history:
             return jsonify({"success": False, "message": "No data found"})
 
-        # Base64 데이터를 포함한 JSON 응답 준비
-        disease_data = []
-        for disease in disease_list:
-            disease_data.append({
-                "disease_id": disease["disease_id"],
-                "disease_name": disease["disease_name"],
-                "original_image": disease["original_image"].decode('utf-8'),  # Base64 문자열로 변환
-                "bounding_image": disease["bounding_image"].decode('utf-8'),  # Base64 문자열로 변환
-                "answer": disease["answer"],
-                "date": disease["date"].isoformat()
-            })
 
-    return jsonify({"success": True, "disease_list": disease_data})
+    return jsonify({"success": True, "history": history})
+
+@app.route('/api/session/<int:session_id>/end', methods=['POST'])
+def end_session(session_id):
+    connection = get_db_connection()
+    try:
+        with connection.cursor() as cursor:
+            update_query = """
+                UPDATE session SET ended_at = %s WHERE session_id = %s
+            """
+            ended_at = datetime.utcnow()
+            cursor.execute(update_query, (ended_at, session_id))
+            connection.commit()
+
+        return jsonify({'success': True, 'message': 'Session ended successfully.'}), 200
+
+    except Exception as e:
+        print(f"Error occurred: {e}")
+        return jsonify({'error': 'Failed to end session'}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
