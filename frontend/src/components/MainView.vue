@@ -208,7 +208,7 @@ export default {
 
                 console.log("Date Array:", this.dateArray);
                 console.log("Temperature Array:", this.temperatureArray);
-                
+
                 const sensor = this.sensors.find(sensor => sensor.isOn); // 활성화된 센서 찾기
                 if (sensor) {
                     this.currentSensorData = this.getSensorData(sensor); // getSensorData로 데이터를 업데이트
@@ -341,6 +341,26 @@ export default {
     padding: 10px;
 }
 
+#camera {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 40vh;
+    /* overflow: hidden; */
+    /* 내용이 넘치는 경우 숨김 처리 */
+}
+
+#camera img,
+#camera video {
+    width: 100%;
+    /* 부모의 너비에 맞춰 100% 사용 */
+    height: auto;
+    /* 높이는 자동 조절 */
+    max-height: 100%;
+    /* 최대 높이를 100%로 설정 */
+}
+
 #actuator-container {
     display: flex;
     flex-direction: row;
@@ -386,7 +406,7 @@ export default {
     display: flex;
     justify-content: center;
     /* 버튼들을 중앙에 배치 */
-    margin-top: 10px;
+    margin-top: 0.5vh;
     gap: 10px;
     /* 버튼 간 간격 */
 }
@@ -410,17 +430,7 @@ export default {
     /*margin: 0 10px;*/
     position: relative;
     width: 35vw;
-}
-
-#data-button {
-    width: 7vw;
-    height: 10vh;
-    border: 2px solid #63C758;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    margin: 0 0.25vw;
-    font-size: medium;
+    height: 25vh;
 }
 
 #weather {
@@ -504,28 +514,13 @@ export default {
         color: black;
     }
 
-    #data-button {
-        width: 15vw;
-        color: black;
-        margin: 0 1vw;
+    #Chart {
+        width: 75vw;
     }
+
+    .sensors-button {
+    width: 10vw;
 }
 
-#camera {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    /* 내용이 넘치는 경우 숨김 처리 */
-}
-
-#camera img,
-#camera video {
-    width: 100%;
-    /* 부모의 너비에 맞춰 100% 사용 */
-    height: auto;
-    /* 높이는 자동 조절 */
-    max-height: 100%;
-    /* 최대 높이를 100%로 설정 */
 }
 </style>
