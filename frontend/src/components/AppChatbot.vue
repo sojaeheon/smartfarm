@@ -48,7 +48,12 @@ export default {
     },
     async fetchSearchHistory() {
       try {
-        const response = await axios.get('/api/chat_history');
+        const response = await axios.get('/api/chat_history',{
+          params:{
+            username : this.$store.state.userId
+          }
+        });
+
         this.lists = response.data.history; // 서버에서 받은 검색 기록 저장
         this.isListOpen = true; // 모달 열기
       } catch (error) {
@@ -132,6 +137,17 @@ export default {
 
       this.scrollToBottom(); // 메시지 전송 후 스크롤 내리기
     },
+    async endSession() {
+      if (this.chat_sessions !== null) {
+        try {
+          // 세션 종료 API 호출
+          await axios.post(`/api/session/${this.chat_sessions}/end`);
+          this.chat_sessions = null;  // 세션 ID 초기화
+        } catch (error) {
+          console.error('세션 종료 오류:', error);
+        }
+      }
+    },
     addMessage(sender, text) {
       this.messages.push({ id: Date.now(), sender, text });
     },
@@ -173,7 +189,15 @@ export default {
   updated() {
     // 컴포넌트 업데이트 후 스크롤을 맨 아래로 자동 조정
     this.scrollToBottom();
-  }
+  },
+  mounted() {
+    // 창을 닫거나 페이지를 나갈 때 세션 종료 API 호출
+    window.addEventListener('beforeunload', this.endSession);
+  },
+  beforeUnmount() { // Vue 3에서는 beforeUnmount 사용
+    this.endSession();
+    window.removeEventListener('beforeunload', this.endSession);
+  },
 };
 </script>
 

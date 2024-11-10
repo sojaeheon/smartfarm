@@ -67,7 +67,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            videoSrc: 'http://REDACTED_PUBLIC_HOST:6666/video_feed',
+            videoSrc: 'http://REDACTED_PUBLIC_HOST:5555/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
