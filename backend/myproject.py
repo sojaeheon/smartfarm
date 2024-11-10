@@ -225,7 +225,7 @@ def create_session():
         with connection.cursor() as cursor:
             # 새 세션을 추가하는 SQL 쿼리 작성
             insert_query = """
-                INSERT INTO session (id, started_at, ended_at, question)
+                INSERT INTO chat_sessions (id, started_at, ended_at, question)
                 VALUES (%s, %s, %s, %s)
             """
             started_at = datetime.now()

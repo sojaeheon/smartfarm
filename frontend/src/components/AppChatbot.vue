@@ -9,7 +9,7 @@
       <div>
         <button id="search-list" @click="showSearchList"></button>
         <div v-if="isListOpen" class="modal-overlay" @click="closeModal">
-          <AppChatbotModal :lists="lists" @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem"
+          <AppChatbotModal :lists="lists.question" @closeModal="closeModal" @deleteItem="deleteSearchHistoryItem"
             @selectSession="loadSessionData" />
         </div>
       </div>
