@@ -5,6 +5,9 @@
 
 <script>
 import Chart from "chart.js/auto";
+import zoomPlugin from "chartjs-plugin-zoom";
+
+Chart.register(zoomPlugin);
 
 export default {
   name: "BarChart",
@@ -20,10 +23,7 @@ export default {
     };
   },
   mounted() {
-    // ChartData가 있는 경우에만 차트 렌더링
-    //if (this.ChartData && Object.keys(this.ChartData).length > 0) {
     this.renderChart();
-    //}
   },
   watch: {
     ChartData(newData) {
@@ -34,7 +34,6 @@ export default {
   },
   methods: {
     renderChart() {
-      // 기존 차트 인스턴스가 있으면 파괴
       if (this.chartInstance) {
         this.chartInstance.destroy();
       }
@@ -43,7 +42,6 @@ export default {
       if (canvas) {
         const ctx = canvas.getContext("2d");
 
-        // 새로운 차트 인스턴스 생성
         this.chartInstance = new Chart(ctx, {
           type: "line",
           data: {
@@ -62,6 +60,29 @@ export default {
                 title: {
                   display: true,
                   text: "Date",
+                },
+                ticks: {
+                  autoSkip: false, // 레이블 자동 생략 비활성화
+                  maxRotation: 0, // 레이블 회전 각도를 조정하여 겹침 방지
+                  minRotation: 0,
+                }
+              }
+            },
+            plugins: {
+              zoom: {
+                pan: {
+                  enabled: true,
+                  mode: "x",
+                  threshold: 500,
+                },
+                zoom: {
+                  wheel: {
+                    enabled: true,
+                  },
+                  pinch: {
+                    enabled: true,
+                  },
+                  mode: "x",
                 },
               },
             },
