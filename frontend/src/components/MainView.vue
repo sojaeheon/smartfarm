@@ -193,7 +193,7 @@ export default {
                     }
                 });
 
-                const datas = response.data.data.slice(-10); // 최근 10개 데이터만 가져오기
+                const datas = response.data.data
 
                 // 센서 데이터 각각을 별도의 배열에 저장
                 this.dateArray = datas.map(item => {
