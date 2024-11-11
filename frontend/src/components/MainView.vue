@@ -118,6 +118,10 @@ export default {
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
+        // 주기적으로 센서 데이터 업데이트 (예: 10초마다)
+        this.pollingInterval = setInterval(() => {
+            this.fetchSensorData();
+        }, 10000); // 10000 밀리초(10초)마다 호출
     },
     methods: {
         toggleActuator(index) {
