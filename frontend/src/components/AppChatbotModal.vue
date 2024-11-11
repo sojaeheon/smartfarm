@@ -48,7 +48,7 @@ export default {
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   min-width: 200px;
-  max-height: 300px; /* 모달의 최대 높이 설정 */
+  height: 300px; /* 모달의 최대 높이 설정 */
   overflow-y: auto; /* 콘텐츠가 많을 때 세로 스크롤 생성 */
   /* 최소 너비 */
   cursor: pointer;
