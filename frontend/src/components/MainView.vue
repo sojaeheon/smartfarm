@@ -72,7 +72,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            videoSrc: 'http://202.31.150.31:5555/video_feed',
+            videoSrc: 'http://202.31.150.31:15915/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
                 { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
@@ -123,9 +123,30 @@ export default {
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
-
     },
     methods: {
+        async getActuatorStatus() {
+            try {
+                const response = await axios.get('/api/actuators/status');
+                const status = response.data;
+                if(response.data.success){
+                    // 각 장치 상태에 맞게 isOn 값을 업데이트
+                    this.actuators[0].isOn = status.dcfan === 'on' ? true : false;
+                    this.actuators[1].isOn = status.waterpump_fill === 'on' ? true : false;
+                    this.actuators[2].isOn = status.waterpump_drain === 'on' ? true : false;
+                    this.actuators[3].isOn = status.led === 'on' ? true : false;
+                }else{
+                    this.actuators[0].isOn = false;
+                    this.actuators[1].isOn = false;
+                    this.actuators[2].isOn = false;
+                    this.actuators[3].isOn = false;
+                }
+                
+                
+            } catch (error) {
+                console.error('Error fetching actuator status:', error);
+            }
+        },
         toggleActuator(index) {
             if (this.actuators[index].label === '워터펌프(급수)') {
                 // '워터펌프(급수)' 버튼을 눌렀을 때 '워터펌프(배수)'를 비활성화
@@ -146,13 +167,14 @@ export default {
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
 
-            // LED 액추에이터인 경우 서버에 상태 전송
-            if (this.actuators[index].label === 'LED') {
-                this.controlLed(index);
-            }
-            if (this.actuators[index].label === 'DC팬') {
-                this.controlDcfan(index);
-            }
+            // // LED 액추에이터인 경우 서버에 상태 전송
+            // if (this.actuators[index].label === 'LED') {
+            //     this.controlLed(index);
+            // }
+            // if (this.actuators[index].label === 'DC팬') {
+            //     this.controlDcfan(index);
+            // }
+            this.controlActuators();
         },
         toggleSwitch(sensor) {
             // 만약 클릭된 센서가 이미 켜져 있으면 끄기
@@ -166,24 +188,42 @@ export default {
             this.currentSensorData = this.getSensorData(sensor);
             this.isDataLoaded = true; // 차트 데이터가 로드되었음을 표시
         },
-        async controlLed(index) {
-            // 서버에 POST 요청 보내기
-            const status = this.actuators[index].isOn ? 'on' : 'off';
+        // async controlLed(index) {
+        //     // 서버에 POST 요청 보내기
+        //     const status = this.actuators[index].isOn ? 'on' : 'off';
 
-            await axios.post(`http://202.31.150.31:9999/led`, {
-                status: status
-            })
-                .catch(error => {
-                    console.error('There was a problem with the axios operation:', error);
-                });
-        },
-        async controlDcfan(index) {
-            // 서버에 POST 요청 보내기
-            const status = this.actuators[index].isOn ? 'on' : 'off';
+        //     await axios.get(`/api/led`, {
+        //             params: {
+        //                 status: status
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('There was a problem with the axios operation:', error);
+        //         });
+        // },
+        // async controlDcfan(index) {
+        //     // 서버에 POST 요청 보내기
+        //     const status = this.actuators[index].isOn ? 'on' : 'off';
 
-            await axios.post(`http://202.31.150.31:9999/dcfan`, {
-                status: status
-            })
+        //     await axios.get(`/api/dcfan`, {
+        //         status: status
+        //     })
+        //         .catch(error => {
+        //             console.error('There was a problem with the axios operation:', error);
+        //         });
+        // },
+        async controlActuators() {
+            // 장치의 상태 추출
+            const statusData = this.actuators.map(actuator => ({
+                label: actuator.label,
+                isOn: actuator.isOn ? 'on' : 'off'
+            }));
+
+            // 서버로 상태 전달
+            await axios.post(`/api/actuators`, {
+                    status: statusData,  // 모든 장치 상태 전달
+                    device_name: this.$store.state.device_name
+                })
                 .catch(error => {
                     console.error('There was a problem with the axios operation:', error);
                 });

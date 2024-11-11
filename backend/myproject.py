@@ -6,6 +6,7 @@ from flask_cors import CORS
 import base64
 from datetime import datetime, timezone
 import os
+import requests
 
 app = Flask(__name__)
 app.secret_key = '818188'
@@ -329,6 +330,105 @@ def message_load(session_id):
         print(f"Error occurred: {e}")
         return jsonify({"error": "Failed to load messages", "details": str(e)}), 500
 
+
+# 액추에이터 서버의 엔드포인트들
+ACTUATOR_URLS = {
+    "led": "http://202.31.150.31:9999/led",
+    "dc_fan": "http://202.31.150.31:9999/dc_fan",
+    "water_supply": "http://202.31.150.31:9999/water_supply",
+    "water_drainage": "http://202.31.150.31:9999/water_drainage"
+}
+
+@app.route('/api/actuators', methods=['POST'])
+def control_actuators():
+    # 요청에서 상태와 device_name을 받음
+    data = request.get_json()  # POST 데이터 받기
+    status_data = data.get('status')  # 상태 정보
+    device_name = data.get('device_name')  # 장치 이름
+
+    if not status_data or not device_name:
+        return jsonify({'status': 'error', 'message': 'Invalid data'}), 400
+
+    # DB 연결
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # 상태 값을 저장할 변수
+    led_status = None
+    dc_fan_status = None
+    water_supply_status = None
+    water_drainage_status = None
+
+    # 각 장치의 상태를 업데이트
+    for actuator in status_data:
+        label = actuator['label']
+        status = actuator['isOn']
+
+        # 상태 값 할당
+        if label == 'LED':
+            led_status = status
+        elif label == 'DC팬':
+            dc_fan_status = status
+        elif label == '워터펌프(급수)':
+            water_supply_status = status
+        elif label == '워터펌프(배수)':
+            water_drainage_status = status
+
+    # `device_name`에 대한 상태 업데이트 (기존 값이 있으면 UPDATE, 없으면 INSERT)
+    cursor.execute("""
+        INSERT INTO actuator (device_name, led, dc_fan, water_supply, water_drainage)
+        VALUES (%s, %s, %s, %s, %s)
+        ON DUPLICATE KEY UPDATE 
+            led = VALUES(led),
+            dc_fan = VALUES(dc_fan),
+            water_supply = VALUES(water_supply),
+            water_drainage = VALUES(water_drainage)
+    """, (device_name, led_status, dc_fan_status, water_supply_status, water_drainage_status))
+
+    # 각 액추에이터 서버로 상태 전달
+    actuator_labels = {
+        'led': led_status,
+        'dc_fan': dc_fan_status,
+        'water_supply': water_supply_status,
+        'water_drainage': water_drainage_status
+    }
+
+    for column, status in actuator_labels.items():
+        if status is not None and column.lower() in ACTUATOR_URLS:
+            actuator_url = ACTUATOR_URLS[column.lower()]
+            try:
+                response = requests.post(actuator_url, json={'status': status})
+                if response.status_code != 204:
+                    print(f"Failed to update {column} on actuator server.")
+            except requests.exceptions.RequestException as e:
+                print(f"Error sending to actuator server for {column}: {e}")
+
+    connection.commit()
+
+    
+@app.route('/api/actuators/status', methods=['GET'])
+def get_actuator_status():
+    # DB 연결
+    connection = get_db_connection()
+    cursor = connection.cursor()
+
+    # 각 장치의 최신 상태 가져오기
+    cursor.execute("SELECT device_name, dc_fan, led, water_supply, water_drainage FROM actuator ORDER BY act_id DESC LIMIT 1")
+    actuator = cursor.fetchone()
+
+    if not actuator:
+        return jsonify({'success' : False})
+
+    # 상태를 반환
+    return jsonify({
+        'success' : True,
+        'device_name': actuator['device_name'],
+        'led': actuator['led'],
+        'dcfan': actuator['dc_fan'],
+        'waterpump_fill': actuator['water_supply'],
+        'waterpump_drain': actuator['water_drainage']
+    })
+    
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=7000, debug=True)
 
