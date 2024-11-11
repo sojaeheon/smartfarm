@@ -64,8 +64,8 @@ def login_check():
     
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        query = "SELECT * FROM users WHERE id = %s"
-        cursor.execute(query, uid)
+        query = "SELECT * FROM users WHERE id = %s AND password = %s"
+        cursor.execute(query, (uid, password))
         user = cursor.fetchone()
     print(user)
     if user:
