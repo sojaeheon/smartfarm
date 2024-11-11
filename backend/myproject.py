@@ -156,7 +156,7 @@ def sensor_graph():
     print(device_name)
     connection = get_db_connection()
     with connection.cursor() as cursor:
-        check_query = "SELECT * FROM sensor WHERE device_name = %s ORDER BY date DESC"
+        check_query = "SELECT * FROM sensor WHERE device_name = %s ORDER BY date DESC LIMIT 2880"
         cursor.execute(check_query, (device_name,))
         sensor_list = cursor.fetchall()
     
@@ -165,7 +165,7 @@ def sensor_graph():
 
 @app.route('/api/disease_load', methods=['GET'])
 def disease_load():
-    username = request.args.get('username')
+    username = request.args.get('username') 
 
     connection = get_db_connection()
     with connection.cursor() as cursor:

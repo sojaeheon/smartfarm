@@ -29,7 +29,12 @@
                 <div id="button-container">
                     <button type="button" v-for="(sensor, index) in sensors" :key="index" class="sensors-button"
                         :class="{ 'on': sensor.isOn }" @click="toggleSwitch(sensor)">{{ sensor.label }}</button>
+                    <button @click="refreshChart" class="refresh-button">
+                        <img src="@/assets/reload.png" alt="새로고침" class="refresh-icon" />
+                    </button>
                 </div>
+                <!-- 새로고침 버튼 추가 -->
+                
             </div>
 
             <!-- Weather -->
@@ -118,10 +123,7 @@ export default {
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
-        // 주기적으로 센서 데이터 업데이트 (예: 10초마다)
-        this.pollingInterval = setInterval(() => {
-            this.fetchSensorData();
-        }, 10000); // 10000 밀리초(10초)마다 호출
+
     },
     methods: {
         toggleActuator(index) {
@@ -197,18 +199,16 @@ export default {
                     }
                 });
 
-                const datas = response.data.data
+                const datas = response.data.data.slice(-1440);
 
                 // 센서 데이터 각각을 별도의 배열에 저장
-                this.dateArray = datas.map(item => {
-                    const date = new Date(item.date);  // 'date'를 Date 객체로 변환
-                    return date.toLocaleTimeString(); // 시간만 추출하여 반환 (HH:mm:ss 형식)
-                }).reverse();
-                this.co2Array = datas.map(item => item.co2);
-                this.temperatureArray = datas.map(item => item.temperature);
-                this.humidityArray = datas.map(item => item.humidity);
-                this.lightArray = datas.map(item => item.light);
-                this.waterLevelArray = datas.map(item => item.waterlevel);
+        // 서버에서 받은 date 값을 그대로 사용
+                this.dateArray = datas.map(item => item.date).reverse();
+                this.co2Array = datas.map(item => item.co2).reverse();
+                this.temperatureArray = datas.map(item => item.temperature).reverse();
+                this.humidityArray = datas.map(item => item.humidity).reverse();
+                this.lightArray = datas.map(item => item.light).reverse();
+                this.waterLevelArray = datas.map(item => item.waterlevel).reverse();
 
                 console.log("Date Array:", this.dateArray);
                 console.log("Temperature Array:", this.temperatureArray);
@@ -219,8 +219,6 @@ export default {
                 }
                 // 데이터 로드 완료 표시
                 this.isDataLoaded = true;
-
-                this.updateChartData(); // 차트 데이터 업데이트
             } catch (error) {
                 console.error("센서 데이터를 불러오지 못했습니다:", error);
             }
@@ -310,6 +308,11 @@ export default {
                 icon: item.weather[0].icon,
             }));
         },
+        // 새로고침 버튼 클릭 시 호출되는 메서드
+        refreshChart() {
+            this.fetchSensorData(); // 새 데이터 가져오기
+            console.log("Chart data has been refreshed.");
+        }
     },
     components: {
         AppHeader,
@@ -343,6 +346,19 @@ export default {
     border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 8px;
     padding: 10px;
+}
+
+/* 기존 스타일 유지 */
+.refresh-button {
+    margin-top: 1px;
+    padding: 8px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.refresh-icon {
+    width: 40px;
+    height: 40px;
 }
 
 #camera {
