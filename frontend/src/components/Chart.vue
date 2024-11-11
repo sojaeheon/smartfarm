@@ -58,13 +58,18 @@ export default {
                 beginAtZero: true,
               },
               x: {
-                display: true,
+                display: false,
                 title: {
                   display: true,
                   text: "Date",
                 },
               },
             },
+            elements: {
+                point: {
+                  radius: 0, // 포인트 동그라미 제거
+                },
+              },
           },
         });
       } else {
