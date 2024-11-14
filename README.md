@@ -10,12 +10,8 @@
 ## 노션
 조명은 LED - (https://www.notion.so/daa597b71e6b46b9a22b0299711b95e0)
 
-# 블록도
-![시스템 구조](https://github.com/user-attachments/assets/4b9d4742-b575-406a-a66b-e95716be5bf6)
-<br/>
-
-# 흐름도
-![작품 흐름도](https://github.com/user-attachments/assets/011de612-fadf-451e-86e5-361ed4fed86f)
+# 시스템 구성
+![image](https://github.com/user-attachments/assets/87ff1455-ecf9-455d-9cf2-60fc420a8734)
 <br/>
 
 # 주요 기능
@@ -70,11 +66,36 @@
       - 리버스 프록시 역할을 하는 Nginx 서버로, 모든 HTTP 요청을 프론트엔드, 백엔드 및 AI 서버로 라우팅
       - 배포된 이미지를 사용
 <br/><br/>
+# 스마트팜
+![image](https://github.com/user-attachments/assets/01ae0753-3ec2-4c1b-b5b5-b784f1da6162)
+- 라즈베리파이4 이용
+- 액츄에이터 : DC팬, 워터펌프, 생장형 LED
+- 센서 : 조도, CO2, 온도, 습도, 수위 
+<br/><br/>
 
 # 로그인
+## 로그인 및 회원가입 화면
+### 로그인 
+![image](https://github.com/user-attachments/assets/26b8a7e8-da9c-4293-bffe-abfd02687b35)
+### 회원가입
+![image](https://github.com/user-attachments/assets/5de2f255-75a1-4a2c-9d2a-69975d31c39b)
+  - 사용자의 id, password, 라즈베리파이 디바이스 정보를 데이터베이스에 저장
 <br/><br/>
 
 # 메인
+## 메인 화면
+![image](https://github.com/user-attachments/assets/c6c89a22-b682-4194-ac22-fc3184ce29b3)
+### 카메라
+  - 라즈베리파이에 카메라를 달아 실시간 스트리밍
+
+### 액츄에이터
+  - HTTP통신을 통한 액츄에이터 작동
+
+### 환경 그래프
+  - 환경 그래프를 통한 스마트팜 내부의 센서값 확인
+
+### 시간별 날씨 정보 확인
+  - Openweather에서 API를 사용 
 <br/><br/>
 
 # 병해진단
@@ -152,6 +173,10 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 ### 3. 결과
 ![RAG1](https://github.com/user-attachments/assets/24702f7e-7517-48d3-b8bf-2bf1c0f7e8de)
 ![RAG2](https://github.com/user-attachments/assets/2cfab811-a350-42ee-88e0-f2ca8c9061bd)
+<br/>
+
+  - 화면 우측 상단에서 이전 대화 내용들을 확인 가능
+![image](https://github.com/user-attachments/assets/3d63ed50-6b62-43ab-b758-61fbcc377fbc)
 
 
 
@@ -159,42 +184,10 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 
 <hr>
 
-# Block #1 
-* window 환경에서 진행
-* Python을 이용하여 대화형 웹 애플리케이션을 쉽게 구현 할 수 있는 웹 프레임워크 Streamlit 사용
-  ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/b948724d-7db3-4fa1-9a9f-f4b5a06704b5)
-  
-* 병해 이미지 업로드
-   - 업로드를 하게 되면 roboflow 모델 호출
-  ![image](https://github.com/sojaeheon/smartfarm/assets/144245586/a411f024-8ad9-4402-912d-af4670d1e503)
-
-# Block #2
-* roboflow 사용
-1. 모델 : Roboflow 3.0
-2. traing 그래프
-   
-![image](https://github.com/sojaeheon/smartfarm/assets/132196804/cc9580ed-6838-4876-aabf-fdb4f9ce63f1)
-
-4. 데이터 셋
-+ Kaggle : 딸기 병해 객채 검출 데이터
-+ 총 4301 병해 이미지
-+ 종류 : 각진반점, 탄저병, 꽃곰팡이병, 잿빛곰팡이병, 세균모무늬병, 흰가루병(잎), 흰가루병(과일)
-
-![image](https://github.com/sojaeheon/smartfarm/assets/119103469/41a0e586-e9b7-4d3b-ae74-360f9b4de652)
-
-
-
+# 기술 스택
+![image](https://github.com/user-attachments/assets/d303936f-0600-4280-b0dc-3302de691349)
+<br/>
 
 # 일정(간트차트)
 ![image](https://github.com/user-attachments/assets/30d6a1e8-1827-4669-bd0a-5c428edcbf68)
-
-<br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-# 방향
-
-## 1. RAG
-* 검생 증강 생성(RAG)을 통해 보다 더 정확한 솔루션 제공
-* 딸기 매뉴얼을 토대로한 AI의 답변
-   * pytorch기반의 HuggingFace 다국어 임베딩 모델 BAAI/bge-m3을 사용 
-![image](https://github.com/sojaeheon/smartfarm/assets/144245586/96d31ba2-50d7-4d5e-bb12-3fa55727434f)
-![image](https://github.com/sojaeheon/smartfarm/assets/144245586/71bf9aa9-08ab-4567-a0c9-643830bec7c9)
 
