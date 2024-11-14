@@ -184,6 +184,14 @@ https://github.com/sojaeheon/smartfarm/assets/132196804/67dfe97b-c4b1-4a8c-8216-
 
 <hr>
 
+# 시연 영상
+
+
+[https://github.com/user-attachments/assets/35c1bfdc-3fda-47c9-9689-612d25f53005](https://github.com/user-attachments/assets/fcf754c1-b8f9-44ca-aba5-d2a6ca876fcf)
+
+
+<br/>
+
 # 기술 스택
 ![image](https://github.com/user-attachments/assets/d303936f-0600-4280-b0dc-3302de691349)
 <br/>
