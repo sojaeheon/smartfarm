@@ -9,10 +9,32 @@
     </div>
 
     <!-- 사진 미리보기 -->
-    <div class="photo-gallery">
-        <img v-for="(photo, index) in photos" :key="index" :src="photo" @click="openDiagnosis(photo)"
+    <!-- <div class="photo-gallery">
+        <img v-for="(photo, index) in photos" :key="index" :src="photo.url" @click="openDiagnosis(photo)"
             class="preview-image" />
+    </div> -->
+    <!-- 사진 미리보기 -->
+    <div class="photo-gallery">
+        <div
+            v-for="(photo, index) in photos"
+            :key="index"
+            class="photo-container"
+            @mouseenter="photo.hovered = true"
+            @mouseleave="photo.hovered = false"
+        >
+            <img
+                :src="photo.url"
+                @click="openDiagnosis(photo)"
+                class="preview-image"
+            />
+            <button
+                v-if="photo.hovered"
+                class="delete-button"
+                @click="removePhoto(index)"
+            ></button>
+        </div>
     </div>
+
 
     <!-- 모달 창: 카메라 또는 파일 선택 -->
     <div class="modal-background" v-if="ShowModal">
@@ -32,8 +54,7 @@
             <button class="close-button" @click="closeDiagnosis"></button><br>
             <h2>진단 결과</h2>
             <div class="modal-p">
-                <!-- <img :src="selectedPhoto" class="diagnosis-image" alt="진단 결과 이미지" /> -->
-                <img :src="diagnosis.resultImage" class="diagnosis-image" alt="diagnosis-image" />
+                <img :src="'data:image/png;base64,' + diagnosis.boundingImage" class="diagnosis-image" alt="진단 결과 이미지" />
                 <p><b>병명:</b> {{ diagnosis.disease }}</p>
                 <p><b>해결책:</b> <span v-html="diagnosis.solution"></span></p>
             </div>
@@ -63,14 +84,46 @@ export default {
                 resultImage: '', //진단 결과 이미지
             },
             isMenuOpen: false,
-
-            //selectedPhoto: '', // 선택된 업로드 사진(test)
         }
     },
     components: {
         AppHeader
     },
+    created() {
+        this.loadDiseaseList();
+    },
     methods: {
+        async loadDiseaseList() {
+            try {
+
+                const username = this.$store.state.userId;
+
+                // API 요청 보내기
+                const response = await axios.get('/api/disease_load', {
+                    params: {
+                        username: username
+                    }
+                });
+
+                console.log(response)
+                // 받아온 데이터를 photos 배열에 추가하고 최신순으로 정렬
+                if (response.data.success && response.data.disease_list) {
+                    this.photos = response.data.disease_list.map(item => ({
+                        url: 'data:image/png;base64,' + item.original_image,
+                        disease_id: item.disease_id,
+                        disease: item.disease_name,
+                        solution: item.answer,
+                        date: new Date(item.date),
+                        boundingImage: item.bounding_image,
+                        isExisting: true,
+                        file: null,
+                    })).sort((a, b) => b.date - a.date); // 최신순 정렬
+                }
+            } catch (error) {
+                console.error('사진을 불러오는 중 오류가 발생했습니다:', error);
+            }
+        },
+
         // 카메라를 열기 위한 메서드 (모바일 카메라를 사용 가능)
         openCamera() {
             this.$refs.fileInput.setAttribute('capture', 'camera'); // 카메라로 사진 촬영
@@ -89,49 +142,88 @@ export default {
             for (let i = 0; i < files.length; i++) {
                 const file = files[i];
                 if (file) {
-                    const imageUrl = URL.createObjectURL(file);  // 이미지 URL 생성
-                    this.photos.push(imageUrl);  // 배열에 추가하여 이미지 저장
+                    const imageUrl = URL.createObjectURL(file); // 이미지 URL 생성
+                    const newPhoto = { // 새로운 사진 객체 생성
+                        url: imageUrl,
+                        file: file,
+                        date: new Date(), // 업로드된 시간 추가
+                        isExisting: false,
+                    };
+
+                    this.photos.unshift(newPhoto); // 배열의 맨 앞에 새 이미지 추가
+
+                    // 추가된 새 이미지를 대상으로 즉시 진단 수행
+                    this.openDiagnosis(newPhoto);
                 }
             }
         },
-        // test용
-        // openDiagnosis(photo) {
-        //     this.selectedPhoto = photo;
-        //     try {
-        //         this.diagnosis.disease = "곰팡이";
-        //         this.diagnosis.solution = "ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ ㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ";
-        //         this.showDiagnosis = true;  // 모달 열기
-        //     } catch (error) {
-        //         console.error('진단 중 오류 발생:', error);
-        //         alert('진단 중 오류가 발생했습니다.');
-        //     }
-        // },
-
         // 병해진단 수행
         async openDiagnosis(photo) {
-            try {
-                this.isLoading = true;                 // 로딩 화면 표시
-                const formData = new FormData();       // 파일을 FormData로 변환
-                formData.append('photo', photo.file);  // 파일 객체 전송
+            if (photo.isExisting) {
+                // 기존 DB 데이터라면, DB에 저장된 진단 결과를 표시
+                this.diagnosis.disease = photo.disease;
+                this.diagnosis.solution = photo.solution.replace(/\n/g, '<br>');
+                this.diagnosis.boundingImage = photo.boundingImage;
+                this.showDiagnosis = true;
+                
+            } else {
+                // 새로 업로드된 이미지라면, 진단 API 호출
+                try {
+                    this.isLoading = true;
+                    const formData = new FormData();
+                    formData.append('photo', photo.file);
+                    formData.append('username', this.$store.state.userId);
 
-                // http://192.168.0.29:8888/api/disease
-                // http://192.168.25.5:8888/api/disease
-                // 서버에 진단 요청 보내기
-                const response = await axios.post('http://192.168.0.29:8888/api/disease', formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                });
-                // 서버에서 받은 진단 결과 처리
-                this.diagnosis.disease = response.data.disease;
-                this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
-                this.diagnosis.resultImage = response.data.resultImage;
-                this.showDiagnosis = true;  // 모달 열기
-            } catch (error) {
-                console.error('진단 중 오류 발생:', error);
-                alert('진단 중 오류가 발생했습니다.');
-            } finally {
-                this.isLoading = false;  // 로딩 화면 숨기기
+                    const response = await axios.post('/api/ai/disease', formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data',
+                        },
+                    });
+
+                    this.diagnosis.disease = response.data.disease;
+                    this.diagnosis.solution = response.data.solution.replace(/\n/g, '<br>');
+                    this.diagnosis.boundingImage = response.data.boundingImage;
+                    this.showDiagnosis = true;
+
+                    this.photos = this.photos.map(p => 
+                        p === photo ? {
+                            ...p,
+                            disease: response.data.disease,
+                            solution: response.data.solution,
+                            boundingImage: response.data.boundingImage, // Base64로 인코딩된 바운딩 이미지
+                            isExisting: true // 진단 완료된 사진으로 표시
+                        } : p
+                    );
+
+                } catch (error) {
+                    console.error('진단 중 오류 발생:', error);
+                    alert('진단 중 오류가 발생했습니다.');
+                } finally {
+                    this.isLoading = false;
+                }
+            }
+        },
+        async removePhoto(index) {
+            const photo = this.photos[index];
+
+            if (photo.isExisting) {
+                // DB에 있는 데이터인 경우 서버에 삭제 요청 전송
+                try {
+                    const response = await axios.post('/api/disease_delete', {
+                        disease_id: photo.disease_id
+                    });
+
+                    if (response.data.success) {
+                        this.photos.splice(index, 1); // 삭제 성공 시 배열에서 항목 제거
+                        alert('이미지가 성공적으로 삭제되었습니다.');
+                    }
+                } catch (error) {
+                    console.error("이미지 삭제 중 오류가 발생했습니다:", error);
+                    alert('이미지 삭제 중 오류가 발생했습니다.');
+                }
+            } else {
+                // 새로 추가된 데이터인 경우 로컬 배열에서만 삭제
+                this.photos.splice(index, 1);
             }
         },
         closeDiagnosis() {
@@ -286,6 +378,8 @@ export default {
     position: absolute;
     top: 8px;
     right: 8px;
+
+    z-index: 2;
 }
 
 /* li 태그 스타일 (버튼처럼 보이게) */
@@ -312,15 +406,44 @@ export default {
     padding-right: 10px;
 }
 
-/* 이미지 미리보기 스타일 */
-.preview-image {
+.photo-container {  /*수정*/
+    position: relative;
     width: 150px;
     height: 200px;
+}
+
+/* 이미지 미리보기 스타일 */
+.preview-image {
+    width: 100%;
+    height: 100%;
+    /* width: 150px;
+    height: 200px; */
     object-fit: contain;
     border-radius: 5px;
     cursor: pointer;
     margin-top: 10px;
     margin-left: 20px;
+    position: relative;
+}
+
+.delete-button {
+    background-image: url('@/assets/delete.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 20px;
+    height: 20px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 10px;
+    left: 150px;
+    z-index: 2;
+}
+
+/* hover 효과 */
+.photo-container:hover .preview-image {
+    background-color: rgba(0, 0, 0, 0.5);
 }
 
 /* 모바일 화면에서 버튼 크기와 여백 조정 */
