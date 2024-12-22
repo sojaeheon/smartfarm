@@ -2,7 +2,11 @@
   <div class="modal-overlay" @click="$emit('closeModal')">
     <div class="modal" @click.stop>
       <ul>
-        <li v-for="(list, index) in lists" :key="index" class="modal-item">{{ list }}</li>
+        <li v-for="(list, index) in lists" :key="index" @click="$emit('selectSession', list.session_id)"
+         class="modal-item">
+          {{ list.question }}
+          <button class="del_button" @click.stop="$emit('deleteItem', index)"></button>
+        </li>
       </ul>
     </div>
   </div>
@@ -44,11 +48,26 @@ export default {
   padding: 20px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   min-width: 200px;
+  height: 300px; /* 모달의 최대 높이 설정 */
+  overflow-y: auto; /* 콘텐츠가 많을 때 세로 스크롤 생성 */
   /* 최소 너비 */
   cursor: pointer;
 }
 
 .modal-item {
-  list-style: none;
+  display: block;
+  width: 100%; /* 도형의 크기에 맞게 조정 */
+  white-space: nowrap; /* 텍스트를 한 줄로 표시 */
+  overflow: hidden; /* 넘치는 텍스트 숨기기 */
+  text-overflow: ellipsis; /* 넘치는 부분을 줄임표(...)로 표시 */
+}
+
+.del_button {
+  background-image: url('@/assets/closebutton.svg');
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 3vw; 
+
 }
 </style>

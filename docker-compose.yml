@@ -7,10 +7,32 @@ services:
     restart: always
     environment:
       - FLASK_ENV=development
+    ports:
+      - "7000:7000"  # 호스트:컨테이너 포트 매핑
     expose:
-      - 6000
+      - 7000
     networks:
       - app-network
+
+  ai:
+    build: ./ai
+    volumes:
+      - ./ai:/workspace
+    container_name: ai
+    restart: always
+    environment:
+      - FLASK_ENV=development
+    ports:
+      - "7777:7777"
+    networks:
+      - app-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all  # 사용 가능한 모든 GPU를 사용합니다.
+              capabilities: [gpu]  # GPU 사용을 지정합니다
 
   frontend:
     build:
@@ -21,11 +43,13 @@ services:
       - /app/node_modules
     container_name: frontend
     restart: always
+    ports:
+      - "8080:8080"
     networks:
       - app-network
     depends_on:
       - backend
-
+  
   nginx:
     image: nginx:latest
     volumes:
@@ -38,6 +62,7 @@ services:
     depends_on:
       - backend
       - frontend
+      - ai
     networks:
       - app-network
 

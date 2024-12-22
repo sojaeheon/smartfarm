@@ -78,27 +78,12 @@ export default {
   /* 가운데 정렬을 위한 설정 */
 }
 
-.nav-bar {
-  display: flex;
-  width: 200px;
-  height: 100%;
-
-}
-
-.nav-bar.open {
-  transform: translateX(0);
-}
 
 /* 모바일 화면에서 메뉴 버튼만 보이도록 설정 */
 @media (min-width: 768px) {
   #menu-button {
     display: none;
     /* 모바일 화면에서만 보이도록 설정 */
-  }
-
-  .nav-bar {
-    transform: translateX(0);
-    /* PC 화면에서는 항상 보이게 설정 */
   }
 }
 </style>

@@ -7,7 +7,6 @@
             <!-- Camera -->
             <div class="grid-item" id="camera">
                 <img :src="videoSrc" alt="Camera Stream" />
-                <!-- <video ref="video" width="100%" autoplay></video> -->
             </div>
 
             <!-- Actuator Buttons -->
@@ -25,12 +24,17 @@
             <!-- Current Data -->
             <div class="grid-item" id="current-data">
                 <div id="Chart">
-                    <Chart :ChartData="currentSensorData" />
+                    <Chart v-if="isDataLoaded" :ChartData="currentSensorData" />
                 </div>
                 <div id="button-container">
                     <button type="button" v-for="(sensor, index) in sensors" :key="index" class="sensors-button"
                         :class="{ 'on': sensor.isOn }" @click="toggleSwitch(sensor)">{{ sensor.label }}</button>
+                    <button @click="refreshChart" class="refresh-button">
+                        <img src="@/assets/reload.png" alt="새로고침" class="refresh-icon" />
+                    </button>
                 </div>
+                <!-- 새로고침 버튼 추가 -->
+                
             </div>
 
             <!-- Weather -->
@@ -63,23 +67,27 @@
 <script>
 import AppHeader from '../components/AppHeader.vue';
 import Chart from './Chart.vue';
+import axios from 'axios';
 
 export default {
     data() {
         return {
-            videoSrc: 'http://192.168.0.38:7777/video_feed',
+            videoSrc: 'http://202.31.150.31:15915/video_feed',
             actuators: [
                 { label: 'DC팬', isOn: false, imgSrc: require('../assets/dcfan.svg') },
-                { label: '워터펌프', isOn: false, imgSrc: require('../assets/water-pump.svg') },
+                { label: '워터펌프(급수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
+                { label: '워터펌프(배수)', isOn: false, imgSrc: require('../assets/water-pump.svg') },
                 { label: 'LED', isOn: false, imgSrc: require('../assets/brightness.svg') },
             ],
             sensors: [
-                { label: '조도', isOn: true, data: [10, 20, 30, 40, 50, 60] },
-                { label: 'CO2', isOn: false, data: [12, 22, 32, 42, 52, 62] },
-                { label: '온도', isOn: false, data: [15, 25, 35, 45, 55, 65] },
-                { label: '습도', isOn: false, data: [8, 18, 28, 38, 48, 58] },
-                { label: '수위', isOn: false, data: [9, 19, 29, 39, 49, 59] }
+                { label: '조도', isOn: true },
+                { label: 'CO2', isOn: false },
+                { label: '온도', isOn: false },
+                { label: '습도', isOn: false },
+                { label: '수위', isOn: false }
+
             ],
+            isDataLoaded: false,
             currentSensorData: {},
             forecastList: [],
             api_key: 'b220e5b857e610bc88ca3db69f5be7be',
@@ -110,41 +118,63 @@ export default {
         }
     },
     mounted() {
-        // 웹캠 접근
-        /*navigator.mediaDevices.getUserMedia({ video: true })
-            .then(stream => {
-                this.$refs.video.srcObject = stream;
-            })
-            .catch(error => {
-                console.error("카메라 접근 실패:", error);
-            });*/
-
         // 초기 센서 설정
-        this.currentSensorData = this.getSensorData(this.sensors.find(sensor => sensor.isOn));
+        this.fetchSensorData();
         // 날씨 데이터 가져오기
         this.fetchWeatherData();
         this.setDateInfo();  // 날짜 설정
     },
     methods: {
+        async getActuatorStatus() {
+            try {
+                const response = await axios.get('/api/actuators/status');
+                const status = response.data;
+                if(response.data.success){
+                    // 각 장치 상태에 맞게 isOn 값을 업데이트
+                    this.actuators[0].isOn = status.dcfan === 'on' ? true : false;
+                    this.actuators[1].isOn = status.waterpump_fill === 'on' ? true : false;
+                    this.actuators[2].isOn = status.waterpump_drain === 'on' ? true : false;
+                    this.actuators[3].isOn = status.led === 'on' ? true : false;
+                }else{
+                    this.actuators[0].isOn = false;
+                    this.actuators[1].isOn = false;
+                    this.actuators[2].isOn = false;
+                    this.actuators[3].isOn = false;
+                }
+                
+                
+            } catch (error) {
+                console.error('Error fetching actuator status:', error);
+            }
+        },
         toggleActuator(index) {
+            if (this.actuators[index].label === '워터펌프(급수)') {
+                // '워터펌프(급수)' 버튼을 눌렀을 때 '워터펌프(배수)'를 비활성화
+                this.actuators.forEach((actuator, idx) => {
+                    if (actuator.label === '워터펌프(배수)') {
+                        this.actuators[idx].isOn = false;
+                    }
+                });
+            } else if (this.actuators[index].label === '워터펌프(배수)') {
+                // '워터펌프(배수)' 버튼을 눌렀을 때 '워터펌프(급수)'를 비활성화
+                this.actuators.forEach((actuator, idx) => {
+                    if (actuator.label === '워터펌프(급수)') {
+                        this.actuators[idx].isOn = false;
+                    }
+                });
+            }
             // 직접 상태를 변경
             this.actuators[index].isOn = !this.actuators[index].isOn;
             console.log(`Actuator ${this.actuators[index].label} is now ${this.actuators[index].isOn ? 'ON' : 'OFF'}`);
-            // 액추에이터가 이미 켜져 있는 경우-시간설정
-            // if (this.actuators[index].isOn) {
-            //     this.actuators[index].isOn = false; // 바로 끄기
-            // } else {
-            //     // 액추에이터 켜기
-            //     this.actuators[index].isOn = true;
-            //     console.log(`Actuator ${this.actuators[index].label} is now ON`);
 
-            //     // 설정된 시간 후에 자동으로 끄기 (n분=n*60*1000, n시간=n*60*60*1000)
-            //     const offTime = 60000; // 1시간(밀리초 단위)
-            //     setTimeout(() => {
-            //         this.actuators[index].isOn = false;
-            //         console.log(`Actuator ${this.actuators[index].label} is now OFF after ${offTime / 1000 / 60} minutes`);
-            //     }, offTime);
+            // // LED 액추에이터인 경우 서버에 상태 전송
+            // if (this.actuators[index].label === 'LED') {
+            //     this.controlLed(index);
             // }
+            // if (this.actuators[index].label === 'DC팬') {
+            //     this.controlDcfan(index);
+            // }
+            this.controlActuators();
         },
         toggleSwitch(sensor) {
             // 만약 클릭된 센서가 이미 켜져 있으면 끄기
@@ -156,19 +186,118 @@ export default {
                 sensor.isOn = true;
             }
             this.currentSensorData = this.getSensorData(sensor);
+            this.isDataLoaded = true; // 차트 데이터가 로드되었음을 표시
+        },
+        // async controlLed(index) {
+        //     // 서버에 POST 요청 보내기
+        //     const status = this.actuators[index].isOn ? 'on' : 'off';
+
+        //     await axios.get(`/api/led`, {
+        //             params: {
+        //                 status: status
+        //             }
+        //         })
+        //         .catch(error => {
+        //             console.error('There was a problem with the axios operation:', error);
+        //         });
+        // },
+        // async controlDcfan(index) {
+        //     // 서버에 POST 요청 보내기
+        //     const status = this.actuators[index].isOn ? 'on' : 'off';
+
+        //     await axios.get(`/api/dcfan`, {
+        //         status: status
+        //     })
+        //         .catch(error => {
+        //             console.error('There was a problem with the axios operation:', error);
+        //         });
+        // },
+        async controlActuators() {
+            // 장치의 상태 추출
+            const statusData = this.actuators.map(actuator => ({
+                label: actuator.label,
+                isOn: actuator.isOn ? 'on' : 'off'
+            }));
+
+            // 서버로 상태 전달
+            await axios.post(`/api/actuators`, {
+                    status: statusData,  // 모든 장치 상태 전달
+                    device_name: this.$store.state.device_name
+                })
+                .catch(error => {
+                    console.error('There was a problem with the axios operation:', error);
+                });
+        },
+        async fetchSensorData() {
+            try {
+                const response = await axios.get('/api/sensor_graph', {
+                    params: {
+                        device_name: this.$store.state.device_name  // 쿼리 파라미터로 전달
+                    },
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                const datas = response.data.data.slice(-1440);
+
+                // 센서 데이터 각각을 별도의 배열에 저장
+        // 서버에서 받은 date 값을 그대로 사용
+                this.dateArray = datas.map(item => item.date).reverse();
+                this.co2Array = datas.map(item => item.co2).reverse();
+                this.temperatureArray = datas.map(item => item.temperature).reverse();
+                this.humidityArray = datas.map(item => item.humidity).reverse();
+                this.lightArray = datas.map(item => item.light).reverse();
+                this.waterLevelArray = datas.map(item => item.waterlevel).reverse();
+
+                console.log("Date Array:", this.dateArray);
+                console.log("Temperature Array:", this.temperatureArray);
+
+                const sensor = this.sensors.find(sensor => sensor.isOn); // 활성화된 센서 찾기
+                if (sensor) {
+                    this.currentSensorData = this.getSensorData(sensor); // getSensorData로 데이터를 업데이트
+                }
+                // 데이터 로드 완료 표시
+                this.isDataLoaded = true;
+            } catch (error) {
+                console.error("센서 데이터를 불러오지 못했습니다:", error);
+            }
+
         },
         getSensorData(sensor) {
+            if (!sensor) return {}; // sensor가 undefined일 경우 빈 객체 반환
+
+            let sensorData = [];
+            switch (sensor.label) {
+                case '온도':
+                    sensorData = this.temperatureArray;
+                    break;
+                case '습도':
+                    sensorData = this.humidityArray;
+                    break;
+                case '조도':
+                    sensorData = this.lightArray;
+                    break;
+                case '수위':
+                    sensorData = this.waterLevelArray;
+                    break;
+                case 'CO2':
+                    sensorData = this.co2Array;
+                    break;
+                default:
+                    sensorData = [];
+            }
+            console.log("Chart Data:", sensorData);  // 콘솔에 데이터 확인
             return {
-                labels: ["1", "2", "3", "4", "5", "6"],  // x축 라벨 (예시)
-                datasets: [
-                    {
-                        label: sensor.label,
-                        data: sensor.data,
-                        backgroundColor: "rgba(54, 162, 235, 0.2)",
-                        borderColor: "rgba(54, 162, 235, 1)",
-                        borderWidth: 1
-                    }
-                ]
+                dates: this.dateArray,
+                datasets: [{
+                    label: sensor.label,
+                    data: sensorData,
+                    backgroundColor: "rgba(54, 162, 235, 0.2)",
+                    borderColor: "rgba(54, 162, 235, 1)",
+                    borderWidth: 1,
+                    fill: false,  // 선 그래프의 선만 표시하도록 설정
+                }]
             };
         },
         getWeatherIconUrl(icon) {
@@ -219,6 +348,11 @@ export default {
                 icon: item.weather[0].icon,
             }));
         },
+        // 새로고침 버튼 클릭 시 호출되는 메서드
+        refreshChart() {
+            this.fetchSensorData(); // 새 데이터 가져오기
+            console.log("Chart data has been refreshed.");
+        }
     },
     components: {
         AppHeader,
@@ -252,6 +386,39 @@ export default {
     border: 2px solid rgba(0, 0, 0, 0.5);
     border-radius: 8px;
     padding: 10px;
+}
+
+/* 기존 스타일 유지 */
+.refresh-button {
+    margin-top: 1px;
+    padding: 8px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+.refresh-icon {
+    width: 40px;
+    height: 40px;
+}
+
+#camera {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 40vh;
+    /* overflow: hidden; */
+    /* 내용이 넘치는 경우 숨김 처리 */
+}
+
+#camera img,
+#camera video {
+    width: 100%;
+    /* 부모의 너비에 맞춰 100% 사용 */
+    height: auto;
+    /* 높이는 자동 조절 */
+    max-height: 100%;
+    /* 최대 높이를 100%로 설정 */
 }
 
 #actuator-container {
@@ -299,7 +466,7 @@ export default {
     display: flex;
     justify-content: center;
     /* 버튼들을 중앙에 배치 */
-    margin-top: 10px;
+    margin-top: 0.5vh;
     gap: 10px;
     /* 버튼 간 간격 */
 }
@@ -320,20 +487,10 @@ export default {
 }
 
 #Chart {
-    margin: 0 10px;
+    /*margin: 0 10px;*/
     position: relative;
-    width: 30vw;
-}
-
-#data-button {
-    width: 7vw;
-    height: 10vh;
-    border: 2px solid #63C758;
-    border-radius: 10px;
-    text-align: center;
-    font-weight: bold;
-    margin: 0 0.25vw;
-    font-size: medium;
+    width: 35vw;
+    height: 25vh;
 }
 
 #weather {
@@ -417,28 +574,13 @@ export default {
         color: black;
     }
 
-    #data-button {
-        width: 15vw;
-        color: black;
-        margin: 0 1vw;
+    #Chart {
+        width: 75vw;
     }
+
+    .sensors-button {
+    width: 10vw;
 }
 
-#camera {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    overflow: hidden;
-    /* 내용이 넘치는 경우 숨김 처리 */
-}
-
-#camera img,
-#camera video {
-    width: 100%;
-    /* 부모의 너비에 맞춰 100% 사용 */
-    height: auto;
-    /* 높이는 자동 조절 */
-    max-height: 100%;
-    /* 최대 높이를 100%로 설정 */
 }
 </style>

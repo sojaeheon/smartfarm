@@ -21,9 +21,9 @@ export default {
   },
   mounted() {
     // ChartData가 있는 경우에만 차트 렌더링
-    if (this.ChartData && Object.keys(this.ChartData).length > 0) {
-      this.renderChart();
-    }
+    //if (this.ChartData && Object.keys(this.ChartData).length > 0) {
+    this.renderChart();
+    //}
   },
   watch: {
     ChartData(newData) {
@@ -42,17 +42,34 @@ export default {
       const canvas = this.$refs.BarChart;
       if (canvas) {
         const ctx = canvas.getContext("2d");
-        
+
         // 새로운 차트 인스턴스 생성
         this.chartInstance = new Chart(ctx, {
           type: "line",
-          data: this.ChartData,
+          data: {
+            labels: this.ChartData.dates,
+            datasets: this.ChartData.datasets,
+          },
           options: {
+            responsive: true,
+            maintainAspectRatio: false,
             scales: {
               y: {
                 beginAtZero: true,
               },
+              x: {
+                display: false,
+                title: {
+                  display: true,
+                  text: "Date",
+                },
+              },
             },
+            elements: {
+                point: {
+                  radius: 0, // 포인트 동그라미 제거
+                },
+              },
           },
         });
       } else {
@@ -63,5 +80,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
