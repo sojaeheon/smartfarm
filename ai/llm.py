@@ -11,7 +11,7 @@ import os
 # 언어 모델 설정
 llm = ChatGoogleGenerativeAI(
     model='gemini-1.5-pro-001',
-    google_api_key='AIzaSyCvBysyoy-zvcU7QhGD3k4Wha-rHJ29PvI',
+    google_api_key='',
     temperature=0,
 )
 
