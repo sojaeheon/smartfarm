@@ -3,7 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 
 # 딸기 병해진단 부분
 def sb_decision(disease_image):
-    rf = Roboflow(api_key="sU34QbSDb0zkJY82W2tG")
+    rf = Roboflow(api_key="")
     project = rf.workspace().project("strawberry_disease-n0bao")
     model = project.version(1).model
 
