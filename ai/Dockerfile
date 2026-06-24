@@ -28,7 +28,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN mkdir -p /home/aim/.cache/huggingface && chmod -R 777 /home/aim/.cache
 
 # 환경 변수 설정
-ENV HF_TOKEN="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"
+ENV HF_TOKEN=""
 ENV HF_HOME="/home/aim/.cache/huggingface"
 ENV TRANSFORMERS_CACHE="/home/aim/.cache/huggingface/hub"
 
